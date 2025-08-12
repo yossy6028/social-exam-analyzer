@@ -60,6 +60,15 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             self.theme_extractor = None
             self.theme_extractor_v2 = None
             logger.info("従来のテーマ抽出を使用します")
+        
+        # 改善された問題抽出器を初期化
+        try:
+            from .improved_question_extractor import ImprovedQuestionExtractor
+            self.question_extractor = ImprovedQuestionExtractor()
+            logger.info("改善された問題抽出器を使用します")
+        except ImportError:
+            self.question_extractor = None
+            logger.info("標準の問題抽出を使用します")
     
     def _initialize_weighted_patterns(self) -> Dict[SocialField, List[Tuple[re.Pattern, float]]]:
         """重み付けされた分野判定パターン"""
@@ -217,6 +226,18 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
     
     def _extract_questions(self, text: str) -> List[Tuple[str, str]]:
         """改善された問題抽出（堅牢な問題構造認識）"""
+        
+        # 改善された問題抽出器を優先的に使用
+        if self.question_extractor:
+            try:
+                questions = self.question_extractor.extract_questions(text)
+                if questions:
+                    logger.info(f"改善された抽出器で{len(questions)}問を抽出")
+                    return questions
+            except Exception as e:
+                logger.error(f"改善された抽出器でエラー: {e}")
+        
+        # フォールバック：従来の方法
         questions = []
         
         # OCRテキストをクリーニング
