@@ -43,7 +43,7 @@ class EnhancedThemeExtractor(ThemeExtractorV2):
     
     def extract(self, text: str) -> ExtractedTheme:
         """
-        テーマを抽出（必要に応じてWeb検索で補正）
+        テーマを抽出（必要に応じてWeb検累で補正）
         """
         # まず基本の抽出を試みる
         base_result = super().extract(text)

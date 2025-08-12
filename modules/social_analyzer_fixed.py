@@ -53,9 +53,12 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         # 強化版テーマ抽出器を初期化（Web検索無効で除外パターンを優先）
         if USE_ENHANCED_EXTRACTOR or USE_V2_EXTRACTOR:
             self.theme_extractor = EnhancedThemeExtractor(enable_web_search=False)
+            # 基底クラスとの互換性のため両方の名前で設定
+            self.theme_extractor_v2 = self.theme_extractor
             logger.info("強化版テーマ抽出器を使用します（Web検索無効）")
         else:
             self.theme_extractor = None
+            self.theme_extractor_v2 = None
             logger.info("従来のテーマ抽出を使用します")
     
     def _initialize_weighted_patterns(self) -> Dict[SocialField, List[Tuple[re.Pattern, float]]]:
@@ -387,6 +390,21 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                         questions.append((f"問{num}", q_text.strip()))
         
         return questions
+    
+    def _extract_topic(self, text: str) -> Optional[str]:
+        """テーマ抽出をオーバーライド（確実に強化版抽出器を使用）"""
+        # 強化版テーマ抽出器を使用
+        if hasattr(self, 'theme_extractor') and self.theme_extractor:
+            result = self.theme_extractor.extract(text)
+            if result.theme:
+                logger.debug(f"テーマ抽出成功: '{text[:50]}...' -> '{result.theme}'")
+                return result.theme
+            else:
+                logger.debug(f"テーマ除外: '{text[:50]}...' -> None")
+                return None
+        
+        # フォールバック（基底クラスの処理）
+        return super()._extract_topic(text)
     
     def _fallback_extraction(self, text: str) -> List[Tuple[str, str]]:
         """フォールバック用の問題抽出"""

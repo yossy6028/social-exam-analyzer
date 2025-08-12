@@ -79,6 +79,38 @@ class ThemeExtractorV2:
                 (re.compile(r'板垣退助.*?政党'), '自由党の結成', '歴史'),
                 (re.compile(r'伊藤博文.*?政党'), '立憲政友会の結成', '歴史'),
             ],
+            '歴史_人物': [
+                (re.compile(r'源頼朝'), '源頼朝の業績', '歴史'),
+                (re.compile(r'源義経'), '源義経の生涯', '歴史'),
+                (re.compile(r'平清盛'), '平清盛の政治', '歴史'),
+                (re.compile(r'足利尊氏'), '足利尊氏の政権', '歴史'),
+                (re.compile(r'足利義満'), '足利義満の政治', '歴史'),
+                (re.compile(r'織田信長'), '織田信長の統一事業', '歴史'),
+                (re.compile(r'豊臣秀吉'), '豊臣秀吉の政策', '歴史'),
+                (re.compile(r'徳川家康'), '徳川家康の統治', '歴史'),
+                (re.compile(r'徳川家光'), '徳川家光の政策', '歴史'),
+                (re.compile(r'徳川吉宗'), '徳川吉宗の改革', '歴史'),
+                (re.compile(r'田沼意次'), '田沼意次の政治', '歴史'),
+                (re.compile(r'松平定信'), '松平定信の改革', '歴史'),
+                (re.compile(r'水野忠邦'), '水野忠邦の改革', '歴史'),
+                (re.compile(r'西郷隆盛'), '西郷隆盛の功績', '歴史'),
+                (re.compile(r'大久保利通'), '大久保利通の政策', '歴史'),
+                (re.compile(r'木戸孝允'), '木戸孝允の業績', '歴史'),
+                (re.compile(r'伊藤博文'), '伊藤博文の政治', '歴史'),
+                (re.compile(r'板垣退助'), '板垣退助の自由民権運動', '歴史'),
+                (re.compile(r'大隈重信'), '大隈重信の政党政治', '歴史'),
+                (re.compile(r'福沢諭吉'), '福沢諭吉の思想', '歴史'),
+                (re.compile(r'聖徳太子'), '聖徳太子の政治', '歴史'),
+                (re.compile(r'中大兄皇子'), '中大兄皇子の改革', '歴史'),
+                (re.compile(r'聖武天皇'), '聖武天皇の政治', '歴史'),
+                (re.compile(r'桓武天皇'), '桓武天皇の政策', '歴史'),
+                (re.compile(r'藤原道長'), '藤原道長の摂関政治', '歴史'),
+                (re.compile(r'藤原頼通'), '藤原頼通の時代', '歴史'),
+                (re.compile(r'白河上皇'), '白河上皇の院政', '歴史'),
+                (re.compile(r'後白河上皇'), '後白河上皇の院政', '歴史'),
+                (re.compile(r'北条時宗'), '北条時宗の政治', '歴史'),
+                (re.compile(r'北条泰時'), '北条泰時の政策', '歴史'),
+            ],
             '歴史_文化': [
                 (re.compile(r'延暦寺'), '延暦寺の歴史', '歴史'),
                 (re.compile(r'伊勢物語'), '伊勢物語の成立', '歴史'),
@@ -126,6 +158,12 @@ class ThemeExtractorV2:
                 (re.compile(r'空き家'), '空き家問題の現状', '公民'),
                 (re.compile(r'少子高齢化'), '少子高齢化の影響', '公民'),
                 (re.compile(r'男女.*?(平等|共同参画|対等)'), '男女共同参画社会の推進', '公民'),
+                (re.compile(r'SDGs'), 'SDGsの目標', '公民'),
+                (re.compile(r'持続可能な開発'), '持続可能な開発目標', '公民'),
+                (re.compile(r'地球温暖化'), '地球温暖化の対策', '公民'),
+                (re.compile(r'気候変動'), '気候変動の影響', '公民'),
+                (re.compile(r'環境破壊'), '環境破壊の現状', '公民'),
+                (re.compile(r'再生可能エネルギー'), '再生可能エネルギーの活用', '公民'),
             ],
         }
     
@@ -167,12 +205,14 @@ class ThemeExtractorV2:
         """抽象的な概念のパターン"""
         return [
             (re.compile(r'資料.*?読み取り'), '資料の読み取り'),
-            (re.compile(r'グラフ.*?分析'), 'グラフの分析'),
+            (re.compile(r'グラフ.*?(分析|読み取)'), 'グラフの分析'),
             (re.compile(r'地図.*?(読み取り|から)'), '地図の読み取り'),
-            (re.compile(r'地図中'), '地図の読み取り'),  # 「地図中の内容」対策
+            (re.compile(r'地図中.*?(都市|地域|県)'), '地図の読み取り'),  # 「地図中の都市」対策
             (re.compile(r'年表.*?読み取り'), '年表の読み取り'),
             (re.compile(r'統計.*?分析'), '統計の分析'),
             (re.compile(r'図表.*?読み取り'), '図表の読み取り'),
+            (re.compile(r'表から.*?読み取'), '統計表の分析'),  # 「表から読み取れること」対策
+            (re.compile(r'次の表.*?(読み取|説明)'), '統計表の分析'),  # 「次の表から読み取れること」対策
         ]
     
     def _init_exclusion_patterns(self) -> List[re.Pattern]:
@@ -198,29 +238,22 @@ class ThemeExtractorV2:
             # 記号や括弧のみの内容
             re.compile(r'^【[あ-んア-ン]】|^\([あ-んア-ン]\)'),
             # 【】にあてはまる形式
-            re.compile(r'【[あ-んア-ン]】にあてはまる'),
-            # 「にあてはまる人物名」形式
-            re.compile(r'にあてはまる(人物名|語句|言葉|もの)'),
+            re.compile(r'【[あ-んア-ン]】.*?にあてはまる'),  # 【い】にあてはまる
+            re.compile(r'にあてはまる.*?(人物名|語句|言葉)'),  # にあてはまる人物名
             
-            # === 「次の〜」パターン（問題文の導入部） ===
-            re.compile(r'^次の(図|表|グラフ|資料|写真|地図|雨温図|年表|史料|文章)(は|で|を|から|について|に関して)'),
-            re.compile(r'^次に示す(図|表|グラフ|資料|写真|地図|雨温図|年表|史料|文章)'),
-            re.compile(r'^以下の(図|表|グラフ|資料|写真|地図|雨温図|年表|史料|文章)'),
-            # 「次の資料は〜について述べたものです」形式
-            re.compile(r'^次の.*?について述べた(もの|内容)'),
-            re.compile(r'^次の.*?に関する(資料|文章|記述)'),
-            re.compile(r'^次の.*?を示した(もの|図|表|資料)'),
+            # === 「次の〜」パターン ===
+            re.compile(r'^次の(図|グラフ|資料|写真|地図|雨温図)(?!.*?(読み取|分析|説明))'),  # 読み取り系は除外しない
+            re.compile(r'^以下の(うち|中から|選択肢)'),  # 以下のうちなど
+            re.compile(r'^次のア〜'),  # 次のア〜エからなど
+            re.compile(r'から選べ$'),  # 「〜から選べ」で終わる文
             
             # === 下線部関連 ===
-            # 下線部の内容（番号なしの場合）
-            re.compile(r'^下線部の(内容|特徴|説明)$'),
-            # 番号付き下線部
-            re.compile(r'^下線部[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]'),
-            re.compile(r'^下線部[（(][あ-おア-オ][)）]'),
-            re.compile(r'^下線部[（(]\d+[)）]'),
-            re.compile(r'^下線部[あ-おア-オ]'),
-            # 下線部を含む一般的なパターン
-            re.compile(r'下線部.*?(について|に関して|として|の内容|の特徴|の説明)$'),
+            # 下線部単独、または下線部+番号/記号のみを除外
+            re.compile(r'^下線部[①-⑳⑪-⑯⑰-⑳❶-❿⓫-⓴]?$'),  # 下線部①など
+            re.compile(r'^下線部\d+$'),  # 下線部6など
+            re.compile(r'^下線部の(内容|特徴|説明|史料)'),  # 下線部の特徴など
+            re.compile(r'^下線部.*?として'),  # 下線部の史料としてなど
+            re.compile(r'^傍線部'),  # 傍線部も同様
             
             # === 参照・引用関連 ===
             # 不完全な表現
@@ -253,6 +286,9 @@ class ThemeExtractorV2:
             re.compile(r'^.{1,3}の内容$'),
             # 極端に一般的な表現
             re.compile(r'^(内容|特徴|理由|原因|結果|影響|意味|目的)$'),
+            # 「具体的な」で始まる指示
+            re.compile(r'^具体的な'),
+            re.compile(r'を用いて.*事例'),  # 「〜を用いて〜事例」パターン
             
             # === 問題解答指示 ===
             # 解答形式の指定
@@ -261,8 +297,9 @@ class ThemeExtractorV2:
             re.compile(r'(正しい|適切な|誤って|間違って).*?(選び|答え)'),
             
             # === 地図・図表の参照（文脈なしでは無意味） ===
-            # 地図中の〜（位置指定）
-            re.compile(r'^(地図中の|図中の|表中の|グラフ中の)'),
+            # 地図中の〜（位置指定）- ただし都市名や地域名がある場合は除外しない
+            re.compile(r'^地図中の(?!.*?(都市|地域|県|国|山|川|平野))'),
+            re.compile(r'^(図中の|表中の|グラフ中の)(?!.*?(読み取|分析|説明))'),
             # アルファベット・記号での場所指定
             re.compile(r'^[A-Z]([地点|地域|都市|県|国])'),
             re.compile(r'^[ア-ン]([地点|地域|都市|県|国])'),
@@ -294,23 +331,6 @@ class ThemeExtractorV2:
         if self._should_exclude(text):
             return ExtractedTheme(None, None, 0.0)
         
-        # 特殊なケースの処理
-        # 「下線部」「新聞記事」などの参照は文脈なしでは意味不明
-        if any(keyword in text for keyword in ['下線部', '新聞記事', '資料', 'グラフ', '表']):
-            # より具体的な内容を探す
-            if '震災' in text:
-                if '淡路' in text or '阪神' in text:
-                    return ExtractedTheme('阪神・淡路大震災', '地理', 0.9)
-                else:
-                    return ExtractedTheme('自然災害の影響', '地理', 0.8)
-            # 他に具体的な内容がない場合はNone
-            if not any(word in text for word in ['について', '説明', '答え', '述べ']):
-                return ExtractedTheme(None, None, 0.0)
-        
-        # 「同年」など文脈依存の表現を除外
-        if text.startswith('同年') or text.startswith('この年'):
-            return ExtractedTheme(None, None, 0.0)
-        
         # ステップ2: 具体的パターンのマッチング
         specific_result = self._match_specific_patterns(text)
         if specific_result:
@@ -327,21 +347,23 @@ class ThemeExtractorV2:
             return abstract_result
         
         # ステップ5: フォールバック処理
-        # フォールバックする前に、本当に有効なテーマがあるか確認
-        if len(text.strip()) < 10 or '答え' in text or '選び' in text:
+        # 短い固有名詞や重要用語も処理する
+        if '答え' in text or '選び' in text:
             return ExtractedTheme(None, None, 0.0)
             
         return self._fallback_extraction(text)
     
     def _should_exclude(self, text: str) -> bool:
         """除外すべきテキストかどうか判定"""
-        # 極端に短すぎる（3文字以下）
-        if len(text.strip()) <= 3:
+        cleaned_text = text.strip()
+        
+        # 極端に短すぎる（2文字以下）
+        if len(cleaned_text) <= 2:
             return True
         
         # 除外パターンにマッチ
         for pattern in self.exclusion_patterns:
-            if pattern.search(text.strip()):  # matchではなくsearchを使用
+            if pattern.search(cleaned_text):
                 return True
         
         return False
@@ -412,6 +434,44 @@ class ThemeExtractorV2:
     
     def _fallback_extraction(self, text: str) -> ExtractedTheme:
         """フォールバック: 最も重要なキーワードを抽出して2文節化"""
+        
+        # 特殊な資料読み取り問題の処理
+        if '地図中' in text and ('都市' in text or '地域' in text or '県' in text):
+            return ExtractedTheme('地図の読み取り', '地理', 0.7)
+        elif '次の表' in text or '表から読み取れる' in text:
+            return ExtractedTheme('統計表の分析', '総合', 0.7)
+        elif 'グラフ' in text and '読み取' in text:
+            return ExtractedTheme('グラフの分析', '総合', 0.7)
+        
+        # 短い固有名詞や用語の場合の特別処理
+        if 2 <= len(text) <= 10:
+            # 歴史上の人物名
+            if text in ['源頼朝', '織田信長', '豊臣秀吉', '徳川家康', '西郷隆盛', '伊藤博文', '明治天皇']:
+                return ExtractedTheme(f"{text}の業績", '歴史', 0.8)
+            # 歴史的事件
+            elif text in ['米騒動', '大塚一揆', '打ちこわし', '大逆事件']:
+                return ExtractedTheme(f"{text}の背景", '歴史', 0.8)
+            # 環境・社会問題
+            elif '環境' in text or '問題' in text:
+                return ExtractedTheme(f"{text}の対策", '公民', 0.7)
+            # 条約・制度
+            elif '条約' in text or '制度' in text:
+                return ExtractedTheme(f"{text}の内容", '公民', 0.7)
+            # 地名・地域
+            elif any(suffix in text for suffix in ['県', '市', '町', '村', '地方', '平野', '山地', '海峽']):
+                return ExtractedTheme(f"{text}の特徴", '地理', 0.7)
+            # その他の短い用語
+            else:
+                field = self._estimate_field(text)
+                if field == '歴史':
+                    suffix = 'の内容'
+                elif field == '地理':
+                    suffix = 'の特徴'
+                elif field == '公民':
+                    suffix = 'の仕組み'
+                else:
+                    suffix = 'の内容'
+                return ExtractedTheme(f"{text}{suffix}", field, 0.6)
         
         # 文脈なしでは意味不明な表現を検出
         meaningless_patterns = [
