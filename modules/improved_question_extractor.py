@@ -114,13 +114,26 @@ class ImprovedQuestionExtractor:
         return major_sections
     
     def _extract_minor_questions(self, text: str) -> List[Tuple[str, str]]:
-        """小問を抽出"""
+        """小問を抽出（大問の説明文も含める）"""
         minor_questions = []
+        
+        # 大問の説明文を抽出（最初の100文字程度）
+        context = ""
+        first_question_pos = text.find("問")
+        if first_question_pos > 0:
+            # 問1の前の文章を文脈として保存
+            context = text[:min(first_question_pos, 200)].strip()
+            if context:
+                context = context + "\n"
         
         for pattern in self.minor_patterns:
             matches = pattern.findall(text)
             if matches:
                 for num, q_text in matches:
+                    # 問1の場合は文脈を含める
+                    if num in ['1', '１']:
+                        q_text = context + q_text
+                    
                     q_text = self._clean_question_text(q_text)
                     if self._is_valid_question(q_text):
                         minor_questions.append((num, q_text))

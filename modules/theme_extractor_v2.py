@@ -450,6 +450,36 @@ class ThemeExtractorV2:
         elif 'グラフ' in text and '読み取' in text:
             return ExtractedTheme('グラフの分析', '総合', 0.7)
         
+        # OCRで断片的になった文から重要語を抽出
+        # 戦いや事件
+        battles = re.findall(r'([ぁ-んァ-ヴー一-龥]+の戦い)', text)
+        if battles:
+            return ExtractedTheme(f"{battles[0]}の経過", '歴史', 0.6)
+        
+        incidents = re.findall(r'([ぁ-んァ-ヴー一-龥]+の乱)', text)
+        if incidents:
+            return ExtractedTheme(f"{incidents[0]}の背景", '歴史', 0.6)
+        
+        # 人物名を探す（〜が、〜は、〜の）
+        person_pattern = re.findall(r'([ぁ-んァ-ヴー一-龥]{2,4})[がはの]', text)
+        for person in person_pattern:
+            if person in ['源頼朝', '織田信長', '豊臣秀吉', '徳川家康', '聖徳太子', '藤原道長']:
+                return ExtractedTheme(f"{person}の業績", '歴史', 0.6)
+        
+        # 時代を探す
+        period_pattern = re.findall(r'([ぁ-んァ-ヴー一-龥]+時代)', text)
+        if period_pattern:
+            return ExtractedTheme(f"{period_pattern[0]}の特徴", '歴史', 0.6)
+        
+        # 地名・県名を探す 
+        prefecture_pattern = re.findall(r'([ぁ-んァ-ヴー一-龥]{2,4}[県府])', text)
+        if prefecture_pattern:
+            return ExtractedTheme(f"{prefecture_pattern[0]}の特徴", '地理', 0.6)
+            
+        city_pattern = re.findall(r'([ぁ-んァ-ヴー一-龥]{2,4}市)', text)
+        if city_pattern:
+            return ExtractedTheme(f"{city_pattern[0]}の特徴", '地理', 0.6)
+        
         # 短い固有名詞や用語の場合の特別処理
         if 2 <= len(text) <= 10:
             # 歴史上の人物名

@@ -123,3 +123,11 @@
 2025-08-13 00:53:48,123 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
 2025-08-13 00:54:08,013 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
 2025-08-13 00:54:08,025 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2025_社会.txt
+2025-08-13 01:10:23,588 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-13 01:10:23,589 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-13 01:10:38,136 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2023
+2025-08-13 01:10:39,697 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2023年東京電機大学中学校問題_社会.pdf
+2025-08-13 01:10:55,501 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-13 01:10:55,504 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-13 01:10:55,504 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-13 01:10:55,512 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2023_社会.txt
