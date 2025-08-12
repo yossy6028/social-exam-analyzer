@@ -153,6 +153,13 @@ class ThemeExtractorV2:
                 (re.compile(r'(ユダヤ.*?アラブ|中東.*?紛争)'), '中東問題の現状', '歴史'),
                 (re.compile(r'日独伊三国同盟'), '日独伊三国同盟の成立', '歴史'),
                 (re.compile(r'国連|国際連合'), '国連の役割', '公民'),
+                (re.compile(r'核兵器.*?条約'), '核兵器禁止条約の内容', '公民'),
+                (re.compile(r'核.*?禁止'), '核兵器禁止条約の内容', '公民'),
+                (re.compile(r'NPT'), '核不拡散条約の内容', '公民'),
+                (re.compile(r'NATO'), 'NATOの役割', '公民'),
+                (re.compile(r'EU|欧州連合'), 'EUの仕組み', '公民'),
+                (re.compile(r'ASEAN'), 'ASEANの役割', '公民'),
+                (re.compile(r'TPP'), 'TPPの内容', '公民'),
             ],
             '社会問題': [
                 (re.compile(r'空き家'), '空き家問題の現状', '公民'),

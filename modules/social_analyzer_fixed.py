@@ -320,8 +320,8 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                 section_text = text[start_pos:end_pos]
                 
                 # 各大問内で問題を抽出（複数のパターンに対応）
-                # パターンA: 問1、問2（ピリオドあり・なし両対応）
-                pattern_a = re.compile(r'問\s*(\d+)[\.\s]*([^問]+?)(?=問\s*\d+|$)', re.DOTALL)
+                # パターンA: 問1、問2（ピリオドあり・なし両対応、全角数字も対応）
+                pattern_a = re.compile(r'問\s*([０-９\d]+)[\s\.\:：　]*([^問]+?)(?=問\s*[０-９\d]+|$)', re.DOTALL)
                 matches_a = pattern_a.findall(section_text)
                 
                 if matches_a:
@@ -342,8 +342,8 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         # 大問構造がない、または問題が少ない場合は全体から問題を探す
         if len(questions) < 10:  # 閾値を5から10に上げる
             # 直接的な問番号（問1、問2、問1.など）を全文から探す
-            # ピリオドありなし両対応
-            direct_pattern = re.compile(r'問\s*(\d+)[\.\s]*([^問]+?)(?=問\s*\d+|$)', re.DOTALL)
+            # ピリオドありなし両対応、全角数字も対応
+            direct_pattern = re.compile(r'問\s*([０-９\d]+)[\s\.\:：　]*([^問]+?)(?=問\s*[０-９\d]+|$)', re.DOTALL)
             direct_matches = direct_pattern.findall(text)
             
             # 既に抽出済みの問題番号を記録
@@ -391,8 +391,85 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         return questions
     
+    def _extract_theme_from_context(self, text: str) -> Optional[str]:
+        """文脈から具体的なテーマを推定（下線部や代名詞問題用）"""
+        
+        # 下線部問題の処理
+        if '下線部' in text:
+            # 前後の文章から具体的な内容を抽出
+            context_patterns = [
+                # 歴史的制度・政策
+                (re.compile(r'参勤交代|幕藩体制|鎖国|検地|刀狩|楽市楽座'), '歴史政策の内容'),
+                (re.compile(r'三大改革|享保の改革|寛政の改革|天保の改革'), '江戸時代の改革'),
+                (re.compile(r'明治維新|廃藩置県|四民平等|地租改正'), '明治時代の改革'),
+                
+                # 政治制度
+                (re.compile(r'三権分立|議院内閣制|国会|内閣|裁判所'), '政治制度の仕組み'),
+                (re.compile(r'憲法|基本的人権|国民主権|平和主義'), '日本国憲法の原則'),
+                
+                # 地理・産業
+                (re.compile(r'工業地帯|工業地域|農業|林業|漁業'), '産業の特徴'),
+                (re.compile(r'気候|地形|人口|都市化'), '地理的特徴'),
+                
+                # 国際関係
+                (re.compile(r'条約|同盟|戦争|講和'), '国際関係の変化'),
+            ]
+            
+            for pattern, theme_template in context_patterns:
+                if pattern.search(text):
+                    return theme_template
+        
+        # 「この」「その」などの代名詞問題
+        pronoun_patterns = [
+            # 地方・地域関連
+            (re.compile(r'この地方.*?産業'), '地方の産業'),
+            (re.compile(r'この地域.*?特徴'), '地域の特徴'),
+            (re.compile(r'この地方.*?気候'), '地方の気候'),
+            (re.compile(r'この都市.*?発展'), '都市の発展'),
+            
+            # 時代・政治関連
+            (re.compile(r'この時代.*?政治'), '時代の政治'),
+            (re.compile(r'この時期.*?社会'), '時期の社会'),
+            (re.compile(r'この制度.*?目的'), '制度の目的'),
+            (re.compile(r'この政策.*?影響'), '政策の影響'),
+            
+            # 経済・産業関連
+            (re.compile(r'この産業.*?発展'), '産業の発展'),
+            (re.compile(r'この工業.*?特徴'), '工業の特徴'),
+            (re.compile(r'この貿易.*?変化'), '貿易の変化'),
+        ]
+        
+        for pattern, theme in pronoun_patterns:
+            if pattern.search(text):
+                return theme
+        
+        # 説明・答えなさい系の問題
+        if any(keyword in text for keyword in ['説明しなさい', '述べなさい', '答えなさい']):
+            # 重要なキーワードを探して2文節形式にする
+            historical_keywords = ['江戸時代', '明治時代', '大正時代', '昭和時代', '平安時代', '鎌倉時代', '室町時代']
+            for keyword in historical_keywords:
+                if keyword in text:
+                    return f"{keyword}の特徴"
+            
+            geo_keywords = ['関東地方', '近畿地方', '中部地方', '東北地方', '九州地方', '中国地方', '四国地方']
+            for keyword in geo_keywords:
+                if keyword in text:
+                    return f"{keyword}の特徴"
+            
+            # 一般的なパターン
+            if '産業' in text:
+                return '産業の特徴'
+            elif '政治' in text:
+                return '政治の仕組み'
+            elif '制度' in text:
+                return '制度の内容'
+            elif '改革' in text:
+                return '改革の内容'
+        
+        return None
+    
     def _extract_topic(self, text: str) -> Optional[str]:
-        """テーマ抽出をオーバーライド（確実に強化版抽出器を使用）"""
+        """テーマ抽出をオーバーライド（文脈解析を強化）"""
         # 強化版テーマ抽出器を使用
         if hasattr(self, 'theme_extractor') and self.theme_extractor:
             result = self.theme_extractor.extract(text)
@@ -400,8 +477,14 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                 logger.debug(f"テーマ抽出成功: '{text[:50]}...' -> '{result.theme}'")
                 return result.theme
             else:
-                logger.debug(f"テーマ除外: '{text[:50]}...' -> None")
-                return None
+                # 除外されたケースでも、文脈から推定を試みる
+                context_theme = self._extract_theme_from_context(text)
+                if context_theme:
+                    logger.debug(f"文脈からテーマ推定: '{text[:50]}...' -> '{context_theme}'")
+                    return context_theme
+                else:
+                    logger.debug(f"テーマ除外: '{text[:50]}...' -> None")
+                    return None
         
         # フォールバック（基底クラスの処理）
         return super()._extract_topic(text)
@@ -486,14 +569,29 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         return has_keywords or is_long_enough
     
     def analyze_document(self, text: str) -> Dict[str, Any]:
-        """改善された文書分析"""
+        """改善された文書分析（文脈情報を保持）"""
+        # 全体テキストを保存（問題分析時に使用）
+        self._current_full_text = text
+        
         # 問題を抽出
         questions = self._extract_questions(text)
+        
+        # 問題が抽出できない場合のデバッグ情報
+        if not questions:
+            logger.warning("問題が抽出できませんでした")
+            logger.debug(f"入力テキストの最初の1000文字: {text[:1000]}")
+            # フォールバック：セクション分割を試みる
+            questions = self._emergency_question_extraction(text)
         
         # 各問題を分析
         analyzed_questions = []
         for q_num, q_text in questions:
-            analyzed_questions.append(self.analyze_question(q_text, q_num))
+            # 文脈強化：前後のテキストを含める
+            enhanced_text = self._find_question_context(text, q_text)
+            analyzed_question = self.analyze_question(enhanced_text, q_num)
+            # 元のテキストも保持
+            analyzed_question.original_text = q_text
+            analyzed_questions.append(analyzed_question)
         
         # 総合と判定された問題を再評価
         analyzed_questions = self._reevaluate_mixed_questions(analyzed_questions)
@@ -506,3 +604,69 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             'statistics': stats,
             'total_questions': len(analyzed_questions)
         }
+    
+    def _find_question_context(self, full_text: str, question_text: str) -> str:
+        """問題文の文脈を特定して強化"""
+        # 問題文の最初の30文字で検索
+        search_fragment = question_text[:30].strip()
+        if not search_fragment:
+            return question_text
+        
+        lines = full_text.split('\n')
+        enhanced_lines = []
+        
+        for i, line in enumerate(lines):
+            if search_fragment in line:
+                # 前後の行を含める（特に前の行に設問文がある場合）
+                start = max(0, i - 5)  # より多くの文脈を含める
+                end = min(len(lines), i + 3)
+                context_lines = lines[start:end]
+                
+                # 意味のある内容を含む行だけを選択
+                meaningful_lines = []
+                for line in context_lines:
+                    line = line.strip()
+                    if (line and 
+                        not line.isdigit() and  # 単独の数字は除外
+                        len(line) > 3):  # 短すぎる行は除外
+                        meaningful_lines.append(line)
+                
+                enhanced_lines = meaningful_lines[:10]  # 最大10行
+                break
+        
+        if enhanced_lines:
+            enhanced_text = ' '.join(enhanced_lines)
+            logger.debug(f"文脈強化: '{question_text[:30]}...' -> '{enhanced_text[:100]}...'")
+            return enhanced_text
+        
+        return question_text
+    
+    def _emergency_question_extraction(self, text: str) -> List[Tuple[str, str]]:
+        """緊急時の問題抽出（通常の抽出が失敗した場合）"""
+        questions = []
+        
+        # より単純なパターンで問題を探す
+        simple_patterns = [
+            # 「問」で始まる行
+            re.compile(r'^問\s*(\d+)[．\.\s]*(.*?)$', re.MULTILINE),
+            # 「(1)」形式
+            re.compile(r'^\((\d+)\)\s*(.*?)$', re.MULTILINE),
+            # 「1.」形式
+            re.compile(r'^(\d+)[．\.]\s*(.*?)$', re.MULTILINE),
+        ]
+        
+        for pattern in simple_patterns:
+            matches = pattern.findall(text)
+            for num, q_text in matches:
+                if len(q_text.strip()) > 10:  # 最低限の長さ
+                    questions.append((f"緊急抽出-{num}", q_text.strip()))
+        
+        if not questions:
+            # 最後の手段：段落ベースの分割
+            paragraphs = [p.strip() for p in text.split('\n\n') if len(p.strip()) > 20]
+            for i, p in enumerate(paragraphs[:10]):  # 最大10段落
+                if any(keyword in p for keyword in ['について', '答え', '選び', '説明']):
+                    questions.append((f"段落-{i+1}", p))
+        
+        logger.info(f"緊急抽出により{len(questions)}問を抽出しました")
+        return questions
