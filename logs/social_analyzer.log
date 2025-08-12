@@ -1,0 +1,96 @@
+2025-08-11 19:38:10,520 - __main__ - ERROR - 分析エラー: 'OCRHandler' object has no attribute 'process_pdf'
+2025-08-11 20:48:36,555 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2020
+2025-08-11 20:48:42,028 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2020年日本工業大学駒場中学校問題_社会.pdf
+2025-08-11 21:21:43,673 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2020
+2025-08-11 21:21:46,453 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2020年東京電機大学中学校問題_社会.pdf
+2025-08-11 21:21:46,462 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2020_社会.txt
+2025-08-11 21:46:42,389 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2020
+2025-08-11 21:46:44,049 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2020年東京電機大学中学校問題_社会.pdf
+2025-08-11 21:46:44,056 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2020_社会.txt
+2025-08-11 21:47:18,246 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2021
+2025-08-11 21:47:20,053 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2021年東京電機大学中学校問題_社会.pdf
+2025-08-11 21:47:20,056 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2021_社会.txt
+2025-08-11 21:48:14,157 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2022
+2025-08-11 21:48:15,404 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2022年東京電機大学中学校問題_社会.pdf
+2025-08-11 21:48:15,407 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2022_社会.txt
+2025-08-11 21:53:38,675 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2020
+2025-08-11 21:53:40,729 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2020年東京電機大学中学校問題_社会.pdf
+2025-08-11 21:53:54,719 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 21:53:54,725 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2020_社会.txt
+2025-08-11 21:59:38,622 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2020
+2025-08-11 21:59:40,358 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2020年東京電機大学中学校問題_社会.pdf
+2025-08-11 21:59:54,287 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 21:59:54,300 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2020_社会.txt
+2025-08-11 22:17:49,401 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2020
+2025-08-11 22:17:50,959 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2020年東京電機大学中学校問題_社会.pdf
+2025-08-11 22:18:00,520 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 22:18:00,537 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2020_社会.txt
+2025-08-11 23:15:34,591 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-11 23:15:36,670 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-11 23:15:54,614 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 23:15:54,631 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2025_社会.txt
+2025-08-11 23:29:59,775 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-11 23:30:01,838 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-11 23:30:20,023 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 23:30:20,043 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2025_社会.txt
+2025-08-11 23:33:49,162 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-11 23:43:07,271 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-11 23:43:08,978 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-11 23:43:27,414 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 23:43:27,447 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2025_社会.txt
+2025-08-11 23:53:01,825 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2024
+2025-08-11 23:53:03,232 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2024年東京電機大学中学校問題_社会.pdf
+2025-08-11 23:53:22,949 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-11 23:53:22,983 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2024_社会.txt
+2025-08-12 00:14:49,786 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-12 00:15:15,755 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-12 00:15:37,122 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 00:15:37,142 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2025_社会.txt
+2025-08-12 00:45:17,779 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-12 00:45:30,660 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-12 00:45:30,660 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-12 00:45:49,183 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 00:45:49,205 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2025_社会_004549.txt
+2025-08-12 00:51:25,545 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2025
+2025-08-12 00:51:28,452 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 00:51:47,947 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 00:51:47,949 - modules.social_analyzer_fixed - WARNING - 問題が抽出できませんでした
+2025-08-12 00:51:47,953 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2025_社会.txt
+2025-08-12 09:55:51,533 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2024
+2025-08-12 09:56:07,335 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2024年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 09:56:26,123 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 09:56:26,150 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2024_社会.txt
+2025-08-12 10:12:26,390 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2024
+2025-08-12 10:12:26,391 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2024年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 10:12:45,250 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 10:12:45,279 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2024_社会_101245.txt
+2025-08-12 10:34:42,313 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2023
+2025-08-12 10:34:43,806 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2023年東京電機大学中学校問題_社会.pdf
+2025-08-12 10:34:59,373 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 10:34:59,388 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2023_社会.txt
+2025-08-12 15:35:15,356 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2025
+2025-08-12 15:35:16,686 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 15:35:39,503 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 15:35:39,530 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2025_社会.txt
+2025-08-12 15:50:22,638 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2025
+2025-08-12 15:50:24,090 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 15:50:43,761 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 15:50:43,781 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2025_社会_155043.txt
+2025-08-12 16:09:19,181 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=東京電機大学中学校, 年度=2025
+2025-08-12 16:09:20,809 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-12 16:09:39,063 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 16:09:39,072 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/東京電機大学中学校_2025_社会.txt
+2025-08-12 16:17:40,179 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2025
+2025-08-12 16:17:41,700 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 16:18:01,240 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 16:18:01,251 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2025_社会.txt
+2025-08-12 16:35:15,787 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2023
+2025-08-12 16:35:17,442 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2023年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 16:35:39,811 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 16:35:39,823 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2023_社会.txt
+2025-08-12 17:02:48,277 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します
+2025-08-12 17:03:00,216 - modules.ocr_handler - INFO - ファイル名から抽出: 学校名=日本工業大学駒場中学校, 年度=2024
+2025-08-12 17:03:01,476 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2024年日本工業大学駒場中学校問題_社会.pdf
+2025-08-12 17:03:20,138 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-12 17:03:20,157 - modules.text_formatter - INFO - テキストファイルを保存しました: /Users/yoshiikatsuhiko/Desktop/過去問_社会/日本工業大学駒場中学校_2024_社会.txt
+2025-08-12 17:18:14,476 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
