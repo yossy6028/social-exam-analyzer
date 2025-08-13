@@ -42,6 +42,16 @@ class ThemeExtractorV2:
         
         # 除外パターン
         self.exclusion_patterns = self._init_exclusion_patterns()
+
+        # 用語カタログ（任意）
+        self.terms_repo = None
+        try:
+            from .terms_repository import TermsRepository
+            repo = TermsRepository()
+            if repo.available():
+                self.terms_repo = repo
+        except Exception:
+            self.terms_repo = None
         
     def _init_specific_patterns(self) -> Dict[str, List[Tuple[re.Pattern, str, str]]]:
         """固有名詞や具体的事象のパターン（2文節形式）"""
@@ -135,6 +145,24 @@ class ThemeExtractorV2:
             '地理_産業': [
                 (re.compile(r'プラスチック製品'), 'プラスチック製品の生産', '地理'),
                 (re.compile(r'半導体'), '半導体産業の発展', '地理'),
+            ],
+            '地理_関西域': [
+                (re.compile(r'大阪市|夢洲|関西国際空港'), '大阪府の地理', '地理'),
+                (re.compile(r'阪神工業地帯'), '阪神工業地帯の特徴', '地理'),
+                (re.compile(r'東大阪市|堺市|千里|泉北|淀川|大淀|淀'), '関西地方の地理', '地理'),
+                (re.compile(r'万博|大阪・関西万博'), '大阪・関西万博', '地理'),
+            ],
+            '歴史_医薬戦争': [
+                (re.compile(r'アヘン戦争'), 'アヘン戦争の影響', '歴史'),
+                (re.compile(r'征露丸|クレオソート'), '戦争と医薬の関係', '歴史'),
+                (re.compile(r'毒ガス'), '毒ガスと医薬研究', '歴史'),
+            ],
+            '歴史_正倉院医薬': [
+                (re.compile(r'正倉院|種々薬帳'), '正倉院と医薬', '歴史'),
+                (re.compile(r'鑑真'), '鑑真の時代', '歴史'),
+            ],
+            '公民_国連': [
+                (re.compile(r'国連.*加盟|加盟国|国際連合'), '国際連合の加盟国数', '公民'),
             ],
             '公民_制度': [
                 (re.compile(r'日本国憲法'), '日本国憲法の三原則', '公民'),
@@ -249,7 +277,9 @@ class ThemeExtractorV2:
             re.compile(r'にあてはまる.*?(人物名|語句|言葉)'),  # にあてはまる人物名
             
             # === 「次の〜」パターン ===
-            re.compile(r'^次の(図|グラフ|資料|写真|地図|雨温図)(?!.*?(読み取|分析|説明))'),  # 読み取り系は除外しない
+            # 図表等の紹介だけで具体性がないものは除外（読み取り/分析/説明がなければ除外）
+            re.compile(r'^次の(図|グラフ|資料|写真|地図|雨温図)(?!.*?(読み取|分析|説明))'),
+            re.compile(r'^次の表(?!.*?(読み取|分析|説明))'),
             re.compile(r'^以下の(うち|中から|選択肢)'),  # 以下のうちなど
             re.compile(r'^次のア〜'),  # 次のア〜エからなど
             re.compile(r'から選べ$'),  # 「〜から選べ」で終わる文
@@ -273,8 +303,8 @@ class ThemeExtractorV2:
             # === 技術・現代的用語（社会科に不適切） ===
             # ホームページやウェブサイト（社会科に不適切）
             re.compile(r'(ホームページ|ウェブサイト|ウェブページ|Webサイト|気象庁ホームページ)'),
-            # 社会科に無関係な用語
-            re.compile(r'(電気機械器具|電子機器|コンピュータ|スマートフォン|携帯電話|グリーンマーク)'),
+            # 社会科に無関係な用語（産業文脈で有用な「電子機器」は除外対象から外す）
+            re.compile(r'(電気機械器具|コンピュータ|スマートフォン|携帯電話|グリーンマーク)'),
             # 現代的すぎる概念
             re.compile(r'(インターネット|ソーシャルメディア|SNS|AI|人工知能)'),
             
@@ -320,6 +350,12 @@ class ThemeExtractorV2:
             re.compile(r'^この(県|府|道|都|地方|地域)の'),
             # A国、B国のような抽象的表現
             re.compile(r'^[A-Z]国'),
+
+            # === その他の参照テキスト（内容が不十分）===
+            # 新聞記事の内容など、教材参照のみの断片
+            re.compile(r'新聞記事の内容'),
+            # 「以下の表」を含むが読み取り等が無い場合は除外
+            re.compile(r'以下の表(?!.*?(読み取|分析|説明))'),
         ]
     
     def extract(self, text: str) -> ExtractedTheme:
@@ -334,11 +370,33 @@ class ThemeExtractorV2:
         5. フォールバック処理
         """
         
-        # ステップ1: 除外チェック
+        # ステップ0.5: 選択肢からの共起判定（空欄/選択問題でもテーマを推定）
+        opt_cluster = self._match_options_cluster(text)
+        if opt_cluster:
+            return opt_cluster
+
+        # ステップ1: 除外チェック（ただし上記で強い根拠がある場合は回避済み）
         if self._should_exclude(text):
             return ExtractedTheme(None, None, 0.0)
+
+        # ステップ1.5: キーワードから具体的なテーマを生成（最優先）
+        refined = self._refine_theme_from_keywords(text)
+        if refined:
+            return refined
+
+        # ステップ1.6: 用語カタログに基づく分野推定（任意）
+        if self.terms_repo is not None:
+            hit = self.terms_repo.suggest_theme(text)
+            if hit:
+                theme, field = hit
+                return ExtractedTheme(theme, self._field_label_to_category(field), 0.8)
         
-        # ステップ2: 具体的パターンのマッチング
+        # ステップ2: クラスタ（複数語の共起による高次テーマ）
+        cluster_result = self._match_cluster_patterns(text)
+        if cluster_result:
+            return cluster_result
+        
+        # ステップ2.5: 具体的パターンのマッチング
         specific_result = self._match_specific_patterns(text)
         if specific_result:
             return specific_result
@@ -359,6 +417,163 @@ class ThemeExtractorV2:
             return ExtractedTheme(None, None, 0.0)
             
         return self._fallback_extraction(text)
+
+    def _refine_theme_from_keywords(self, text: str) -> Optional[ExtractedTheme]:
+        """キーワードから具体的なテーマを生成"""
+        import re
+        
+        # デバッグ: テキストの内容を確認
+        # logger.debug(f"_refine_theme_from_keywords: text='{text}'")
+        
+        # まず特定のキーワードを直接マッチング
+        if '鎌倉幕府' in text:
+            # logger.debug("鎌倉幕府マッチ!")
+            return ExtractedTheme('鎌倉幕府の成立', '歴史', 0.9)
+        if '室町幕府' in text:
+            return ExtractedTheme('室町幕府の政治', '歴史', 0.9)
+        if '江戸幕府' in text or '徳川幕府' in text:
+            return ExtractedTheme('江戸幕府の政治', '歴史', 0.9)
+        if '江戸時代' in text:
+            if '身分' in text:
+                return ExtractedTheme('江戸時代の身分制度', '歴史', 0.95)
+            return ExtractedTheme('江戸時代の特徴', '歴史', 0.9)
+        if '明治維新' in text:
+            return ExtractedTheme('明治維新の改革', '歴史', 0.9)
+        if '大日本帝国憲法' in text:
+            return ExtractedTheme('大日本帝国憲法の内容', '歴史', 0.9)
+        if '日本国憲法' in text:
+            return ExtractedTheme('日本国憲法の内容', '公民', 0.9)
+        if '人口ピラミッド' in text:
+            return ExtractedTheme('人口ピラミッドの分析', '地理', 0.95)
+        
+        # 固有名詞の抽出（優先度順）
+        patterns = [
+            (r'([^、。\s]{2,4}時代)', '歴史', 'の特徴'),
+            (r'([^、。\s]{2,6}幕府)', '歴史', 'の成立'),
+            (r'([^、。\s]{2,8}(?:の乱|の変|戦争|条約))', '歴史', ''),
+            (r'(第\d+次[^、。\s]+)', '歴史', ''),
+            (r'([^、。\s]{2,4}(?:天皇|上皇|法皇))', '歴史', 'の政治'),
+            (r'([^、。\s]{2,6}(?:県|府|都|道))', '地理', 'の特徴'),
+            (r'([^、。\s]{2,6}(?:平野|盆地|山地|高原))', '地理', 'の地形'),
+            (r'([^、。\s]{2,8}憲法)', '公民', 'の内容'),
+            (r'([^、。\s]{2,6}(?:選挙|投票))', '公民', 'の仕組み'),
+        ]
+        
+        for pattern, field, suffix in patterns:
+            matches = re.findall(pattern, text)
+            if matches:
+                theme = matches[0] + suffix if suffix else matches[0]
+                return ExtractedTheme(theme, field, 0.85)
+        
+        # 人名パターン（フルネーム）
+        person_pattern = re.findall(r'([一-龥]{2,4}[\s　]?[一-龥]{2,4})', text)
+        if person_pattern:
+            for person in person_pattern:
+                # 歴史上の重要人物リスト
+                if any(name in person for name in ['源頼朝', '平清盛', '織田信長', '豊臣秀吉', '徳川家康', 
+                                                    '聖徳太子', '藤原道長', '足利尊氏', '西郷隆盛', '伊藤博文']):
+                    return ExtractedTheme(f'{person}の業績', '歴史', 0.85)
+        
+        # 重要な事件・出来事
+        events = ['大化の改新', '承久の乱', '応仁の乱', '本能寺の変', '関ヶ原の戦い', 
+                 '明治維新', '太平洋戦争', '日露戦争', '第一次世界大戦', '第二次世界大戦']
+        for event in events:
+            if event in text:
+                return ExtractedTheme(event, '歴史', 0.9)
+        
+        # 地理的特徴
+        if '人口ピラミッド' in text:
+            return ExtractedTheme('人口ピラミッドの分析', '地理', 0.9)
+        if '雨温図' in text:
+            return ExtractedTheme('雨温図の読み取り', '地理', 0.9)
+        if '地図' in text and ('読み取' in text or '特徴' in text):
+            return ExtractedTheme('地図の読み取り', '地理', 0.85)
+        if 'グラフ' in text and ('分析' in text or '読み取' in text):
+            return ExtractedTheme('グラフの分析', '地理', 0.85)
+        
+        return None
+
+    def _match_options_cluster(self, text: str) -> Optional[ExtractedTheme]:
+        """ア/イ/ウ/エ の選択肢から強いテーマ候補を推定"""
+        import re
+        options: List[str] = []
+        # 代表的な選択肢フォーマット（全角/半角ドット/カッコ/コロン/読点等）
+        patterns = [
+            # 典型: ア. テキスト / （ア） テキスト / ア：テキスト / ア、テキスト
+            re.compile(r'[（(]?([アイウエ])[）)]?[\s\.:：、,，)]\s*([^\n\r]+)'),
+            re.compile(r'[（(]?([あいうえ])[）)]?[\s\.:：、,，)]\s*([^\n\r]+)'),
+            # 区切り弱いOCR崩れ: 行頭カタカナ + 空白 + 文章
+            re.compile(r'^[\s　]*([アイウエ])\s+([^\n\r]+)', re.MULTILINE),
+        ]
+        for pat in patterns:
+            for m in pat.finditer(text):
+                opt_text = (m.group(2) or '').strip()
+                if opt_text:
+                    options.append(opt_text)
+        if not options:
+            return None
+        # 選択肢だけでクラスタ判定
+        joined = '、'.join(options)
+        cluster = self._match_cluster_patterns(joined)
+        if cluster:
+            return cluster
+        # 用語カタログによる分野推定
+        if getattr(self, 'terms_repo', None) is not None:
+            hit = self.terms_repo.suggest_theme(joined)
+            if hit:
+                theme, field = hit
+                return ExtractedTheme(theme, self._field_label_to_category(field), 0.8)
+        return None
+
+    def _match_cluster_patterns(self, text: str) -> Optional[ExtractedTheme]:
+        """複数の関連語が同時に出るときに、より高次の主題を設定"""
+        t = text
+        count = 0
+        temples = [
+            '延暦寺', '東大寺', '法隆寺', '薬師寺', '平等院', '金閣寺', '銀閣寺', '清水寺',
+            '唐招提寺', '興福寺', '東寺', '中尊寺', '比叡山', '高野山'
+        ]
+        count = sum(1 for w in temples if w in t)
+        if count >= 2:
+            # 代表的寺院が複数同時に出現 → 文化史の俯瞰テーマに集約
+            return ExtractedTheme('日本の中世の寺院', '歴史', 0.9)
+
+        # 産業クラスタ（例: 複数の工業製品用語）
+        industry_terms = ['半導体', '鉄鋼', '自動車', '電子機器', '石油化学', 'プラスチック']
+        if sum(1 for w in industry_terms if w in t) >= 2:
+            return ExtractedTheme('日本の工業の特徴', '地理', 0.85)
+
+        # 人口・統計クラスタ
+        stats_terms = ['人口ピラミッド', '合計特殊出生率', '高齢化率', '年少人口', '生産年齢人口']
+        if sum(1 for w in stats_terms if w in t) >= 2:
+            return ExtractedTheme('人口統計の分析', '公民', 0.85)
+
+        # 古典文学の代表作群
+        classics = ['伊勢物語', '源氏物語', '竹取物語', '平家物語']
+        if sum(1 for w in classics if w in t) >= 2:
+            return ExtractedTheme('日本の古典文学', '歴史', 0.85)
+
+        # 中国の王朝名
+        dynasties = ['夏', '殷', '周', '秦', '漢', '隋', '唐', '宋', '元', '明', '清']
+        if sum(1 for w in dynasties if w in t) >= 2:
+            return ExtractedTheme('中国の王朝', '歴史', 0.8)
+
+        # 日本仏教の代表的高僧
+        monks = ['栄西', '道元', '日蓮', '法然', '親鸞', '最澄', '空海']
+        if sum(1 for w in monks if w in t) >= 2:
+            return ExtractedTheme('日本の仏教宗派', '歴史', 0.8)
+
+        # 近現代アジア史の出来事群
+        asia_modern = ['韓国併合', '五・四運動', '二十一条の要求', '柳条湖事件']
+        if sum(1 for w in asia_modern if w in t) >= 2:
+            return ExtractedTheme('近現代アジア史の出来事', '歴史', 0.8)
+
+        # 近現代世界史の出来事群
+        world_modern = ['ヴェルサイユ条約', 'ワシントン会議', 'ロカルノ条約', 'ケロッグ・ブリアン条約', '国際連盟', '大西洋憲章']
+        if sum(1 for w in world_modern if w in t) >= 2:
+            return ExtractedTheme('近現代世界史の出来事', '歴史', 0.8)
+
+        return None
     
     def _should_exclude(self, text: str) -> bool:
         """除外すべきテキストかどうか判定"""
@@ -371,6 +586,11 @@ class ThemeExtractorV2:
         # 除外パターンにマッチ
         for pattern in self.exclusion_patterns:
             if pattern.search(cleaned_text):
+                try:
+                    # ログに除外理由（パターン）を記録（デバッグ容易化）
+                    logger.info(f"テーマ除外: pattern='{pattern.pattern}' text='{cleaned_text[:40]}...'")
+                except Exception:
+                    pass
                 return True
         
         return False
@@ -441,15 +661,57 @@ class ThemeExtractorV2:
     
     def _fallback_extraction(self, text: str) -> ExtractedTheme:
         """フォールバック: 最も重要なキーワードを抽出して2文節化"""
-        
+        import re
+
         # 特殊な資料読み取り問題の処理
         if '地図中' in text and ('都市' in text or '地域' in text or '県' in text):
             return ExtractedTheme('地図の読み取り', '地理', 0.7)
-        elif '次の表' in text or '表から読み取れる' in text:
+        elif ('次の表' in text and (('読み取' in text) or ('説明' in text) or ('分析' in text))) or ('表から読み取れる' in text):
+            # 「次の表」は読み取り・説明・分析の明示がある場合のみ有効
             return ExtractedTheme('統計表の分析', '総合', 0.7)
         elif 'グラフ' in text and '読み取' in text:
             return ExtractedTheme('グラフの分析', '総合', 0.7)
-        
+
+        # 近現代アジア史（単発語でも俯瞰テーマへ）
+        for w in ['韓国併合', '五・四運動', '二十一条の要求', '柳条湖事件']:
+            if w in text:
+                return ExtractedTheme('近現代アジア史の出来事', '歴史', 0.75)
+
+        # 近現代世界史（単発語でも俯瞰テーマへ）
+        for w in ['ヴェルサイユ条約', 'ワシントン会議', 'ロカルノ条約', 'ケロッグ・ブリアン条約', '国際連盟', '大西洋憲章']:
+            if w in text:
+                return ExtractedTheme('近現代世界史の出来事', '歴史', 0.75)
+
+        # 具体キーワードからの即時テーマ化（弱フォールバック）
+        # 気候・雨温図
+        if '雨温図' in text:
+            city = None
+            m = re.search(r'(大阪市|大阪|京都市|京都|神戸市|神戸|那覇市|那覇|札幌市|札幌|仙台市|仙台|名古屋市|名古屋|福岡市|福岡|広島市|広島|新潟市|新潟|静岡市|静岡|浜松市|浜松)', text)
+            if m:
+                city = m.group(1)
+                return ExtractedTheme(f'{city}の気候', '地理', 0.7)
+            return ExtractedTheme('気候の特徴', '地理', 0.6)
+
+        # 国連加盟国数
+        if '国連' in text and ('加盟' in text or '加盟国' in text):
+            return ExtractedTheme('国際連合の加盟国数', '公民', 0.7)
+
+        # 万博・夢洲・大阪
+        if ('万博' in text and ('大阪' in text or '関西' in text)) or '夢洲' in text:
+            return ExtractedTheme('大阪・関西万博', '地理', 0.7)
+
+        # 地域固有の産業・空港・工業地帯
+        if '阪神工業地帯' in text:
+            return ExtractedTheme('阪神工業地帯の特徴', '地理', 0.7)
+        if '地場産業' in text:
+            return ExtractedTheme('地場産業の発展', '地理', 0.6)
+        if '関西国際空港' in text:
+            return ExtractedTheme('関西国際空港の役割', '地理', 0.7)
+
+        # 関西域の地名・河川
+        if any(w in text for w in ['淀川', '大淀', '淀', '千里', '泉北', '東大阪市', '堺市']):
+            return ExtractedTheme('関西地方の地理', '地理', 0.65)
+
         # OCRで断片的になった文から重要語を抽出
         # 戦いや事件
         battles = re.findall(r'([ぁ-んァ-ヴー一-龥]+の戦い)', text)
@@ -585,3 +847,11 @@ class ThemeExtractorV2:
             return '公民'
         
         return '総合'
+
+    def _field_label_to_category(self, label: str) -> str:
+        mapping = {
+            'history': '歴史',
+            'geography': '地理',
+            'civics': '公民',
+        }
+        return mapping.get(label, '総合')

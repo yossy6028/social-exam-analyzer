@@ -36,3 +36,48 @@ python3 main.py
 - tkinter（GUI用）
 - OCRライブラリ（Google Cloud Vision API推奨）
 
+## 重要用語カタログ（Playwright 収集）
+
+教材用語サイトを Playwright で巡回し、歴史/地理/公民ごとの重要用語カタログを作成できます。
+
+- 対象:
+  - 一般用語: https://study.005net.com/yogo/yogo.php
+  - 地理用語: https://study.005net.com/chiriYogo/chiriYogo.php
+  - 公民用語: https://study.005net.com/kominYogo/kominYogo.php
+
+手順:
+```
+cd social_exam_analyzer
+pip install playwright beautifulsoup4 lxml
+playwright install
+python3 tools/build_terms_catalog.py
+```
+
+出力:
+- `data/terms_catalog/terms.json`（機械可読）
+- `docs/terms_catalog.md`（人間可読）
+
+備考:
+- 用語カタログが存在する場合、抽出器は分野推定の補助に用います（任意）。
+- サイト構造変更時は `tools/build_terms_catalog.py` 内の `select_terms()` の選択子を調整してください。
+
+## テストの実行（軽量ランナー）
+
+pytest が無い環境でも以下で test_*.py を一括実行できます。
+
+```bash
+python3 run_all_tests.py             # 通常（統合/外部依存テストを除外）
+python3 run_all_tests.py --all       # すべての test_*.py を実行
+python3 run_all_tests.py -k theme    # ファイル名に theme を含むものだけ
+python3 run_all_tests.py --stop-on-fail  # 失敗時に中断
+```
+
+注意:
+- デフォルトではネットワークや外部リソース依存の可能性があるテスト（ファイル名に `brave`/`web`/`real`/`pdf_analysis`/`real_pdf` を含む）を除外します。
+- 一部のテストはテキスト出力に「❌」を含みます。ランナーは「❌」表示や終了コードをもとに失敗判定します。
+
+pytest を利用する場合（環境にインストール済みであること）:
+
+```bash
+pytest -q social_exam_analyzer
+```

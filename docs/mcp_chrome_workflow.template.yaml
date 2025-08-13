@@ -1,0 +1,89 @@
+version: 1
+name: terms-catalog-crawl
+description: Crawl study.005net.com term pages via mcp-chrome and save HTML locally
+
+# NOTE: This is a template. Tool names and result bindings may differ by client.
+# Adjust `tool` names to match your mcp-chrome server (e.g. chrome.open, chrome.goto, chrome.content, fs.writeFile).
+# Replace ${HOME} if your client doesn't expand env vars inside args.
+
+env:
+  BASE: /Users/yoshiikatsuhiko/social_exam_analyzer
+  OUT: ${BASE}/data/terms_catalog/html
+
+steps:
+  - id: ensure-outdir
+    tool: fs.mkdirp
+    args:
+      path: ${OUT}
+
+  # ---------- History (general terms)
+  - id: history-open
+    tool: chrome.open
+    args: {}
+
+  - id: history-goto
+    tool: chrome.goto
+    args:
+      url: https://study.005net.com/yogo/yogo.php
+
+  - id: history-content
+    tool: chrome.getContent
+    args: {}
+    saveAs: historyHtml  # store result into context variable
+
+  - id: history-save
+    tool: fs.writeFile
+    args:
+      path: ${OUT}/history.html
+      contentFrom: historyHtml
+
+  # ---------- Geography
+  - id: geo-open
+    tool: chrome.open
+    args: {}
+
+  - id: geo-goto
+    tool: chrome.goto
+    args:
+      url: https://study.005net.com/chiriYogo/chiriYogo.php
+
+  - id: geo-content
+    tool: chrome.getContent
+    args: {}
+    saveAs: geoHtml
+
+  - id: geo-save
+    tool: fs.writeFile
+    args:
+      path: ${OUT}/geography.html
+      contentFrom: geoHtml
+
+  # ---------- Civics
+  - id: civics-open
+    tool: chrome.open
+    args: {}
+
+  - id: civics-goto
+    tool: chrome.goto
+    args:
+      url: https://study.005net.com/kominYogo/kominYogo.php
+
+  - id: civics-content
+    tool: chrome.getContent
+    args: {}
+    saveAs: civicsHtml
+
+  - id: civics-save
+    tool: fs.writeFile
+    args:
+      path: ${OUT}/civics.html
+      contentFrom: civicsHtml
+
+  # ---------- Build catalog (offline)
+  - id: build-catalog
+    tool: shell.exec
+    args:
+      cwd: ${BASE}
+      command: |
+        python3 tools/build_terms_catalog.py --offline-dir data/terms_catalog/html
+

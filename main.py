@@ -279,32 +279,42 @@ class SocialExamAnalyzerGUI:
         
         if questions:
             # 大問ごとにグループ化
+            # まず出現順で大問番号の正規化マップを作成（1..Nに再割当）
+            raw_groups = []
+            for q in questions:
+                raw_major = self._extract_major_number(q.number)
+                raw_groups.append(raw_major)
+            normalized_map = {}
+            order = []
+            for m in raw_groups:
+                if m not in normalized_map:
+                    order.append(m)
+                    normalized_map[m] = str(len(order))
+            # 異常に大きい番号（例: 14,22 など）は並び順に応じて再割当される
+
             grouped_themes = {}
             for q in questions:
-                # 問題番号から大問番号を推定
-                if '問' in q.number:
-                    q_num = q.number.replace('問', '').strip()
-                    if '-' in q_num or '.' in q_num:
-                        # "1-1", "1.1" のような形式
-                        major_num = q_num.split('-')[0].split('.')[0]
-                    else:
-                        # 単純な番号の場合、10問ごとに大問として区切る
-                        try:
-                            num_val = int(q_num)
-                            major_num = str((num_val - 1) // 10 + 1)
-                        except:
-                            major_num = '1'
-                else:
-                    major_num = '1'
-                
+                major_num_raw = self._extract_major_number(q.number)
+                major_num = normalized_map.get(major_num_raw, major_num_raw)
                 if major_num not in grouped_themes:
                     grouped_themes[major_num] = []
-                
-                if q.topic:
-                    grouped_themes[major_num].append((q.number, q.topic, q.field.value))
+
+                # テーマがない場合は使用語句や分野から推定（できるだけ具体化）
+                topic = q.topic
+                if not topic:
+                    base_text = getattr(q, 'original_text', None) or q.text
+                    topic = self._infer_fallback_theme(base_text, q.field.value)
+
+                grouped_themes[major_num].append((q.number, topic if topic else '（テーマ不明）', q.field.value))
             
             # 大問ごとに表示
-            for major_num in sorted(grouped_themes.keys(), key=lambda x: int(x) if x.isdigit() else 0):
+            # 数値としてソート
+            def _to_int(s):
+                try:
+                    return int(s)
+                except:
+                    return 0
+            for major_num in sorted(grouped_themes.keys(), key=_to_int):
                 if len(grouped_themes) > 1:
                     self.result_text.insert(tk.END, f"\n▼ 大問 {major_num}\n")
                     self.result_text.insert(tk.END, "-" * 40 + "\n")
@@ -313,7 +323,17 @@ class SocialExamAnalyzerGUI:
                 if themes:
                     for num, theme, field in themes:
                         # 分野も併記してより分かりやすく
-                        self.result_text.insert(tk.END, f"  {num}: {theme} [{field}]\n")
+                        display_num = num
+                        try:
+                            import re
+                            m = re.search(r'大問(\d+)[\-－―]?問?\s*(.+)', num)
+                            if m:
+                                # 正規化した大問番号で置換
+                                norm = normalized_map.get(m.group(1), m.group(1))
+                                display_num = f"問{m.group(2)}"
+                        except Exception:
+                            pass
+                        self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}]\n")
                 else:
                     self.result_text.insert(tk.END, "  （テーマ情報なし）\n")
         else:
@@ -367,6 +387,111 @@ class SocialExamAnalyzerGUI:
     def stop_progress(self):
         """プログレスバーを停止"""
         self.progress.stop()
+
+    def _extract_major_number(self, number_str: str) -> str:
+        """設問番号文字列から大問番号を堅牢に抽出"""
+        try:
+            import re
+            # パターン1: 大問X-問Y / 大問X
+            m = re.search(r'大問(\d+)', number_str)
+            if m:
+                major_num = int(m.group(1))
+                # 異常値チェック（中学入試で大問10以上は稀）
+                if major_num > 10:
+                    # 問22が誤って大問22になった場合の補正
+                    logger.warning(f"異常な大問番号を検出: {major_num} → 補正")
+                    return str((major_num - 1) // 10 + 1)
+                return str(major_num)
+            # パターン2: X-問Y / X.Y
+            m2 = re.match(r'\s*(\d+)[\-\.]', number_str)
+            if m2:
+                return m2.group(1)
+            # パターン3: 問Yのみ → グルーピング規則（10問ごと）
+            if '問' in number_str:
+                y = number_str.split('問')[-1]
+                y = y.split('-')[0].split('.')[0].strip()
+                num_val = int(y)
+                return str((num_val - 1) // 10 + 1)
+        except:
+            pass
+        return '1'
+
+    def _infer_fallback_theme(self, text: str, field_label: str) -> str:
+        """テーマ未検出時の簡易推定（使用語句/分野から補う）"""
+        try:
+            import re
+            t = (text or '').strip()
+            
+            # まず重要キーワードを抽出してみる
+            # 歴史的事件・人物
+            historical_events = re.findall(r'([一-龥]{2,8}(?:の乱|の変|戦争|条約|改革|革命))', t)
+            if historical_events:
+                return historical_events[0]
+            
+            persons = re.findall(r'([一-龥]{2,4}[\s　]?[一-龥]{2,4})', t)
+            for person in persons:
+                if any(name in person for name in ['源頼朝', '平清盛', '織田信長', '豊臣秀吉', '徳川家康']):
+                    return f'{person}の業績'
+            
+            # 地理的要素
+            locations = re.findall(r'([一-龥]{2,6}(?:県|府|都|道|市|平野|盆地|山地))', t)
+            if locations:
+                return f'{locations[0]}の特徴'
+            
+            # 公民的要素
+            civics = re.findall(r'([一-龥]{2,8}(?:憲法|法律|選挙|制度|条約))', t)
+            if civics:
+                return f'{civics[0]}の内容'
+            
+            # 固有名詞を探す（3文字以上の漢字の連続）
+            proper_nouns = re.findall(r'[一-龥]{3,8}', t)
+            exclude_words = {'答えなさい', '選びなさい', '説明しなさい', '述べなさい', 'について', 
+                           'あてはまる', '正しい', 'まちがって', '次のうち', '下線部'}
+            proper_nouns = [n for n in proper_nouns if n not in exclude_words]
+            
+            if proper_nouns:
+                # 最も重要そうな単語を選択
+                keyword = proper_nouns[0]
+                if field_label == '歴史':
+                    return f'{keyword}の歴史的意義'
+                elif field_label == '地理':
+                    return f'{keyword}の地理的特徴'
+                elif field_label == '公民':
+                    return f'{keyword}の制度'
+                else:
+                    return f'{keyword}について'
+            
+            # 分野別の簡易推定
+            if field_label == '地理':
+                if '人口ピラミッド' in t:
+                    return '人口ピラミッドの分析'
+                if '地図' in t or '地図中' in t:
+                    return '地図の読み取り'
+                if '雨温図' in t:
+                    return '雨温図の読み取り'
+                if 'グラフ' in t:
+                    return 'グラフの分析'
+                if '表' in t:
+                    return '統計表の分析'
+                return '地理問題'
+            
+            if field_label == '歴史':
+                period = re.search(r'(縄文|弥生|古墳|飛鳥|奈良|平安|鎌倉|室町|戦国|江戸|明治|大正|昭和|平成|令和)時代', t)
+                if period:
+                    return f"{period.group(0)}の特徴"
+                return '歴史問題'
+            
+            if field_label == '公民':
+                for kw in ['日本国憲法', '三権分立', '国会', '内閣', '裁判所', '選挙']:
+                    if kw in t:
+                        return f"{kw}の仕組み"
+                return '公民問題'
+            
+            # その他
+            return f"{field_label}問題"
+            
+        except Exception:
+            return f"{field_label}問題"
 
 
 def main():

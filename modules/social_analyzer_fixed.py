@@ -69,6 +69,14 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         except ImportError:
             self.question_extractor = None
             logger.info("標準の問題抽出を使用します")
+
+        # 用語カタログ（任意）
+        try:
+            from .terms_repository import TermsRepository
+            repo = TermsRepository()
+            self.terms_repo = repo if repo.available() else None
+        except Exception:
+            self.terms_repo = None
     
     def _initialize_weighted_patterns(self) -> Dict[SocialField, List[Tuple[re.Pattern, float]]]:
         """重み付けされた分野判定パターン"""
@@ -248,74 +256,90 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         # 複数の問題抽出パターンを順番に試行
         questions = self._extract_with_multiple_patterns(cleaned_text)
+        if questions:
+            try:
+                logger.info(f"問題抽出: {len(questions)}問を検出（複数パターン）")
+            except Exception:
+                pass
         
         # 問題が見つからない場合の警告とフォールバック
         if not questions:
             logger.warning("問題が抽出できませんでした")
             # フォールバック：適切な内容のセクションのみを抽出
             questions = self._fallback_extraction(cleaned_text)
+            if questions:
+                try:
+                    logger.info(f"フォールバック抽出: {len(questions)}セクションを疑似設問として採用")
+                except Exception:
+                    pass
         
         return questions
     
     def _extract_with_reset_detection(self, text: str) -> List[Tuple[str, str]]:
-        """問題番号のリセットを検出して大問を判定（改善版）"""
-        questions = []
+        """問題番号のリセットを検出して大問を判定（改良版・寛容抽出）"""
+        questions: List[Tuple[str, str]] = []
         
-        # 問題番号パターン（問1、問2、問1.など）
-        question_pattern = re.compile(r'問\s*(\d+)[\.\s]*([^問]+?)(?=問\s*\d+|$)', re.DOTALL)
+        # 見出し（大問）候補: 先頭に数字と句点
+        large_heading_pattern = re.compile(r'^(\d+)[\.\)]\s*.*$', re.MULTILINE)
+        headings = [(m.start(), int(m.group(1))) for m in large_heading_pattern.finditer(text)]
+        
+        # 問題番号（全角/半角、ピリオドや空白あり）
+        question_pattern = re.compile(
+            r'問\s*([０-９\d]+)[．\.:：\s　]*([\s\S]*?)(?=\n?問\s*[０-９\d]+|$)'
+        )
         all_matches = list(question_pattern.finditer(text))
-        
         if not all_matches:
             return questions
         
-        # 大問番号を追跡
+        # 全角→半角変換テーブル
+        z2h = str.maketrans({chr(ord('０')+i): str(i) for i in range(10)})
+        
         current_large = 1
         previous_num = 0
-        reset_count = 0  # リセット回数をカウント
-        consecutive_count = 0  # 連続した問題番号のカウント
+        reset_count = 0
+        last_heading_num = None
         
-        for i, match in enumerate(all_matches):
-            q_num = int(match.group(1))
-            q_text = match.group(2)
+        for m in all_matches:
+            raw_num = m.group(1)
+            try:
+                q_num = int(raw_num.translate(z2h))
+            except ValueError:
+                continue
+            q_text = m.group(2)
             
-            # 問題番号がリセットされた条件
-            # 主要条件: 問題番号が1に戻る（問2以上から問1へ）
+            # 直前の見出しで大問を上書き（存在する場合）
+            pos = m.start()
+            heading_candidates = [h for h in headings if h[0] <= pos]
+            if heading_candidates:
+                _, hnum = heading_candidates[-1]
+                if last_heading_num != hnum:
+                    current_large = hnum
+                    last_heading_num = hnum
+            
+            # 番号リセット検出
             if q_num == 1 and previous_num >= 2:
-                current_large += 1
+                current_large = current_large + 1 if last_heading_num is None else current_large
                 reset_count += 1
-                consecutive_count = 0
-                logger.debug(f"問題番号リセット検出: 問{previous_num} → 問1、大問{current_large}へ")
-            # 連続性チェック: 期待される番号と異なる場合
             elif previous_num > 0:
-                expected_num = previous_num + 1
-                # 番号が飛んで1に戻った場合
+                expected = previous_num + 1
                 if q_num == 1 and previous_num != 1:
-                    current_large += 1
+                    current_large = current_large + 1 if last_heading_num is None else current_large
                     reset_count += 1
-                    consecutive_count = 0
-                    logger.debug(f"番号ジャンプによるリセット: 問{previous_num} → 問1、大問{current_large}へ")
-                # 番号が期待通り増加
-                elif q_num == expected_num:
-                    consecutive_count += 1
-                # 番号が減少（1以外）
-                elif q_num < previous_num:
-                    # 大きく戻る場合は大問変更の可能性
-                    if previous_num - q_num >= 3:
-                        current_large += 1
-                        reset_count += 1
-                        consecutive_count = 0
-                        logger.debug(f"大きな番号減少: 問{previous_num} → 問{q_num}、大問{current_large}へ")
+                elif q_num < previous_num and (previous_num - q_num) >= 3:
+                    current_large = current_large + 1 if last_heading_num is None else current_large
+                    reset_count += 1
             
-            # 問題を追加
+            # 整形
             q_text = self._format_question_text(q_text)
-            if self._is_valid_question(q_text):
+            
+            # 大問検出のため寛容に採用（短文でも「について」や最低限の長さで許可）
+            minimal_ok = ('について' in q_text) or (len(q_text.strip()) >= 8)
+            if self._is_valid_question(q_text) or minimal_ok:
                 questions.append((f"大問{current_large}-問{q_num}", q_text.strip()))
             
             previous_num = q_num
         
-        # デバッグ情報
-        logger.info(f"検出された大問数: {current_large} (リセット回数: {reset_count})")
-        
+        logger.info(f"検出された大問数(推定): {len(set(q[0].split('-')[0] for q in questions))} (リセット: {reset_count})")
         return questions
     
     def _extract_with_multiple_patterns(self, text: str) -> List[Tuple[str, str]]:
@@ -495,16 +519,24 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         if hasattr(self, 'theme_extractor') and self.theme_extractor:
             result = self.theme_extractor.extract(text)
             if result.theme:
-                logger.debug(f"テーマ抽出成功: '{text[:50]}...' -> '{result.theme}'")
+                # 低信頼度はINFOで可視化、それ以外はDEBUG
+                if getattr(result, 'confidence', 1.0) < 0.7:
+                    logger.info(
+                        f"テーマ抽出低信頼度: '{text[:50]}...' -> '{result.theme}' conf={getattr(result,'confidence',None)}"
+                    )
+                else:
+                    logger.debug(
+                        f"テーマ抽出成功: '{text[:50]}...' -> '{result.theme}' conf={getattr(result,'confidence',None)}"
+                    )
                 return result.theme
             else:
                 # 除外されたケースでも、文脈から推定を試みる
                 context_theme = self._extract_theme_from_context(text)
                 if context_theme:
-                    logger.debug(f"文脈からテーマ推定: '{text[:50]}...' -> '{context_theme}'")
+                    logger.info(f"文脈からテーマ推定: '{text[:50]}...' -> '{context_theme}'")
                     return context_theme
                 else:
-                    logger.debug(f"テーマ除外: '{text[:50]}...' -> None")
+                    logger.info(f"テーマ抽出なし: '{text[:50]}...' -> None")
                     return None
         
         # フォールバック（基底クラスの処理）
@@ -609,9 +641,19 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         for q_num, q_text in questions:
             # 文脈強化：前後のテキストを含める
             enhanced_text = self._find_question_context(text, q_text)
+            # 資料語彙のスコア加点（資料ブロックのキーワードを明示付与）
+            enhanced_text = self._augment_with_material_terms(text, enhanced_text)
             analyzed_question = self.analyze_question(enhanced_text, q_num)
             # 元のテキストも保持
             analyzed_question.original_text = q_text
+            # ログ: 各設問の主題・分野を可視化
+            try:
+                logger.info(
+                    f"設問分析: {q_num} field={analyzed_question.field.value} "
+                    f"topic={analyzed_question.topic if analyzed_question.topic else 'None'}"
+                )
+            except Exception:
+                pass
             analyzed_questions.append(analyzed_question)
         
         # 総合と判定された問題を再評価
@@ -625,6 +667,94 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             'statistics': stats,
             'total_questions': len(analyzed_questions)
         }
+
+    def _augment_with_material_terms(self, full_text: str, ctx_text: str) -> str:
+        """資料ブロックの語彙を抽出し、設問文に付与してテーマ化を後押し"""
+        try:
+            import re
+            if not ctx_text:
+                return ctx_text
+            frag = ctx_text[:30].strip()
+            pos = full_text.find(frag) if frag else -1
+            start = max(0, pos - 2000) if pos >= 0 else 0
+            end = min(len(full_text), pos + 2000) if pos >= 0 else len(full_text)
+            window = full_text[start:end]
+            material_terms = []
+            for m in re.finditer(r'資料[【\[]?.{0,30}?[】\]]?', window):
+                block_start = m.start()
+                block_end = min(len(window), block_start + 800)
+                block = window[block_start:block_end]
+                nouns = re.findall(r'[一-龥ァ-ヴー]{2,}', block)
+                priority = [
+                    '延暦寺','東大寺','法隆寺','薬師寺','鑑真','正倉院','種々薬帳',
+                    '韓国併合','柳条湖事件','五・四運動','二十一条の要求',
+                    '大阪','大阪市','夢洲','関西国際空港','阪神工業地帯',
+                    '人口ピラミッド','雨温図','国連','国際連合'
+                ]
+                # terms.json を優先的に反映（地理の語彙は重みを大きく）
+                repo_hits = []
+                if getattr(self, 'terms_repo', None) is not None:
+                    try:
+                        repo_hits = self.terms_repo.find_terms_in_text(block)
+                    except Exception:
+                        repo_hits = []
+                freq = {}
+                for w in nouns:
+                    freq[w] = freq.get(w, 0) + 1
+                scored = sorted(freq.items(), key=lambda kv: (-(kv[1] + (5 if kv[0] in priority else 0)), -len(kv[0])))
+                top = [w for w,_ in scored[:20]]
+                # 用語カタログの地理語彙を加点（川/空港/地名/工業地帯など）
+                geo_terms = []
+                for field, term in repo_hits:
+                    if field == 'geography':
+                        geo_terms.append(term)
+                # 代表的な後方一致も拾う（川/空港/湾/平野/山地）
+                extra_geo = re.findall(r'[一-龥ァ-ヴー]{2,}(川|空港|湾|平野|山地|工業地帯)', block)
+                material_terms.extend(top)
+                if geo_terms:
+                    material_terms.extend(geo_terms)
+                if extra_geo:
+                    material_terms.extend(extra_geo)
+            if not material_terms:
+                return ctx_text
+            uniq = []
+            for w in material_terms:
+                if w not in uniq:
+                    uniq.append(w)
+            # 地理語彙は重みを強めに（3倍）、その他は2倍
+            if getattr(self, 'terms_repo', None) is not None:
+                geo_set = set(self.terms_repo.terms.get('geography', []))
+            else:
+                geo_set = set()
+            geo_terms = [w for w in uniq if (w in geo_set) or re.search(r'(川|空港|湾|平野|山地|工業地帯|市|府|県)$', w)]
+            other_terms = [w for w in uniq if w not in geo_terms]
+            booster_geo = (' ' + ' '.join(geo_terms[:20])) if geo_terms else ''
+            booster_other = (' ' + ' '.join(other_terms[:20])) if other_terms else ''
+            # 地理語彙 4倍、その他 2倍へ調整
+            boosted = f"{ctx_text}{booster_geo*4}{booster_other*2}"
+            return boosted
+        except Exception:
+            return ctx_text
+
+    def _extract_nouns(self, text: str):
+        """形態素解析（可能なら）で名詞候補を抽出。失敗時は空を返す。"""
+        try:
+            from fugashi import Tagger  # type: ignore
+            tagger = Tagger()
+            nouns = []
+            for w in tagger(text):
+                pos = ','.join((w.feature.pos or [])) if hasattr(w.feature, 'pos') else (w.feature.part_of_speech if hasattr(w.feature, 'part_of_speech') else '')
+                if '名詞' in pos and len(str(w)) >= 2:
+                    nouns.append(str(w))
+            return nouns
+        except Exception:
+            try:
+                from janome.tokenizer import Tokenizer  # type: ignore
+                t = Tokenizer()
+                nouns = [token.surface for token in t.tokenize(text) if token.part_of_speech.startswith('名詞') and len(token.surface) >= 2]
+                return nouns
+            except Exception:
+                return []
     
     def _find_question_context(self, full_text: str, question_text: str) -> str:
         """問題文の文脈を特定して強化"""
@@ -639,8 +769,8 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         for i, line in enumerate(lines):
             if search_fragment in line:
                 # 前後の行を含める（特に前の行に設問文がある場合）
-                start = max(0, i - 5)  # より多くの文脈を含める
-                end = min(len(lines), i + 3)
+                start = max(0, i - 8)  # 文脈拡張
+                end = min(len(lines), i + 5)
                 context_lines = lines[start:end]
                 
                 # 意味のある内容を含む行だけを選択
@@ -652,7 +782,21 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                         len(line) > 3):  # 短すぎる行は除外
                         meaningful_lines.append(line)
                 
-                enhanced_lines = meaningful_lines[:10]  # 最大10行
+                # 直近の「資料」ブロックも追加
+                extra_context = []
+                k = i
+                # 上方向に遡って「資料」見出しを探索
+                while k >= 0 and (i - k) <= 30:
+                    if '資料' in lines[k]:
+                        # 見出し行から数行を追加
+                        for j in range(k, min(k + 8, len(lines))):
+                            s = lines[j].strip()
+                            if s and len(s) > 3 and not s.isdigit():
+                                extra_context.append(s)
+                        break
+                    k -= 1
+
+                enhanced_lines = (meaningful_lines + extra_context)[:14]  # 最大14行
                 break
         
         if enhanced_lines:
