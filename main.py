@@ -24,6 +24,7 @@ except ImportError:
         from modules.social_analyzer import SocialAnalyzer
 from modules.social_excel_formatter import SocialExcelFormatter
 from modules.ocr_handler import OCRHandler
+from modules.theme_knowledge_base import ThemeKnowledgeBase
 
 # ロギング設定
 logging.basicConfig(
@@ -49,6 +50,7 @@ class SocialExamAnalyzerGUI:
         self.analyzer = SocialAnalyzer()
         self.formatter = SocialExcelFormatter()
         self.ocr_handler = OCRHandler()
+        self.theme_knowledge = ThemeKnowledgeBase()
         
         self.selected_file = None
         self.analysis_result = None
@@ -123,6 +125,11 @@ class SocialExamAnalyzerGUI:
                                      command=self.save_excel,
                                      state=tk.DISABLED)
         self.save_button.grid(row=0, column=1, padx=5)
+        
+        self.save_text_button = ttk.Button(button_frame, text="テキスト保存", 
+                                          command=self.save_text,
+                                          state=tk.DISABLED)
+        self.save_text_button.grid(row=0, column=2, padx=5)
         
         # プログレスバー
         self.progress = ttk.Progressbar(main_frame, mode='indeterminate')
@@ -378,10 +385,127 @@ class SocialExamAnalyzerGUI:
             except Exception as e:
                 logger.error(f"Excel保存エラー: {e}")
                 messagebox.showerror("エラー", f"保存中にエラーが発生しました:\n{str(e)}")
+
+    def save_text(self):
+        """テキスト形式でテーマ一覧を保存"""
+        if not self.analysis_result:
+            messagebox.showwarning("警告", "先に分析を実行してください")
+            return
+        
+        # 保存先ディレクトリを固定
+        save_dir = Path("/Users/yoshiikatsuhiko/Desktop/過去問_社会")
+        
+        # ディレクトリが存在しない場合は作成
+        try:
+            save_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            logger.error(f"保存先ディレクトリの作成エラー: {e}")
+            messagebox.showerror("エラー", f"保存先ディレクトリを作成できませんでした：\n{str(e)}")
+            return
+        
+        # ファイル名を生成
+        school_name = self.school_entry.get()
+        year = self.year_entry.get()
+        filename = f"{school_name}_{year}_テーマ一覧_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        file_path = save_dir / filename
+        
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                # ヘッダー情報
+                f.write("=" * 60 + "\n")
+                f.write(f"社会科入試問題分析 - テーマ一覧\n")
+                f.write("=" * 60 + "\n\n")
+                f.write(f"学校名: {school_name}\n")
+                f.write(f"年度: {year}年\n")
+                f.write(f"分析日時: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}\n")
+                f.write(f"総問題数: {self.analysis_result['total_questions']}問\n\n")
+                
+                # 分野別出題状況
+                stats = self.analysis_result['statistics']
+                f.write("【分野別出題状況】\n")
+                if 'field_distribution' in stats:
+                    for field, data in stats['field_distribution'].items():
+                        f.write(f"  {field:8s}: {data['count']:3d}問 ({data['percentage']:5.1f}%)\n")
+                f.write("\n")
+                
+                # テーマ一覧（大問ごと）
+                f.write("【出題テーマ一覧】\n")
+                questions = self.analysis_result.get('questions', [])
+                
+                if questions:
+                    # 大問ごとにグループ化（display_resultsと同じロジック）
+                    raw_groups = []
+                    for q in questions:
+                        raw_major = self._extract_major_number(q.number)
+                        raw_groups.append(raw_major)
+                    normalized_map = {}
+                    order = []
+                    for m in raw_groups:
+                        if m not in normalized_map:
+                            order.append(m)
+                            normalized_map[m] = str(len(order))
+                    
+                    grouped_themes = {}
+                    for q in questions:
+                        major_num_raw = self._extract_major_number(q.number)
+                        major_num = normalized_map.get(major_num_raw, major_num_raw)
+                        if major_num not in grouped_themes:
+                            grouped_themes[major_num] = []
+                        
+                        # テーマがない場合は推定
+                        topic = q.topic
+                        if not topic:
+                            base_text = getattr(q, 'original_text', None) or q.text
+                            topic = self._infer_fallback_theme(base_text, q.field.value)
+                        
+                        grouped_themes[major_num].append((q.number, topic if topic else '（テーマ不明）', q.field.value))
+                    
+                    # 大問ごとに出力
+                    def _to_int(s):
+                        try:
+                            return int(s)
+                        except:
+                            return 0
+                    
+                    for major_num in sorted(grouped_themes.keys(), key=_to_int):
+                        if len(grouped_themes) > 1:
+                            f.write(f"\n▼ 大問 {major_num}\n")
+                            f.write("-" * 40 + "\n")
+                        
+                        themes = grouped_themes[major_num]
+                        if themes:
+                            for num, theme, field in themes:
+                                # 問題番号を整形
+                                display_num = num
+                                try:
+                                    import re
+                                    m = re.search(r'大問(\d+)[\-－‐]?問?\s*(.+)', num)
+                                    if m:
+                                        norm = normalized_map.get(m.group(1), m.group(1))
+                                        display_num = f"問{m.group(2)}"
+                                except Exception:
+                                    pass
+                                f.write(f"  {display_num}: {theme} [{field}]\n")
+                        else:
+                            f.write("  （テーマ情報なし）\n")
+                else:
+                    f.write("  （問題が検出されませんでした）\n")
+                
+                f.write("\n")
+                f.write("=" * 60 + "\n")
+                f.write("分析終了\n")
+            
+            messagebox.showinfo("完了", f"テーマ一覧を保存しました：\n{file_path}")
+            logger.info(f"テーマ一覧を保存: {file_path}")
+            
+        except Exception as e:
+            logger.error(f"テキスト保存エラー: {e}")
+            messagebox.showerror("エラー", f"保存中にエラーが発生しました：\n{str(e)}")
     
     def enable_save_button(self):
         """保存ボタンを有効化"""
         self.save_button.config(state=tk.NORMAL)
+        self.save_text_button.config(state=tk.NORMAL)
         self.analyze_button.config(state=tk.NORMAL)
     
     def stop_progress(self):
@@ -417,80 +541,14 @@ class SocialExamAnalyzerGUI:
         return '1'
 
     def _infer_fallback_theme(self, text: str, field_label: str) -> str:
-        """テーマ未検出時の簡易推定（使用語句/分野から補う）"""
+        """テーマ未検出時の推定（カリキュラムと主題インデックスを参照）"""
         try:
-            import re
-            t = (text or '').strip()
-            
-            # まず重要キーワードを抽出してみる
-            # 歴史的事件・人物
-            historical_events = re.findall(r'([一-龥]{2,8}(?:の乱|の変|戦争|条約|改革|革命))', t)
-            if historical_events:
-                return historical_events[0]
-            
-            persons = re.findall(r'([一-龥]{2,4}[\s　]?[一-龥]{2,4})', t)
-            for person in persons:
-                if any(name in person for name in ['源頼朝', '平清盛', '織田信長', '豊臣秀吉', '徳川家康']):
-                    return f'{person}の業績'
-            
-            # 地理的要素
-            locations = re.findall(r'([一-龥]{2,6}(?:県|府|都|道|市|平野|盆地|山地))', t)
-            if locations:
-                return f'{locations[0]}の特徴'
-            
-            # 公民的要素
-            civics = re.findall(r'([一-龥]{2,8}(?:憲法|法律|選挙|制度|条約))', t)
-            if civics:
-                return f'{civics[0]}の内容'
-            
-            # 固有名詞を探す（3文字以上の漢字の連続）
-            proper_nouns = re.findall(r'[一-龥]{3,8}', t)
-            exclude_words = {'答えなさい', '選びなさい', '説明しなさい', '述べなさい', 'について', 
-                           'あてはまる', '正しい', 'まちがって', '次のうち', '下線部'}
-            proper_nouns = [n for n in proper_nouns if n not in exclude_words]
-            
-            if proper_nouns:
-                # 最も重要そうな単語を選択
-                keyword = proper_nouns[0]
-                if field_label == '歴史':
-                    return f'{keyword}の歴史的意義'
-                elif field_label == '地理':
-                    return f'{keyword}の地理的特徴'
-                elif field_label == '公民':
-                    return f'{keyword}の制度'
-                else:
-                    return f'{keyword}について'
-            
-            # 分野別の簡易推定
-            if field_label == '地理':
-                if '人口ピラミッド' in t:
-                    return '人口ピラミッドの分析'
-                if '地図' in t or '地図中' in t:
-                    return '地図の読み取り'
-                if '雨温図' in t:
-                    return '雨温図の読み取り'
-                if 'グラフ' in t:
-                    return 'グラフの分析'
-                if '表' in t:
-                    return '統計表の分析'
-                return '地理問題'
-            
-            if field_label == '歴史':
-                period = re.search(r'(縄文|弥生|古墳|飛鳥|奈良|平安|鎌倉|室町|戦国|江戸|明治|大正|昭和|平成|令和)時代', t)
-                if period:
-                    return f"{period.group(0)}の特徴"
-                return '歴史問題'
-            
-            if field_label == '公民':
-                for kw in ['日本国憲法', '三権分立', '国会', '内閣', '裁判所', '選挙']:
-                    if kw in t:
-                        return f"{kw}の仕組み"
-                return '公民問題'
-            
-            # その他
-            return f"{field_label}問題"
-            
-        except Exception:
+            # 知識ベースを使用してテーマを決定
+            theme = self.theme_knowledge.determine_theme(text, field_label)
+            return theme
+        except Exception as e:
+            logger.warning(f"テーマ推定エラー: {e}")
+            # フォールバック処理
             return f"{field_label}問題"
 
 
