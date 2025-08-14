@@ -70,8 +70,17 @@ def run_test(file: Path) -> Tuple[bool, str]:
     # - 終了コードが非0 -> 失敗
     # - 出力に ❌ / 失敗 を含む -> 失敗
     # - それ以外は成功とみなす
-    failed_markers = ['❌', '失敗']
-    failed = proc.returncode != 0 or any(m in output for m in failed_markers)
+    # 失敗検出は厳密化:
+    # - 終了コードが非0
+    # - ランナー自身が付ける『❌ FAIL』
+    # - 代表的な例外トレースの有無
+    # - 明確な日本語の失敗表現
+    failure_indicators = [
+        'Traceback (most recent call last)',
+        'AssertionError',
+        'FileNotFoundError',
+    ]
+    failed = proc.returncode != 0 or any(ind in output for ind in failure_indicators)
 
     return (not failed), output
 

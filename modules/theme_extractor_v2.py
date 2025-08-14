@@ -384,8 +384,23 @@ class ThemeExtractorV2:
         if refined:
             return refined
 
-        # ステップ1.6: 用語カタログに基づく分野推定（任意）
+        # ステップ1.6: 用語カタログ/時代インデックスに基づく分野・時代推定（任意）
         if self.terms_repo is not None:
+            # 時代推定を先に試みる（歴史の具体化に寄与）
+            period = self.terms_repo.infer_history_period(text)
+            if period:
+                # 文脈語で2文節化
+                if '文化' in text:
+                    theme = f"{period}の文化"
+                elif '政治' in text:
+                    theme = f"{period}の政治"
+                elif '経済' in text:
+                    theme = f"{period}の経済"
+                elif '社会' in text:
+                    theme = f"{period}の社会"
+                else:
+                    theme = f"{period}の特徴"
+                return ExtractedTheme(theme, '歴史', 0.85)
             hit = self.terms_repo.suggest_theme(text)
             if hit:
                 theme, field = hit
@@ -446,6 +461,41 @@ class ThemeExtractorV2:
         if '人口ピラミッド' in text:
             return ExtractedTheme('人口ピラミッドの分析', '地理', 0.95)
         
+        # 年度・西暦の処理
+        m_year = re.search(r'(\d{4})年', text)
+        if m_year:
+            year = m_year.group(1)
+            # 周辺語で具体化
+            if 'オリンピック' in text:
+                return ExtractedTheme(f'{year}年のオリンピック', '歴史', 0.7)
+            if '万博' in text or '博覧会' in text:
+                return ExtractedTheme(f'{year}年の万博', '地理', 0.7)
+            if '選挙' in text:
+                return ExtractedTheme(f'{year}年の選挙', '公民', 0.7)
+            if '条約' in text:
+                return ExtractedTheme(f'{year}年の条約', '歴史', 0.7)
+            if '戦争' in text or '大戦' in text:
+                return ExtractedTheme(f'{year}年の戦争', '歴史', 0.75)
+            return ExtractedTheme(f'{year}年の出来事', '総合', 0.6)
+
+        # 公民の代表用語（より具体化）
+        civics_map = [
+            ('プライバシー', 'プライバシーの権利'),
+            ('オンブズマン', 'オンブズマン制度の仕組み'),
+            ('国土交通省', '国土交通省の役割'),
+            ('市町村合併', '市町村合併の目的'),
+            ('合併', '市町村合併の目的'),
+            ('裁判員', '裁判員制度の仕組み'),
+            ('個人情報', '個人情報保護の仕組み'),
+        ]
+        for key, theme in civics_map:
+            if key in text:
+                return ExtractedTheme(theme, '公民', 0.9)
+
+        # 数字のみ参照の除外（例: 「12について」）
+        if re.fullmatch(r'\s*\d{1,3}\s*(について)?\s*', text):
+            return ExtractedTheme(None, None, 0.0)
+
         # 固有名詞の抽出（優先度順）
         patterns = [
             (r'([^、。\s]{2,4}時代)', '歴史', 'の特徴'),
@@ -482,6 +532,17 @@ class ThemeExtractorV2:
                 return ExtractedTheme(event, '歴史', 0.9)
         
         # 地理的特徴
+        # 国名の具体化
+        countries = ['フィリピン', 'ウルグアイ', 'ブラジル', 'アメリカ合衆国', 'アメリカ', '中国', 'インド']
+        for c in countries:
+            if c in text:
+                if any(k in text for k in ['産業', '工業', '農業', '貿易']):
+                    return ExtractedTheme(f'{c}の産業', '地理', 0.8)
+                if any(k in text for k in ['人口', '少子', '高齢']):
+                    return ExtractedTheme(f'{c}の人口', '地理', 0.75)
+                if any(k in text for k in ['気候', '雨温図']):
+                    return ExtractedTheme(f'{c}の気候', '地理', 0.75)
+                return ExtractedTheme(f'{c}の地理的特徴', '地理', 0.75)
         if '人口ピラミッド' in text:
             return ExtractedTheme('人口ピラミッドの分析', '地理', 0.9)
         if '雨温図' in text:
@@ -811,7 +872,10 @@ class ThemeExtractorV2:
         
         field = self._estimate_field(text)
         
-        # 2文節形式に変換
+        # 2文節形式に変換（一般語の除外）
+        if keyword in ['社会', '政治', '経済', '制度', '制定']:
+            # 文脈が弱い一般語は除外
+            return ExtractedTheme(None, None, 0.0)
         if field == '歴史':
             theme = f"{keyword}の歴史"
         elif field == '地理':

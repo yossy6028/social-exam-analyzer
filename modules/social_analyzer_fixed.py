@@ -134,21 +134,28 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         """改善された分野判定（重み付けスコアリング）"""
         scores = {}
         
-        # まず時代名を明示的にチェック（歴史優先）
-        time_period_patterns = [
+        # 歴史的キーワードの強化判定
+        history_keywords = [
+            # 時代名
             '縄文時代', '弥生時代', '古墳時代', '飛鳥時代', '奈良時代',
             '平安時代', '鎌倉時代', '室町時代', '戦国時代', '安土桃山時代',
-            '江戸時代', '明治時代', '大正時代', '昭和時代', '平成時代', '令和時代'
+            '江戸時代', '明治時代', '大正時代', '昭和時代', '平成時代', '令和時代',
+            # 歴史的事件
+            '戦争', '戦い', '乱', '変', '改革', '維新', '革命', '条約', '同盟',
+            # 歴史的組織・制度
+            '幕府', '朝廷', '将軍', '天皇', '藩', '大名', '武士',
+            # 中国王朝
+            '隋', '唐', '宋', '元', '明', '清', '中国の王朝', '中国王朝',
+            # その他歴史キーワード
+            '歴史', '年号', '西暦'
         ]
         
-        # 時代名が含まれている場合は歴史として強く判定
-        for period in time_period_patterns:
-            if period in text:
-                # 時代が主題の場合は歴史として確定
-                if '特徴' in text or '文化' in text or '政治' in text or '経済' in text:
-                    return SocialField.HISTORY
-                # 時代名があれば歴史のスコアに大きなボーナス
-                scores[SocialField.HISTORY] = scores.get(SocialField.HISTORY, 0) + 5.0
+        # 歴史キーワードチェック
+        history_count = sum(1 for kw in history_keywords if kw in text)
+        if history_count >= 2:  # 2つ以上のキーワードで歴史確定
+            return SocialField.HISTORY
+        elif history_count == 1:  # 1つでも強いスコア
+            scores[SocialField.HISTORY] = scores.get(SocialField.HISTORY, 0) + 5.0
         
         # 重み付けスコアの計算
         for field, weighted_patterns in self.weighted_field_patterns.items():

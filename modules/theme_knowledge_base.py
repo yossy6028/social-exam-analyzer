@@ -90,7 +90,69 @@ class ThemeKnowledgeBase:
             return self._determine_general_theme(text, field)
     
     def _determine_history_theme(self, text: str) -> str:
-        """歴史分野のテーマ決定"""
+        """歴史分野のテーマ決定（subject_index.mdに基づく具体化）"""
+        # まず特定の歴史的事件を探す（最優先）
+        specific_events = {
+            '大化の改新': ['大化の改新', '中大兄皇子', '中臣鎌足', '蘇我氏'],
+            '壬申の乱': ['壬申の乱', '天武天皇', '大友皇子'],
+            '保元の乱': ['保元の乱', '崇徳上皇', '後白河天皇'],
+            '平治の乱': ['平治の乱', '源義朝', '平清盛'],
+            '承久の乱': ['承久の乱', '後鳥羽上皇', '北条義時'],
+            '応仁の乱': ['応仁の乱', '細川', '山名'],
+            '本能寺の変': ['本能寺の変', '織田信長', '明智光秀'],
+            '関ヶ原の戦い': ['関ヶ原', '徳川家康', '石田三成'],
+            '大政奉還': ['大政奉還', '徳川慶喜', '王政復古'],
+            '戊辰戦争': ['戊辰戦争', '新政府軍', '旧幕府軍'],
+            '西南戦争': ['西南戦争', '西郷隆盛'],
+            '日清戦争': ['日清戦争', '下関条約', '遼東半島'],
+            '日露戦争': ['日露戦争', 'ポーツマス条約', '樺太'],
+            '第一次世界大戦': ['第一次世界大戦', 'ベルサイユ条約'],
+            '満州事変': ['満州事変', '柳条湖', '満州国'],
+            '日中戦争': ['日中戦争', '盧溝橋'],
+            '太平洋戦争': ['太平洋戦争', '真珠湾', 'ミッドウェー']
+        }
+        
+        for event_name, keywords in specific_events.items():
+            if any(kw in text for kw in keywords):
+                # イベントの詳細な側面を判定
+                if '原因' in text or '理由' in text or 'きっかけ' in text:
+                    return f"{event_name}の原因"
+                elif '結果' in text or '影響' in text:
+                    return f"{event_name}の影響"
+                elif '経過' in text or '展開' in text:
+                    return f"{event_name}の経過"
+                else:
+                    return event_name
+        
+        # 特定の制度・政策を探す
+        specific_policies = {
+            '班田収授法': ['班田収授法', '口分田', '公地公民'],
+            '墾田永年私財法': ['墾田永年私財法', '荘園'],
+            '御恩と奉公': ['御恩と奉公', '御家人', '守護・地頭'],
+            '楽市楽座': ['楽市楽座', '織田信長', '商業'],
+            '太閤検地': ['太閤検地', '豊臣秀吉', '石高'],
+            '刀狩': ['刀狩', '豊臣秀吉', '兵農分離'],
+            '参勤交代': ['参勤交代', '大名統制', '江戸幕府'],
+            '鎖国': ['鎖国', '出島', 'オランダ', '長崎'],
+            '享保の改革': ['享保の改革', '徳川吉宗', '目安箱'],
+            '寛政の改革': ['寛政の改革', '松平定信', '倹約'],
+            '天保の改革': ['天保の改革', '水野忠邦', '株仲間'],
+            '地租改正': ['地租改正', '税制', '土地'],
+            '殖産興業': ['殖産興業', '富国強兵', '官営工場'],
+            '農地改革': ['農地改革', 'GHQ', '自作農']
+        }
+        
+        for policy_name, keywords in specific_policies.items():
+            if any(kw in text for kw in keywords):
+                if '内容' in text or '特徴' in text:
+                    return f"{policy_name}の内容"
+                elif '目的' in text or '理由' in text:
+                    return f"{policy_name}の目的"
+                elif '結果' in text or '影響' in text:
+                    return f"{policy_name}の影響"
+                else:
+                    return policy_name
+        
         # 時代を特定
         detected_period = None
         max_score = 0
@@ -101,27 +163,56 @@ class ThemeKnowledgeBase:
                 max_score = score
                 detected_period = period
         
-        # 特定の歴史的事件や人物を探す
-        events = re.findall(r'([一-龥]{2,8}(?:の乱|の変|戦争|条約|改革|革命|事件))', text)
-        if events:
-            return events[0]
+        # 中国王朝の特別処理
+        china_dynasties = ['隋', '唐', '宋', '元', '明', '清', '秦', '漢', '三国', '晋', '五代']
+        for dynasty in china_dynasties:
+            if dynasty in text and ('中国' in text or '王朝' in text or '皇帝' in text):
+                return f"{dynasty}朝の特徴"
+        
+        # 文化の具体化
+        specific_cultures = {
+            '飛鳥文化': '飛鳥文化',
+            '天平文化': '天平文化',
+            '国風文化': '国風文化',
+            '北山文化': '北山文化と金閣',
+            '東山文化': '東山文化と銀閣',
+            '桃山文化': '桃山文化',
+            '元禄文化': '元禄文化',
+            '化政文化': '化政文化'
+        }
+        
+        for culture_key, culture_name in specific_cultures.items():
+            if culture_key in text:
+                return culture_name
         
         # 人物名を探す
         persons = self._extract_person_names(text)
         if persons:
-            if detected_period:
-                return f"{detected_period}時代・{persons[0]}"
-            return f"{persons[0]}の業績"
+            person = persons[0]
+            # 人物に関連する具体的なテーマ
+            if '政策' in text or '改革' in text:
+                return f"{person}の政策"
+            elif '文化' in text or '作品' in text:
+                return f"{person}の文化的業績"
+            elif detected_period:
+                return f"{detected_period}時代・{person}"
+            else:
+                return f"{person}の業績"
         
-        # 文化を探す
-        cultures = re.findall(r'([一-龥]{2,4}文化)', text)
-        if cultures:
-            return cultures[0]
-        
-        # 時代が特定できた場合
+        # 時代が特定できた場合の詳細化
         if detected_period:
-            # 文脈から詳細を判定
-            if '政治' in text or '幕府' in text or '朝廷' in text:
+            # より具体的な側面を判定
+            if '貿易' in text or '交易' in text:
+                return f"{detected_period}時代の貿易"
+            elif '仏教' in text or '寺' in text:
+                return f"{detected_period}時代の仏教"
+            elif '武士' in text or '武家' in text:
+                return f"{detected_period}時代の武士"
+            elif '農民' in text or '百姓' in text:
+                return f"{detected_period}時代の農民"
+            elif '商人' in text or '商業' in text:
+                return f"{detected_period}時代の商業"
+            elif '政治' in text or '幕府' in text or '朝廷' in text:
                 return f"{detected_period}時代の政治"
             elif '文化' in text or '芸術' in text:
                 return f"{detected_period}時代の文化"
@@ -130,12 +221,98 @@ class ThemeKnowledgeBase:
             elif '社会' in text or '身分' in text:
                 return f"{detected_period}時代の社会"
             else:
-                return f"{detected_period}時代"
+                return f"{detected_period}時代の特徴"
         
         return "歴史総合問題"
     
     def _determine_geography_theme(self, text: str) -> str:
-        """地理分野のテーマ決定"""
+        """地理分野のテーマ決定（subject_index.mdに基づく具体化）"""
+        # 特定の地域・地形を探す
+        specific_regions = {
+            '関東平野': '関東平野の特徴',
+            '濃尾平野': '濃尾平野の農業',
+            '石狩平野': '石狩平野の開拓',
+            '筑紫平野': '筑紫平野の稲作',
+            '瀬戸内': '瀬戸内の気候と産業',
+            'リアス海岸': 'リアス海岸と水産業',
+            '扇状地': '扇状地の土地利用',
+            '三角州': '三角州の形成',
+            '中央高地': '中央高地の農業',
+            '四大工業地帯': '四大工業地帯',
+            '京浜工業地帯': '京浜工業地帯',
+            '中京工業地帯': '中京工業地帯',
+            '阪神工業地帯': '阪神工業地帯',
+            '北九州工業地帯': '北九州工業地帯'
+        }
+        
+        for region_key, theme_name in specific_regions.items():
+            if region_key in text:
+                return theme_name
+        
+        # 都道府県の特産品・産業
+        prefecture_industries = {
+            '北海道': ['酪農', '畑作', '水産業', '観光'],
+            '青森': ['りんご', '水産業'],
+            '岩手': ['南部鉄器', '農業'],
+            '山形': ['さくらんぼ', '米'],
+            '新潟': ['米', 'コシヒカリ'],
+            '静岡': ['茶', '水産業', 'みかん'],
+            '愛知': ['自動車工業', '陶磁器'],
+            '京都': ['伝統工業', '観光'],
+            '大阪': ['商業', '工業'],
+            '兵庫': ['鉄鋼業', '港湾'],
+            '広島': ['自動車工業', '造船'],
+            '愛媛': ['みかん', '養殖業'],
+            '福岡': ['工業', '商業'],
+            '鹿児島': ['畜産', 'さつまいも'],
+            '沖縄': ['観光', 'さとうきび']
+        }
+        
+        for prefecture, industries in prefecture_industries.items():
+            if prefecture in text:
+                for industry in industries:
+                    if industry in text:
+                        return f"{prefecture}の{industry}"
+                return f"{prefecture}の産業"
+        
+        # 農業の具体化
+        agricultural_products = {
+            '米': '稲作農業',
+            'コシヒカリ': 'ブランド米生産',
+            '野菜': '野菜栽培',
+            'みかん': 'みかん栽培',
+            'りんご': 'りんご栽培',
+            'ぶどう': 'ぶどう栽培',
+            '茶': '茶の栽培',
+            '酪農': '酪農業',
+            '畜産': '畜産業',
+            '施設園芸': '施設園芸農業',
+            '促成栽培': '促成栽培',
+            '抑制栽培': '抑制栽培',
+            '高冷地農業': '高冷地農業'
+        }
+        
+        for product, theme in agricultural_products.items():
+            if product in text:
+                return theme
+        
+        # 工業の具体化
+        industrial_types = {
+            '自動車': '自動車工業',
+            '鉄鋼': '鉄鋼業',
+            '造船': '造船業',
+            '石油化学': '石油化学工業',
+            '電子': '電子工業',
+            '繊維': '繊維工業',
+            '食品': '食品工業',
+            '伝統工業': '伝統的工芸品',
+            'ハイテク': 'ハイテク産業'
+        }
+        
+        for industry_key, industry_name in industrial_types.items():
+            if industry_key in text:
+                return industry_name
+        
         # 地域名を探す
         regions = re.findall(r'([一-龥]{2,4}(?:地方|平野|盆地|山地|川|湖|海|半島|諸島|県|府|都|道))', text)
         region_name = regions[0] if regions else None
@@ -150,25 +327,40 @@ class ThemeKnowledgeBase:
                 max_score = score
                 detected_theme = theme
         
-        # 地域とテーマを組み合わせ
+        # より具体的なテーマ生成
         if region_name and detected_theme:
             return f"{region_name}の{detected_theme}"
         elif detected_theme:
-            # 詳細なテーマを決定
-            if detected_theme == '農業':
-                crops = re.findall(r'(米|稲|野菜|果物|みかん|りんご|ぶどう|茶)', text)
-                if crops:
-                    return f"{crops[0]}の生産"
-                return "農業の特色"
-            elif detected_theme == '工業':
-                industries = re.findall(r'([一-龥]{2,4}工業)', text)
-                if industries:
-                    return industries[0]
-                return "工業の発展"
-            elif detected_theme == '気候':
+            if detected_theme == '気候':
                 if '雨温図' in text:
                     return "雨温図の読み取り"
-                return "気候の特徴"
+                elif '季節風' in text:
+                    return "季節風の影響"
+                elif '梅雨' in text:
+                    return "梅雨の仕組み"
+                elif '台風' in text:
+                    return "台風の特徴"
+                return "日本の気候区分"
+            elif detected_theme == '交通':
+                if '新幹線' in text:
+                    return "新幹線網の発達"
+                elif '高速道路' in text:
+                    return "高速道路網"
+                elif '空港' in text:
+                    return "空港と航空路"
+                elif '港' in text:
+                    return "港湾と海運"
+                return "交通網の発達"
+            elif detected_theme == '環境':
+                if '温暖化' in text:
+                    return "地球温暖化問題"
+                elif '公害' in text:
+                    return "公害問題"
+                elif 'リサイクル' in text:
+                    return "リサイクル"
+                elif '再生可能エネルギー' in text:
+                    return "再生可能エネルギー"
+                return "環境問題"
             else:
                 return f"{detected_theme}の特色"
         elif region_name:
@@ -176,9 +368,15 @@ class ThemeKnowledgeBase:
         
         # 資料タイプによる判定
         if 'グラフ' in text:
+            if '折れ線' in text:
+                return "折れ線グラフの分析"
+            elif '棒' in text:
+                return "棒グラフの分析"
+            elif '円' in text:
+                return "円グラフの分析"
             return "統計グラフの分析"
-        elif '地図' in text:
-            return "地図の読み取り"
+        elif '地図' in text or '地形図' in text:
+            return "地形図の読み取り"
         elif '表' in text:
             return "統計表の分析"
         
