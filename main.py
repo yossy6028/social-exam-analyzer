@@ -649,14 +649,8 @@ if __name__ == "__main__":
                 
                 for field, count in sorted(field_counts.items(), key=lambda x: x[1], reverse=True):
                     percentage = (count / result.get('total_questions', 1)) * 100
-                    field_display = {
-                        'GEOGRAPHY': '地理',
-                        'HISTORY': '歴史',
-                        'CIVICS': '公民',
-                        'CURRENT_AFFAIRS': '時事問題',
-                        'MIXED': '総合'
-                    }.get(field, field)
-                    output_lines.append(f"  {field_display:10s}: {count:3d}問 ({percentage:5.1f}%)")
+                    # fieldは既に日本語なのでそのまま使用
+                    output_lines.append(f"  {field:10s}: {count:3d}問 ({percentage:5.1f}%)")
                 
                 output_lines.append("")
                 output_lines.append("【出題テーマ一覧】")
@@ -680,14 +674,9 @@ if __name__ == "__main__":
                         output_lines.append("-"*40)
                     
                     # テーマ決定
-                    field_value = q.field.value if hasattr(q, 'field') and hasattr(q.field, 'value') else 'MIXED'
-                    field_name = {
-                        'GEOGRAPHY': '地理',
-                        'HISTORY': '歴史',
-                        'CIVICS': '公民',
-                        'CURRENT_AFFAIRS': '時事問題',
-                        'MIXED': '総合'
-                    }.get(field_value, '総合')
+                    field_value = q.field.value if hasattr(q, 'field') and hasattr(q.field, 'value') else '総合'
+                    # field_valueは既に日本語なのでそのまま使用
+                    field_name = field_value
                     
                     question_text = q.text if hasattr(q, 'text') else ''
                     question_num = q.number if hasattr(q, 'number') else '問?'
