@@ -440,15 +440,22 @@ class SocialExamAnalyzerGUI:
                 
                 if questions:
                     # 大問ごとにグループ化（display_resultsと同じロジック）
+                    # 大問番号を正規化（異常値を修正）
                     raw_groups = []
                     for q in questions:
                         raw_major = self._extract_major_number(q.number)
+                        # 異常な大問番号を検出（10以上は異常）
+                        if raw_major.isdigit() and int(raw_major) > 10:
+                            logger.warning(f"異常な大問番号検出: {raw_major}")
                         raw_groups.append(raw_major)
+                    
+                    # 順番に1から番号を振り直す
                     normalized_map = {}
                     order = []
                     for m in raw_groups:
                         if m not in normalized_map:
                             order.append(m)
+                            # 常に1から順番に番号を振る
                             normalized_map[m] = str(len(order))
                     
                     grouped_themes = {}

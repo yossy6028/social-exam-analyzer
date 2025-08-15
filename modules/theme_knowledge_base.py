@@ -200,21 +200,26 @@ class ThemeKnowledgeBase:
             '人権': ['平等権', '自由権', '社会権', '参政権', '請求権', '新しい人権']
         }
     
-    def determine_theme(self, text: str, field: str) -> str:
+    def determine_theme(self, text: str, field: Optional[str]) -> str:
         """
-        テキストと分野からテーマを決定
+        テキストと分野からテーマを決定（分野未指定時は自動推定）
         
         Args:
             text: 問題文
-            field: 分野（地理/歴史/公民/時事・総合）
+            field: 分野（地理/歴史/公民/時事・総合）またはNone/"自動"
         
         Returns:
             決定されたテーマ
         """
         if not text:
-            return f"{field}問題"
+            return f"{field or '総合'}問題"
         
         text = text.strip()
+        
+        # 分野未指定なら主題インデックスに基づき推定
+        if field in (None, '', '自動'):
+            est_field, _score = self.estimate_field(text)
+            field = est_field or '総合'
         
         # 分野別の詳細なテーマ決定
         if field == '歴史':
@@ -225,6 +230,86 @@ class ThemeKnowledgeBase:
             return self._determine_civics_theme(text)
         else:
             return self._determine_general_theme(text, field)
+
+    def estimate_field(self, text: str) -> Tuple[Optional[str], int]:
+        """subject_indexの語彙に基づき分野を推定し、ヒット数を返す。
+        戻り値: (推定分野, スコア)
+        """
+        if not text:
+            return None, 0
+        text = text.strip()
+
+        # 決定的な早期判定（公民・歴史）
+        if re.search(r'第\d+条', text) or '日本国憲法' in text or '三権分立' in text:
+            return '公民', 5
+        if '王朝' in text and ('中国' in text or '朝' in text):
+            return '歴史', 5
+
+        # 歴史: 日本史の各時代語・代表語 + 中国王朝/制度
+        history_hits = 0
+        for period, keywords in self.history_periods.items():
+            # period名自体が含まれる場合は強いヒット
+            if period and period in text:
+                history_hits += 2
+            for kw in keywords:
+                if kw and kw in text:
+                    history_hits += 1
+        # 明確な中国王朝語（曖昧語を避ける）
+        chinese_dynasties = ['秦', '漢', '隋', '唐', '宋', '元', '明', '清', '三国', '晋', '五代', '十国']
+        if any(d in text for d in chinese_dynasties):
+            history_hits += 3
+
+        # 地理: 地形/気候/産業・地域の語彙
+        geography_hits = 0
+        for theme, keywords in self.geography_themes.items():
+            if theme and theme in text:
+                geography_hits += 1
+            for kw in keywords:
+                if kw and kw in text:
+                    geography_hits += 1
+        # 決定的な資料語彙
+        decisive_geo = ['雨温図', '地形図', '平野', '盆地', '都道府県', '工業地帯',
+                        '北海道', '東北地方', '関東地方', '中部地方', '近畿地方', '中国地方', '四国地方', '九州地方', '沖縄県']
+        if any(w in text for w in decisive_geo):
+            geography_hits += 2
+
+        # 公民: 憲法/政治/経済/国際の語彙
+        civics_hits = 0
+        for theme, keywords in self.civics_themes.items():
+            if theme and theme in text:
+                civics_hits += 1
+            for kw in keywords:
+                if kw and kw in text:
+                    civics_hits += 1
+        decisive_civics = ['日本国憲法', '三権分立', '国会', '内閣', '裁判所', '選挙制度']
+        if any(w in text for w in decisive_civics):
+            civics_hits += 2
+
+        scores = {
+            '歴史': history_hits,
+            '地理': geography_hits,
+            '公民': civics_hits,
+        }
+        # 憲法ワードがあれば公民を優先
+        if civics_hits > 0 and (re.search(r'第\d+条', text) or '日本国憲法' in text or '憲法' in text):
+            return '公民', max(civics_hits + 2, 3)
+        best_field = max(scores, key=scores.get)
+        best_score = scores[best_field]
+        if best_score == 0:
+            return None, 0
+        return best_field, best_score
+
+    def analyze(self, text: str) -> Tuple[Optional[str], Optional[str], float]:
+        """テキストから (テーマ, 分野, 信頼度) を返す。
+        分野は主題インデックス優先で推定し、その分野の決定器でテーマを生成。
+        """
+        field, score = self.estimate_field(text)
+        if not field:
+            return None, None, 0.0
+        theme = self.determine_theme(text, field)
+        # 単純なスコア正規化（上限0.95）
+        confidence = min(0.95, 0.2 + 0.1 * max(1, score))
+        return theme, field, confidence
     
     def _determine_history_theme(self, text: str) -> str:
         """歴史分野のテーマ決定（subject_index.mdに基づく具体化）"""
@@ -232,6 +317,7 @@ class ThemeKnowledgeBase:
         specific_events = {
             '大化の改新': ['大化の改新', '中大兄皇子', '中臣鎌足', '蘇我氏'],
             '壬申の乱': ['壬申の乱', '天武天皇', '大友皇子'],
+            '白村江の戦い': ['白村江', '百済', '新羅', '唐と新羅', '朝鮮半島での戦い'],
             '保元の乱': ['保元の乱', '崇徳上皇', '後白河天皇'],
             '平治の乱': ['平治の乱', '源義朝', '平清盛'],
             '承久の乱': ['承久の乱', '後鳥羽上皇', '北条義時'],
@@ -300,14 +386,15 @@ class ThemeKnowledgeBase:
                 max_score = score
                 detected_period = period
         
-        # 中国王朝の特別処理（強化版）
+        # 中国王朝の特別処理（強化版：曖昧語の誤検出を回避）
         china_dynasties = ['隋', '唐', '宋', '元', '明', '清', '秦', '漢', '三国', '晋', '五代', '十国']
         for dynasty in china_dynasties:
-            # より正確な王朝検出（文字境界を考慮）
-            import re
-            dynasty_pattern = re.compile(r'\b' + dynasty + r'(?:朝|王朝|の|について|時代)?')
-            if dynasty_pattern.search(text):
-                # 王朝名だけでも歴史テーマとして扱う
+            # 「明治/文明/証明/説明/照明」などの曖昧ヒットを除外
+            if dynasty == '明' and any(bad in text for bad in ['明治', '文明', '証明', '説明', '照明', '明らか']):
+                continue
+            # より正確な王朝検出（接尾辞や文脈語を要求）
+            dynasty_pattern = re.compile(rf'{dynasty}(?:朝|王朝|帝|時代|の|について|における)')
+            if dynasty_pattern.search(text) or ('中国' in text and dynasty in text):
                 if ('中国' in text or '王朝' in text or '皇帝' in text or '朝廷' in text):
                     return f"{dynasty}朝の特徴"
                 elif '政治' in text:
@@ -539,52 +626,96 @@ class ThemeKnowledgeBase:
         return "地理総合問題"
     
     def _determine_civics_theme(self, text: str) -> str:
-        """公民分野のテーマ決定"""
-        # テーマカテゴリを特定
+        """公民分野のテーマ決定（具体化を最優先）"""
+        # 1) 憲法条文の具体化
+        m = re.findall(r'第(\d+)条', text)
+        if m:
+            art = m[0]
+            article_map = {
+                '9': '平和主義（戦争の放棄）',
+                '13': '個人の尊重・幸福追求権',
+                '14': '法の下の平等',
+                '19': '思想良心の自由',
+                '20': '信教の自由',
+                '21': '表現の自由',
+                '25': '生存権',
+                '26': '教育を受ける権利・義務教育',
+                '27': '勤労の権利と義務',
+                '28': '労働三権（団結・団体交渉・争議権）',
+                '29': '財産権',
+                '31': '適正手続（法定手続の保障）',
+                '35': '令状主義',
+                '41': '国会（国権の最高機関・唯一の立法機関）',
+                '43': '両院制（衆議院・参議院）',
+                '59': '法律案の議決（衆議院の優越）',
+                '60': '予算の議決（衆議院の先議）',
+                '67': '内閣総理大臣の指名',
+                '76': '司法権と裁判所',
+                '81': '違憲審査制（最高裁）',
+                '92': '地方自治の本旨',
+                '94': '条例制定権',
+                '96': '憲法改正'
+            }
+            return article_map.get(art, f"憲法第{art}条")
+
+        # 2) 政治機構の具体化
+        if '国会' in text:
+            if any(k in text for k in ['予算', '条約', '内閣総理大臣の指名', '解散', '衆議院の優越']):
+                return '国会の権限'
+            return '国会の仕組み'
+        if '内閣' in text or '閣議' in text:
+            return '内閣の役割'
+        if any(k in text for k in ['裁判所', '司法権', '違憲審査', '三審制', '最高裁']):
+            if '違憲審査' in text or '最高裁' in text:
+                return '違憲審査制'
+            return '司法制度'
+        if any(k in text for k in ['地方自治', '条例', '直接請求', '首長', '二元代表制']):
+            return '地方自治'
+
+        # 3) 選挙・政党
+        if '選挙' in text or '投票' in text:
+            if any(k in text for k in ['小選挙区', '比例代表', '重複立候補', 'ドント式', '供託金', '一票の格差']):
+                return '選挙制度'
+            return '選挙制度'
+        if '政党' in text or '与党' in text or '野党' in text or '連立' in text:
+            return '政党政治'
+
+        # 4) 経済・財政・労働・社会保障・消費者
+        if any(k in text for k in ['税', '納税', '租税', '消費税', '所得税', '累進']):
+            return '税制'
+        if any(k in text for k in ['財政', '予算', '国債']):
+            return '財政の仕組み'
+        if any(k in text for k in ['金融', '日銀', '金利']):
+            return '金融政策'
+        if any(k in text for k in ['市場', '需要', '供給', '価格', '独占', '寡占', '景気']):
+            return '市場経済の仕組み'
+        if any(k in text for k in ['労働', '雇用', '労働組合', '団結権', '団体交渉', '争議権', '最低賃金', '非正規']):
+            if any(k in text for k in ['団結権', '団体交渉', '争議権']):
+                return '労働三権'
+            return '労働問題'
+        if any(k in text for k in ['社会保障', '年金', '医療保険', '介護保険', '生活保護', '公的扶助']):
+            return '社会保障制度'
+        if any(k in text for k in ['消費者', 'PL法', 'クーリング・オフ', '消費者庁']):
+            return '消費者保護'
+
+        # 5) 国際分野
+        orgs = re.findall(r'(国連|UN|WHO|UNESCO|UNICEF|WTO|IMF|ICJ|安全保障理事会)', text)
+        if orgs:
+            return f"{orgs[0]}の役割"
+        if any(k in text for k in ['ODA', 'PKO', '国際協力', '難民']):
+            return '国際協力'
+
+        # 6) フォールバック: カテゴリカウント
         detected_theme = None
         max_score = 0
-        
         for theme, keywords in self.civics_themes.items():
             score = sum(1 for kw in keywords if kw in text)
             if score > max_score:
                 max_score = score
                 detected_theme = theme
-        
         if detected_theme:
-            # 詳細なテーマを決定
-            if detected_theme == '憲法':
-                if '条' in text:
-                    articles = re.findall(r'第(\d+)条', text)
-                    if articles:
-                        return f"憲法第{articles[0]}条"
-                return "日本国憲法の原則"
-            elif detected_theme == '政治':
-                if '選挙' in text:
-                    if '東京都知事' in text:
-                        return "東京都知事選挙"
-                    return "選挙制度"
-                elif '国会' in text:
-                    return "国会の仕組み"
-                elif '内閣' in text:
-                    return "内閣の役割"
-                elif '裁判' in text:
-                    return "司法制度"
-                return "政治の仕組み"
-            elif detected_theme == '経済':
-                if '税' in text:
-                    return "税金の仕組み"
-                elif '労働' in text:
-                    return "労働問題"
-                return "経済の仕組み"
-            elif detected_theme == '国際':
-                orgs = re.findall(r'(国連|UN|WHO|UNESCO|UNICEF|WTO|IMF)', text)
-                if orgs:
-                    return f"{orgs[0]}の役割"
-                return "国際協力"
-            else:
-                return f"{detected_theme}問題"
-        
-        return "公民総合問題"
+            return f"{detected_theme}問題"
+        return '公民総合問題'
     
     def _determine_general_theme(self, text: str, field: str) -> str:
         """時事・総合分野のテーマ決定"""

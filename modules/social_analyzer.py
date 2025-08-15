@@ -1034,38 +1034,36 @@ class SocialAnalyzer:
             return self._fix_simple_question_numbers(questions)
     
     def _fix_large_question_numbers(self, questions: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
-        """大問構造での問題番号修正"""
-        large_question_groups = {}
-        
-        # 大問ごとにグループ化
+        """大問構造での問題番号修正（出現順で大問を1..Nに正規化、重複排除）"""
+        # 出現順に大問キーのリストを作る（'other' は最後）
+        ordered_keys: List[str] = []
+        buckets: Dict[str, List[Tuple[str, str]]] = {}
         for q_num, q_text in questions:
-            # 大問番号を抽出
-            large_match = re.search(r'大問(\d+)', q_num)
-            if large_match:
-                large_num = large_match.group(1)
-                if large_num not in large_question_groups:
-                    large_question_groups[large_num] = []
-                large_question_groups[large_num].append((q_num, q_text))
-            else:
-                # 大問番号がない場合は末尾に追加
-                if 'other' not in large_question_groups:
-                    large_question_groups['other'] = []
-                large_question_groups['other'].append((q_num, q_text))
-        
-        # 各大問内で連番に修正
-        fixed_questions = []
-        for large_num in sorted(large_question_groups.keys(), key=lambda x: (x != 'other', x)):
-            group_questions = large_question_groups[large_num]
-            
-            for i, (q_num, q_text) in enumerate(group_questions, 1):
-                if large_num == 'other':
-                    new_q_num = f"問{i}"
-                else:
-                    new_q_num = f"大問{large_num}-問{i}"
-                
-                fixed_questions.append((new_q_num, q_text))
-        
-        return fixed_questions
+            m = re.search(r'大問(\d+)', q_num)
+            k = m.group(1) if m else 'other'
+            if k not in ordered_keys:
+                ordered_keys.append(k)
+            buckets.setdefault(k, []).append((q_num, q_text))
+
+        # 正規化マップ作成（'other' は末尾）
+        normalize: Dict[str, str] = {}
+        counter = 1
+        for k in ordered_keys:
+            if k == 'other':
+                continue
+            normalize[k] = str(counter)
+            counter += 1
+        if 'other' in buckets:
+            normalize['other'] = str(counter)
+
+        # 生成
+        fixed: List[Tuple[str, str]] = []
+        for k in ordered_keys:
+            norm = normalize.get(k, k)
+            for i, (_qnum, q_text) in enumerate(buckets[k], 1):
+                new_q = f"問{i}" if k == 'other' else f"大問{norm}-問{i}"
+                fixed.append((new_q, q_text))
+        return fixed
     
     def _fix_simple_question_numbers(self, questions: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
         """シンプルな問題番号修正"""

@@ -38,6 +38,7 @@ from .social_analyzer import (
     SocialField, ResourceType, QuestionFormat, SocialQuestion,
     SocialAnalyzer as BaseSocialAnalyzer
 )
+from .theme_knowledge_base import ThemeKnowledgeBase
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +78,12 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             self.terms_repo = repo if repo.available() else None
         except Exception:
             self.terms_repo = None
+
+        # 主題インデックスに基づく知識ベース
+        try:
+            self.theme_kb = ThemeKnowledgeBase()
+        except Exception:
+            self.theme_kb = None
     
     def _initialize_weighted_patterns(self) -> Dict[SocialField, List[Tuple[re.Pattern, float]]]:
         """重み付けされた分野判定パターン"""
@@ -131,9 +138,141 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         }
     
     def _detect_field(self, text: str) -> SocialField:
-        """問題文から分野を検出（バランスの取れた判定）"""
+        """問題文から分野を検出（一貫性のある判定）"""
         if not text:
             return SocialField.MIXED
+        
+        # テキストを正規化（判定の一貫性のため）
+        normalized_text = text.lower()
+        history_context = False
+
+        # 早期判定ルール（誤分類の主因を先に潰す）
+        try:
+            # 1) 中国の王朝 → 歴史
+            if ('王朝' in text) and ('中国' in text or '朝' in text):
+                return SocialField.HISTORY
+            # 2) 地方×産業/農業/工業/漁業/気候/地形/人口 → 地理
+            if (any(r in text for r in ['北海道','東北地方','関東地方','中部地方','近畿地方','中国地方','四国地方','九州地方','沖縄'])
+                and any(k in text for k in ['産業','農業','工業','漁業','気候','地形','人口','地図','グラフ'])):
+                return SocialField.GEOGRAPHY
+            # 3) 選挙/三権分立/国会/内閣 → 公民
+            if any(k in text for k in ['選挙','三権分立','国会','内閣','裁判所','日本国憲法','政治制度']):
+                return SocialField.CIVICS
+        except Exception:
+            pass
+        
+        # 分野別スコア
+        scores = {
+            'geography': 0,
+            'history': 0,
+            'civics': 0
+        }
+        
+        # === 歴史判定（最優先） ===
+        # 寺院関連は必ず歴史として判定
+        temple_keywords = [
+            '寺院', '寺', '法隆寺', '東大寺', '延暦寺', '金閣寺', '銀閣寺', '清水寺',
+            '仏教', '僧', '僧侶', '宗派', '伽藍', '仏像', '仏堂'
+        ]
+        if any(kw in normalized_text for kw in temple_keywords):
+            scores['history'] += 10
+            logger.debug("寺院関連キーワード検出 → 歴史+10")
+            history_context = True
+        
+        # 時代キーワード
+        era_keywords = [
+            '縄文', '弥生', '古墳', '飛鳥', '奈良', '平安', '鎌倉', '室町',
+            '戦国', '安土桃山', '江戸', '明治', '大正', '昭和',
+            '古代', '中世', '近世', '近代'
+        ]
+        for kw in era_keywords:
+            if kw in normalized_text:
+                scores['history'] += 5
+                logger.debug(f"時代キーワード「{kw}」検出 → 歴史+5")
+                break
+        if scores['history'] >= 5:
+            history_context = True
+        
+        # 中国王朝（歴史として強く判定）
+        chinese_dynasties = ['秦', '漢', '隋', '唐', '宋', '元', '明', '清', '三国', '晋']
+        if any(dynasty in text for dynasty in chinese_dynasties):  # 漢字は元のテキストで判定
+            scores['history'] += 8
+            logger.debug("中国王朝検出 → 歴史+8")
+            history_context = True
+        # 「王朝」単独でも歴史寄り
+        if '王朝' in text:
+            scores['history'] += 4
+        
+        # 歴史的人物・出来事
+        history_keywords = [
+            '天皇', '将軍', '幕府', '朝廷', '藩', '武士', '貴族',
+            '戦争', '戦い', '乱', '変', '条約', '改革', '維新',
+            '遺跡', '史跡', '城', '古文書'
+        ]
+        for kw in history_keywords:
+            if kw in normalized_text:
+                scores['history'] += 2
+        if scores['history'] >= 6:
+            history_context = True
+        
+        # === 地理判定 ===
+        # 地図・気候関連（地理の決定的キーワード）
+        geography_strong = ['地図', '地形図', '雨温図', '気候', '気温', '降水量']
+        if any(kw in normalized_text for kw in geography_strong):
+            scores['geography'] += 8
+            logger.debug("地図・気候キーワード検出 → 地理+8")
+        
+        # 産業・地域関連
+        geography_keywords = [
+            '農業', '工業', '漁業', '産業', '貿易', '輸出', '輸入',
+            '都道府県', '地方', '平野', '盆地', '山地', '川', '湖',
+            '人口', '都市', '過疎', '過密', '交通',
+            '北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州'
+        ]
+        # 歴史文脈下では環境語の寄与を無効化（誤分類ガード）
+        environment_terms = ['環境', '環境問題', '温暖化', '地球温暖化', '公害', 'リサイクル', '再生可能エネルギー', 'co2']
+        for kw in geography_keywords:
+            if kw in normalized_text:
+                if history_context and kw in environment_terms:
+                    continue
+                scores['geography'] += 2
+        
+        # === 公民判定 ===
+        # 現代政治制度（公民の決定的キーワード）
+        civics_strong = [
+            '日本国憲法', '選挙', '投票', '議会', '国会', '内閣', '裁判所',
+            '三権分立', '地方自治', '条例'
+        ]
+        if any(kw in normalized_text for kw in civics_strong):
+            scores['civics'] += 8
+            logger.debug("現代政治キーワード検出 → 公民+8")
+        
+        # その他の公民キーワード
+        civics_keywords = [
+            '憲法', '法律', '権利', '義務', '自由', '人権',
+            '政党', '民主主義', '主権', '税金', '予算', '財政',
+            '社会保障', '年金', '医療', '福祉',
+            'sdgs', '国連', '国際機関'
+        ]
+        for kw in civics_keywords:
+            if kw in normalized_text:
+                scores['civics'] += 2
+        
+        # === 最終判定 ===
+        max_score = max(scores.values())
+        
+        if max_score == 0:
+            return SocialField.MIXED
+        
+        # スコアが最も高い分野を選択
+        if scores['history'] == max_score:
+            return SocialField.HISTORY
+        elif scores['geography'] == max_score:
+            return SocialField.GEOGRAPHY
+        elif scores['civics'] == max_score:
+            return SocialField.CIVICS
+        
+        return SocialField.MIXED
         
         # 地理の特徴的なキーワード
         geography_keywords = [
@@ -170,6 +309,9 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             '戦争', '戦い', '乱', '変', '事件', '条約', '改革',
             '文化', '仏教', '神道', 'キリスト教', '寺', '神社',
             '遺跡', '遺産', '史跡', '城', '古文書',
+            # 寺院関連（歴史として統一）
+            '寺院', '法隆寺', '東大寺', '延暦寺', '金閣寺', '銀閣寺', '清水寺',
+            '中世', '古代', '近世', '僧', '僧侶', '宗派',
             # 中国王朝も歴史として扱う（拡張）
             '秦', '漢', '隋', '唐', '宋', '元', '明', '清', '王朝', '三国', '晋', '五代', '十国',
             '皇帝', '皇后', '太子', '宦官', '科挙', '郡県制', '封建制', '律令制',
@@ -224,6 +366,9 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         # 強いキーワードのチェック（重み付け2倍）
         for kw in geography_strong:
             if kw in text:
+                # 歴史文脈では環境系の強キーワードは無視
+                if history_context and kw in ['環境問題']:
+                    continue
                 geo_score += 2
         
         for kw in civics_strong:
@@ -532,26 +677,152 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         return questions
     
     def _extract_theme_from_context(self, text: str) -> Optional[str]:
-        """文脈から具体的なテーマを推定（下線部や代名詞問題用）"""
+        """文脈から具体的なテーマを推定（改良版）"""
         
-        # 下線部問題の処理
+        # まず具体的な内容を抽出
+        specific_themes = []
+        
+        # 中国王朝の具体的な内容（より厳密な判定）
+        # 注意：「明」は「説明」「証明」などに含まれるため特別処理
+        chinese_dynasties = [
+            ('秦の始皇帝', '秦の始皇帝と統一'),
+            ('秦朝', '秦の始皇帝と統一'),
+            ('漢王朝', '漢の時代と文化'),
+            ('漢の時代', '漢の時代と文化'),
+            ('前漢', '漢の時代と文化'),
+            ('後漢', '漢の時代と文化'),
+            ('隋の', '隋の統一と大運河'),
+            ('隋朝', '隋の統一と大運河'),
+            ('唐の', '唐の繁栄と国際交流'),
+            ('唐朝', '唐の繁栄と国際交流'),
+            ('遣唐使', '唐の繁栄と国際交流'),
+            ('宋の', '宋の経済発展'),
+            ('宋朝', '宋の経済発展'),
+            ('北宋', '宋の経済発展'),
+            ('南宋', '宋の経済発展'),
+            ('元の', 'モンゴル帝国と元'),
+            ('元朝', 'モンゴル帝国と元'),
+            ('元寇', 'モンゴル帝国と元'),
+            ('明朝', '明の海禁政策'),
+            ('明の', '明の海禁政策'),
+            ('清朝', '清の支配体制'),
+            ('清の', '清の支配体制'),
+        ]
+        for pattern, theme in chinese_dynasties:
+            if pattern in text:
+                specific_themes.append(theme)
+                break
+        
+        # 日本の時代別テーマ
+        if '縄文' in text:
+            if '土器' in text:
+                specific_themes.append('縄文土器と生活')
+            else:
+                specific_themes.append('縄文時代の文化')
+        elif '弥生' in text:
+            if '稲作' in text or '農業' in text:
+                specific_themes.append('弥生時代の稲作')
+            else:
+                specific_themes.append('弥生時代の社会')
+        elif '古墳' in text:
+            specific_themes.append('古墳時代の豪族')
+        elif '飛鳥' in text:
+            specific_themes.append('飛鳥時代の仏教文化')
+        elif '奈良' in text:
+            if '大仏' in text:
+                specific_themes.append('奈良の大仏建立')
+            else:
+                specific_themes.append('奈良時代の律令制')
+        elif '平安' in text:
+            if '藤原' in text:
+                specific_themes.append('平安時代の藤原氏')
+            elif '源氏物語' in text or '枕草子' in text:
+                specific_themes.append('平安時代の国風文化')
+            else:
+                specific_themes.append('平安時代の貴族政治')
+        elif '鎌倉' in text:
+            if '御家人' in text or '封建' in text:
+                specific_themes.append('鎌倉幕府と御家人')
+            else:
+                specific_themes.append('鎌倉時代の武士政権')
+        elif '室町' in text:
+            if '応仁の乱' in text:
+                specific_themes.append('応仁の乱と戦国時代')
+            else:
+                specific_themes.append('室町幕府の統治')
+        elif '江戸' in text:
+            if '鎖国' in text:
+                specific_themes.append('江戸時代の鎖国政策')
+            elif '参勤交代' in text:
+                specific_themes.append('参勤交代制度')
+            else:
+                specific_themes.append('江戸幕府の体制')
+        elif '明治' in text:
+            if '維新' in text:
+                specific_themes.append('明治維新の改革')
+            elif '憲法' in text:
+                specific_themes.append('大日本帝国憲法')
+            else:
+                specific_themes.append('明治時代の近代化')
+        
+        # 寺院・仏教関連
+        if '寺院' in text or '寺' in text:
+            if '法隆寺' in text:
+                specific_themes.append('法隆寺と聖徳太子')
+            elif '東大寺' in text:
+                specific_themes.append('東大寺と大仏建立')
+            elif '金閣寺' in text or '銀閣寺' in text:
+                specific_themes.append('室町文化と寺院')
+            elif '中世' in text:
+                specific_themes.append('日本の中世寺院文化')
+            else:
+                specific_themes.append('日本の寺院建築')
+        
+        # 地理関連の具体化
+        if '気候' in text:
+            if '雨温図' in text:
+                specific_themes.append('雨温図の読み取り')
+            else:
+                specific_themes.append('日本の気候区分')
+        elif '産業' in text:
+            if '農業' in text:
+                specific_themes.append('日本の農業分布')
+            elif '工業' in text:
+                specific_themes.append('日本の工業地帯')
+            else:
+                specific_themes.append('日本の産業構造')
+        elif '地形' in text or '地形図' in text:
+            specific_themes.append('地形図の読み取り')
+        
+        # 公民関連の具体化
+        if '選挙' in text:
+            if '制度' in text:
+                specific_themes.append('選挙制度の仕組み')
+            else:
+                specific_themes.append('選挙と民主主義')
+        elif '憲法' in text and '日本国' in text:
+            specific_themes.append('日本国憲法の原則')
+        elif '国会' in text:
+            specific_themes.append('国会の仕組み')
+        elif '内閣' in text:
+            specific_themes.append('内閣の役割')
+        elif '裁判' in text:
+            specific_themes.append('裁判所の機能')
+        
+        # 最も具体的なテーマを返す
+        if specific_themes:
+            return specific_themes[0]
+        
+        # 下線部問題の処理（既存のロジック）
         if '下線部' in text:
-            # 前後の文章から具体的な内容を抽出
             context_patterns = [
-                # 歴史的制度・政策
-                (re.compile(r'参勤交代|幕藩体制|鎖国|検地|刀狩|楽市楽座'), '歴史政策の内容'),
+                (re.compile(r'参勤交代|幕藩体制|鎖国|検地|刀狩|楽市楽座'), '江戸時代の政策'),
                 (re.compile(r'三大改革|享保の改革|寛政の改革|天保の改革'), '江戸時代の改革'),
                 (re.compile(r'明治維新|廃藩置県|四民平等|地租改正'), '明治時代の改革'),
-                
-                # 政治制度
                 (re.compile(r'三権分立|議院内閣制|国会|内閣|裁判所'), '政治制度の仕組み'),
                 (re.compile(r'憲法|基本的人権|国民主権|平和主義'), '日本国憲法の原則'),
-                
-                # 地理・産業
                 (re.compile(r'工業地帯|工業地域|農業|林業|漁業'), '産業の特徴'),
                 (re.compile(r'気候|地形|人口|都市化'), '地理的特徴'),
-                
-                # 国際関係
                 (re.compile(r'条約|同盟|戦争|講和'), '国際関係の変化'),
             ]
             
@@ -559,52 +830,34 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                 if pattern.search(text):
                     return theme_template
         
-        # 「この」「その」などの代名詞問題
-        pronoun_patterns = [
-            # 地方・地域関連
-            (re.compile(r'この地方.*?産業'), '地方の産業'),
-            (re.compile(r'この地域.*?特徴'), '地域の特徴'),
-            (re.compile(r'この地方.*?気候'), '地方の気候'),
-            (re.compile(r'この都市.*?発展'), '都市の発展'),
-            
-            # 時代・政治関連
-            (re.compile(r'この時代.*?政治'), '時代の政治'),
-            (re.compile(r'この時期.*?社会'), '時期の社会'),
-            (re.compile(r'この制度.*?目的'), '制度の目的'),
-            (re.compile(r'この政策.*?影響'), '政策の影響'),
-            
-            # 経済・産業関連
-            (re.compile(r'この産業.*?発展'), '産業の発展'),
-            (re.compile(r'この工業.*?特徴'), '工業の特徴'),
-            (re.compile(r'この貿易.*?変化'), '貿易の変化'),
-        ]
+        # 追加のフォールバック処理（より具体的なテーマを生成）
+        # 歴史的人物
+        if any(name in text for name in ['徳川', '豊臣', '織田', '源頼朝', '北条', '足利']):
+            return '武家政権の変遷'
         
-        for pattern, theme in pronoun_patterns:
-            if pattern.search(text):
-                return theme
+        # 戦争・紛争
+        if any(word in text for word in ['戦争', '戦い', '乱', '変', '事件']):
+            if '世界大戦' in text:
+                return '世界大戦と日本'
+            elif '戊辰戦争' in text:
+                return '明治維新の戦い'
+            else:
+                return '日本の戦争と紛争'
         
-        # 説明・答えなさい系の問題
-        if any(keyword in text for keyword in ['説明しなさい', '述べなさい', '答えなさい']):
-            # 重要なキーワードを探して2文節形式にする
-            historical_keywords = ['江戸時代', '明治時代', '大正時代', '昭和時代', '平安時代', '鎌倉時代', '室町時代']
-            for keyword in historical_keywords:
-                if keyword in text:
-                    return f"{keyword}の特徴"
-            
-            geo_keywords = ['関東地方', '近畿地方', '中部地方', '東北地方', '九州地方', '中国地方', '四国地方']
-            for keyword in geo_keywords:
-                if keyword in text:
-                    return f"{keyword}の特徴"
-            
-            # 一般的なパターン
-            if '産業' in text:
-                return '産業の特徴'
-            elif '政治' in text:
-                return '政治の仕組み'
-            elif '制度' in text:
-                return '制度の内容'
-            elif '改革' in text:
-                return '改革の内容'
+        # 経済・産業
+        if any(word in text for word in ['経済', '産業', '工業', '農業', '貿易']):
+            if '高度経済成長' in text:
+                return '高度経済成長期'
+            else:
+                return '日本の産業発展'
+        
+        # 国際関係
+        if any(word in text for word in ['国連', 'NATO', 'EU', '条約', '協定']):
+            return '国際機関と条約'
+        
+        # 憲法・法律
+        if any(word in text for word in ['憲法', '法律', '権利', '義務']):
+            return '法制度の仕組み'
         
         return None
     
@@ -723,6 +976,12 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         # 問題を抽出
         questions = self._extract_questions(text)
+        # 問題番号の重複・異常を補正（大問構造維持・正規化）
+        try:
+            from .social_analyzer import SocialAnalyzer as _Base
+            questions = _Base._fix_duplicate_question_numbers(self, questions)
+        except Exception:
+            pass
         
         # 問題が抽出できない場合のデバッグ情報
         if not questions:
@@ -734,11 +993,23 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         # 各問題を分析
         analyzed_questions = []
         for q_num, q_text in questions:
-            # 文脈強化：前後のテキストを含める
-            enhanced_text = self._find_question_context(text, q_text)
-            # 資料語彙のスコア加点（資料ブロックのキーワードを明示付与）
-            enhanced_text = self._augment_with_material_terms(text, enhanced_text)
-            analyzed_question = self.analyze_question(enhanced_text, q_num)
+            # 文脈強化は内部で利用するが、分野・テーマの確定は原文ベースで実施
+            _ = self._find_question_context(text, q_text)  # 解析ログ用に実行
+            _ = self._augment_with_material_terms(text, q_text)
+            analyzed_question = self.analyze_question(q_text, q_num)
+            # 総合またはテーマNoneの場合、近傍資料の名詞を補完して再判定
+            try:
+                needs_boost = (analyzed_question.field == SocialField.MIXED) or (not analyzed_question.topic)
+                if needs_boost:
+                    booster = self._extract_top_nouns_nearby(text, q_text, limit=12)
+                    if booster:
+                        boosted_text = (q_text + booster)[:1200]
+                        re_q = self.analyze_question(boosted_text, q_num)
+                        # 分野がMIXED→特定 or テーマが具体化されたら採用
+                        if (re_q.field != SocialField.MIXED and analyzed_question.field == SocialField.MIXED) or (re_q.topic and not analyzed_question.topic):
+                            analyzed_question = re_q
+            except Exception:
+                pass
             # 元のテキストも保持
             analyzed_question.original_text = q_text
             # ログ: 各設問の主題・分野を可視化
@@ -762,6 +1033,62 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             'statistics': stats,
             'total_questions': len(analyzed_questions)
         }
+
+    def analyze_question(self, question_text: str, question_number: str = "") -> SocialQuestion:
+        """主題インデックスを優先して分野・テーマを確定する分析器"""
+        # まず既存ロジックで大枠を算出
+        question = SocialQuestion(
+            number=question_number,
+            text=question_text,
+            field=self._detect_field(question_text),
+            resource_types=self._detect_resources(question_text),
+            question_format=self._detect_format(question_text),
+            is_current_affairs=self._is_current_affairs(question_text),
+            keywords=self._extract_keywords(question_text),
+        )
+
+        # 主題インデックス（subject_index.md）で分野とテーマを上書き（高優先）
+        if getattr(self, 'theme_kb', None) is not None:
+            try:
+                theme, field_label, confidence = self.theme_kb.analyze(question_text)
+            except Exception:
+                theme, field_label, confidence = (None, None, 0.0)
+
+            # 分野の置換（確度が一定以上、または中国王朝や寺院・時代語など強い根拠がある場合）
+            if field_label:
+                # 既存フィールドと矛盾する代表的誤分類の是正：
+                # - 「中国王朝」が地理扱い → 歴史に矯正
+                # - 「農業」や「工業」等の語があるのに歴史扱い → 地理に矯正
+                if field_label == '歴史':
+                    question.field = SocialField.HISTORY
+                elif field_label == '地理':
+                    question.field = SocialField.GEOGRAPHY
+                elif field_label == '公民':
+                    question.field = SocialField.CIVICS
+
+            # テーマを最終確定（KBのテーマを優先）
+            if theme:
+                question.topic = theme
+
+        # 分野別の補足情報
+        if question.field == SocialField.HISTORY:
+            question.time_period = self._extract_time_period(question.text)
+        elif question.field == SocialField.GEOGRAPHY:
+            question.region = self._extract_region(question.text)
+
+        # テーマ抽出器の結果しかない場合のフォールバック（重複抑制＆条文具体化）
+        if not question.topic:
+            # 憲法条文の優先具体化
+            import re as _re
+            m = _re.findall(r'第(\d+)条', question.text)
+            if m:
+                question.topic = self.theme_kb._determine_civics_theme(question.text) if getattr(self, 'theme_kb', None) else f"憲法第{m[0]}条"
+            else:
+                topic = self._extract_topic(question.text)
+                if topic:
+                    question.topic = topic
+
+        return question
 
     def _augment_with_material_terms(self, full_text: str, ctx_text: str) -> str:
         """資料ブロックの語彙を抽出し、設問文に付与してテーマ化を後押し"""
@@ -797,7 +1124,7 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                 for w in nouns:
                     freq[w] = freq.get(w, 0) + 1
                 scored = sorted(freq.items(), key=lambda kv: (-(kv[1] + (5 if kv[0] in priority else 0)), -len(kv[0])))
-                top = [w for w,_ in scored[:20]]
+                top = [w for w,_ in scored[:30]]
                 # 用語カタログの地理語彙を加点（川/空港/地名/工業地帯など）
                 geo_terms = []
                 for field, term in repo_hits:
@@ -830,6 +1157,30 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             return boosted
         except Exception:
             return ctx_text
+
+    def _extract_top_nouns_nearby(self, full_text: str, question_text: str, limit: int = 10) -> str:
+        """近傍の「資料」ブロックから上位名詞を抽出し、設問文に補完する（総合フォールバック用）"""
+        try:
+            import re
+            frag = question_text[:30].strip()
+            pos = full_text.find(frag) if frag else -1
+            if pos < 0:
+                return ''
+            window = full_text[max(0, pos-1500):min(len(full_text), pos+1500)]
+            # 直近の「資料」見出しを探索
+            blocks = []
+            for m in re.finditer(r'資料[【\[]?.{0,40}?[】\]]?', window):
+                b = window[m.start():m.start()+800]
+                blocks.append(b)
+            text_for_nouns = '\n'.join(blocks) if blocks else window
+            nouns = re.findall(r'[一-龥ァ-ヴー]{2,}', text_for_nouns)
+            freq = {}
+            for w in nouns:
+                freq[w] = freq.get(w, 0) + 1
+            top = [w for w,_ in sorted(freq.items(), key=lambda kv: (-kv[1], -len(kv[0])) )[:limit]]
+            return ' ' + ' '.join(top) if top else ''
+        except Exception:
+            return ''
 
     def _extract_nouns(self, text: str):
         """形態素解析（可能なら）で名詞候補を抽出。失敗時は空を返す。"""

@@ -144,7 +144,17 @@ class SocialExcelFormatter:
             ws.cell(row=row, column=4, value=q.question_format.value)
             ws.cell(row=row, column=5, value="○" if q.is_current_affairs else "")
             ws.cell(row=row, column=6, value=q.time_period or q.region or "")
-            ws.cell(row=row, column=7, value=q.topic or "")
+            # 公民の凡庸テーマは具体化（条文優先）
+            topic_display = q.topic or ""
+            try:
+                if (not topic_display or topic_display in ['日本国憲法の原則','政治の仕組み','経済の仕組み']) and q.field.value == '公民':
+                    import re
+                    arts = re.findall(r'第(\d+)条', q.text)
+                    if arts:
+                        topic_display = f"憲法第{arts[0]}条"
+            except Exception:
+                pass
+            ws.cell(row=row, column=7, value=topic_display)
             ws.cell(row=row, column=8, value=", ".join(q.keywords[:5]))
             ws.cell(row=row, column=9, value=q.text[:100] + "..." if len(q.text) > 100 else q.text)
             
