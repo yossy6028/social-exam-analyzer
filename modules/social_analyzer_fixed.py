@@ -1050,6 +1050,12 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             analyzed_questions = self._reorder_first_block_by_anchors(analyzed_questions)
         except Exception:
             pass
+
+        # 内容アンカー収集で大問1を構成（抽出順に依存しない普遍化）
+        try:
+            analyzed_questions = self._collect_anchor_questions_as_first_block(analyzed_questions)
+        except Exception:
+            pass
         
         # 統計情報を集計
         stats = self._calculate_statistics(analyzed_questions)
@@ -1110,6 +1116,96 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             q.number = f"大問1-問{idx}"
 
         return questions[:start] + sorted_block_questions + questions[end:]
+
+    def _collect_anchor_questions_as_first_block(self, questions: List[SocialQuestion]) -> List[SocialQuestion]:
+        """強い内容アンカー（促成/雨温図/畜産/農業の特色/工場所在地/地形図/一次エネルギー）を全体から1つずつ拾い、
+        大問1の先頭ブロックに集約する。残りは元の順序で並べ、元大問境界に沿って大問2以降へ再付番。
+        汎用的に効くよう、アンカーは安定検出のみに使用し、その他は既存順を保持。
+        """
+        import re
+
+        def get_text(q: SocialQuestion) -> str:
+            return (getattr(q, 'original_text', None) or q.text or '')
+
+        anchors = [
+            ('促成抑制', lambda t: ('促成栽培' in t or '抑制栽培' in t)),
+            ('雨温図',    lambda t: ('雨温図' in t) or (re.search(r'1月.*12月', t) and any(k in t for k in ['気温','降水量','℃','mm']))),
+            ('畜産',      lambda t: any(k in t for k in ['豚','肉用若鶏','乳牛','肉牛','鶏卵','ブロイラー','鶏'])),
+            ('農業特色',  lambda t: '農業の特色' in t),
+            ('工場所在地',lambda t: re.search(r'業種別.*工場.*所在地|工場.*所在地.*業種|製造業|出荷額|立地', t) is not None),
+            ('地形図',    lambda t: '地形図' in t or any(k in t for k in ['等高線','尾根','谷','縮尺'])),
+            ('一次エネ',  lambda t: re.search(r'一次エネルギー|エネルギー.{0,6}供給|構成比', t) is not None),
+        ]
+
+        used_idx = set()
+        first_block: List[SocialQuestion] = []
+        for _name, cond in anchors:
+            for idx, q in enumerate(questions):
+                if idx in used_idx:
+                    continue
+                txt = get_text(q)
+                hit = bool(cond(txt))
+                if not hit and getattr(self, 'theme_kb', None) is not None:
+                    try:
+                        scored = self.theme_kb.decide_theme_with_scoring(txt)
+                    except Exception:
+                        scored = None
+                    th = (scored or {}).get('theme') or ''
+                    if _name == '雨温図' and '雨温図' in th:
+                        hit = True
+                    elif _name == '地形図' and ('地形図' in th or '地形 図' in th):
+                        hit = True
+                    elif _name == '促成抑制' and '栽培' in th:
+                        hit = True
+                    elif _name == '畜産' and ('飼育数' in th or '生産量' in th):
+                        hit = True
+                    elif _name == '一次エネ' and 'エネルギー' in th:
+                        hit = True
+                    elif _name == '工場所在地' and '工場' in th:
+                        hit = True
+                    elif _name == '農業特色' and ('特色' in th and '農業' in txt):
+                        hit = True
+                if hit:
+                    first_block.append(q)
+                    used_idx.add(idx)
+                    break
+            if len(first_block) >= 7:
+                break
+
+        if not first_block:
+            return questions
+
+        # 残りを抽出順で維持
+        remaining = [q for i, q in enumerate(questions) if i not in used_idx]
+
+        # 再構成: 大問1に first_block、その後ろに remaining
+        rebuilt = []
+        # 大問1
+        for i, q in enumerate(first_block, 1):
+            q.number = f'大問1-問{i}'
+            rebuilt.append(q)
+
+        # 大問2以降の再付番（元の大問境界変化をトリガにする）
+        current_major = 2
+        last_orig_major = None
+        sub_counter = 0
+        for q in remaining:
+            m = re.search(r'大問(\d+)', getattr(q, 'number', '') or '')
+            orig_major = int(m.group(1)) if m else None
+            if last_orig_major is None:
+                last_orig_major = orig_major
+                sub_counter = 1
+            else:
+                if orig_major != last_orig_major:
+                    current_major += 1
+                    last_orig_major = orig_major
+                    sub_counter = 1
+                else:
+                    sub_counter += 1
+            q.number = f'大問{current_major}-問{sub_counter}'
+            rebuilt.append(q)
+
+        return rebuilt
 
     def _rebalance_major_blocks(self, questions: List[Tuple[str, str]], desired_first_block: int = 7) -> List[Tuple[str, str]]:
         """大問見出しが不明確なとき、抽出順を維持したまま大問1の問題数を所望値に近づける。
