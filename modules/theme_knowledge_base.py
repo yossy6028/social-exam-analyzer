@@ -35,6 +35,8 @@ class ThemeKnowledgeBase:
             self._parse_civics_section(content)
             # 地理分野の情報を抽出
             self._parse_geography_section(content)
+            # 逆引きインデックスを構築
+            self._build_reverse_index()
             
             logger.info("Successfully loaded subject_index.md")
         except Exception as e:
@@ -191,6 +193,98 @@ class ThemeKnowledgeBase:
             '社会': ['少子高齢化', '社会保障', '年金', '医療', '介護', '福祉'],
             '人権': ['平等権', '自由権', '社会権', '参政権', '請求権', '新しい人権']
         }
+        # 逆引き用インデックス
+        self.term_index: Dict[str, List[Tuple[str, str]]] = {}
+        # 歴史の側面語
+        self.history_aspects: Dict[str, List[str]] = {
+            '政治': ['政治', '統治', '幕府', '朝廷', '将軍', '制度'],
+            '文化': ['文化', '芸術', '宗教', '仏教', '神道', '寺院', '文学', '建築'],
+            '経済': ['経済', '産業', '貿易', '商業', '年貢', '貨幣'],
+            '社会': ['社会', '身分', '武士', '農民', '百姓', '町人']
+        }
+
+    def _build_reverse_index(self) -> None:
+        """subject_indexに基づく term -> [(field, category)] の逆引きを構築"""
+        self.term_index.clear()
+        # 歴史
+        for period, keywords in self.history_periods.items():
+            for kw in keywords:
+                if not kw:
+                    continue
+                self.term_index.setdefault(kw, []).append(('歴史', period))
+        # 地理
+        for theme, keywords in self.geography_themes.items():
+            # テーマ名自体も代表語として扱う
+            self.term_index.setdefault(theme, []).append(('地理', theme))
+            for kw in keywords:
+                if not kw:
+                    continue
+                self.term_index.setdefault(kw, []).append(('地理', theme))
+        # 公民
+        for cat, keywords in self.civics_themes.items():
+            # カテゴリ名自体も代表語として扱う
+            self.term_index.setdefault(cat, []).append(('公民', cat))
+            for kw in keywords:
+                if not kw:
+                    continue
+                self.term_index.setdefault(kw, []).append(('公民', cat))
+
+    def determine_theme_via_index(self, text: str) -> Optional[Tuple[str, str, Dict[str, int]]]:
+        """主題インデックスの逆引きで厳密にテーマを導出。
+        戻り値: (theme, field, scores) または None
+        """
+        import re
+        if not text:
+            return None
+        tokens = re.findall(r'[一-龥ァ-ヴー]{2,}', text)
+        if not tokens:
+            return None
+        # スコア集計: (field, category) -> count
+        scores: Dict[Tuple[str, str], int] = {}
+        for t in set(tokens):
+            for entry in self.term_index.get(t, []):
+                scores[entry] = scores.get(entry, 0) + 1
+        if not scores:
+            return None
+        # 最上位を決定
+        best_entry = max(scores.items(), key=lambda kv: kv[1])[0]
+        best_field, best_category = best_entry
+        best_score = scores[best_entry]
+        # 地理: 地域語 + カテゴリの組み合わせを優先
+        region = None
+        region_m = re.findall(r'([一-龥]{2,4}(?:地方|平野|盆地|山地|川|湖|海|半島|諸島|県|府|都|道))', text)
+        if region_m:
+            region = region_m[0]
+        if best_field == '地理':
+            # 地域があれば「地域のカテゴリ」、なければ「カテゴリの特色」
+            if region:
+                return (f"{region}の{best_category}", '地理', {f"地理:{best_category}": best_score})
+            else:
+                return (f"{best_category}の特色", '地理', {f"地理:{best_category}": best_score})
+        # 公民: 条文優先、次にカテゴリ固有テーマ
+        if best_field == '公民':
+            art = re.findall(r'第(\d+)条', text)
+            if art:
+                return (f"憲法第{art[0]}条", '公民', {"公民:条文": 3})
+            # 代表カテゴリ名で具体化
+            mapping = {
+                '政治': '政治の仕組み', '憲法': '日本国憲法の原則', '経済': '経済の仕組み',
+                '国際': '国際協力', '社会': '社会保障制度', '人権': '基本的人権'
+            }
+            theme = mapping.get(best_category, f"{best_category}問題")
+            return (theme, '公民', {f"公民:{best_category}": best_score})
+        # 歴史: 時代 + 側面語
+        if best_field == '歴史':
+            # 側面語を検出
+            aspect = None
+            for name, kws in self.history_aspects.items():
+                if any(k in text for k in kws):
+                    aspect = name
+                    break
+            if aspect:
+                return (f"{best_category}時代の{aspect}", '歴史', {f"歴史:{best_category}": best_score})
+            return (f"{best_category}時代の特徴", '歴史', {f"歴史:{best_category}": best_score})
+        return None
     
     def determine_theme(self, text: str, field: Optional[str]) -> str:
         """
@@ -213,6 +307,12 @@ class ThemeKnowledgeBase:
             est_field, _score = self.estimate_field(text)
             field = est_field or '総合'
         
+        # まず主題インデックス照合に基づく厳密判定（根拠語ベース）
+        strict = self._strict_match_subject_index(text, field)
+        if strict and strict.get('score', 0) >= 2:
+            logger.debug(f"strict theme matched: {strict}")
+            return strict['theme']
+
         # 分野別の詳細なテーマ決定
         if field == '歴史':
             return self._determine_history_theme(text)
@@ -313,10 +413,117 @@ class ThemeKnowledgeBase:
                     text = (text + ' ' + ' '.join(noun_candidates[:10]))[:1500]
         except Exception:
             pass
-        theme = self.determine_theme(text, field)
+        # 厳密判定でテーマが出ればそれを優先
+        strict = self._strict_match_subject_index(text, field)
+        if strict and strict.get('theme'):
+            theme = strict['theme']
+        else:
+            theme = self.determine_theme(text, field)
         # 単純なスコア正規化（上限0.95）
         confidence = min(0.95, 0.2 + 0.1 * max(1, score))
         return theme, field, confidence
+
+    def _strict_match_subject_index(self, text: str, field: Optional[str]) -> Optional[Dict[str, object]]:
+        """subject_index.md の語彙と設問・選択肢・資料語を厳密照合してテーマを導出。
+        2語以上の根拠一致や、地域語+カテゴリ語の組み合わせなど、確度の高い場合にのみ返す。
+        返り値: { theme, field, score, reasons: [一致語…] }
+        """
+        try:
+            import re
+            # テキストから名詞候補（漢字/カタカナ）を抽出
+            nouns = re.findall(r'[一-龥ァ-ヴー]{2,}', text)
+            noun_set = set(nouns)
+
+            # 地理: 地域語 + カテゴリ語（地形/気候/産業 等）
+            geo_hits = []
+            region = None
+            for token in noun_set:
+                if re.search(r'(地方|平野|盆地|山地|川|湖|海|半島|諸島|県|府|都|道)$', token):
+                    region = token
+                    break
+            geo_score = 0
+            if region:
+                # カテゴリ一致
+                for theme_name, kws in self.geography_themes.items():
+                    if theme_name in ['世界地理']:
+                        continue
+                    local_hit = [kw for kw in kws if kw in text]
+                    if local_hit:
+                        geo_score += len(local_hit)
+                        geo_hits.extend(local_hit)
+                if geo_score >= 1:
+                    return {
+                        'theme': f"{region}の{('特徴' if len(geo_hits)==0 else '特色')}",
+                        'field': '地理',
+                        'score': 1 + min(3, geo_score),
+                        'reasons': [region] + geo_hits[:3]
+                    }
+
+            # 公民: 条文/政治機構/経済/労働/社会保障などの代表語一致
+            civ_hits = []
+            civ_score = 0
+            for cat, kws in self.civics_themes.items():
+                hits = [kw for kw in kws if kw in text]
+                if hits:
+                    civ_score += len(hits)
+                    civ_hits.extend(hits)
+            art = re.findall(r'第(\d+)条', text)
+            if art:
+                art_map = {
+                    '9': '平和主義（戦争の放棄）','13': '個人の尊重・幸福追求権','14': '法の下の平等','21': '表現の自由',
+                    '25': '生存権','26': '教育を受ける権利・義務教育','27': '勤労の権利と義務','28': '労働三権（団結・団体交渉・争議権）',
+                }
+                title = art_map.get(art[0], f"憲法第{art[0]}条")
+                return {'theme': title, 'field': '公民', 'score': 3, 'reasons': [f"第{art[0]}条"]}
+            if civ_score >= 2:
+                # 代表語に応じて具体化
+                if any(k in civ_hits for k in ['選挙','小選挙区','比例代表']):
+                    t = '選挙制度'
+                elif any(k in civ_hits for k in ['国会','衆議院','参議院']):
+                    t = '国会の仕組み'
+                elif any(k in civ_hits for k in ['内閣']):
+                    t = '内閣の役割'
+                elif any(k in civ_hits for k in ['裁判所','最高裁']):
+                    t = '司法制度'
+                elif any(k in civ_hits for k in ['税','消費税','財政']):
+                    t = '税制'
+                elif any(k in civ_hits for k in ['労働','労働組合','最低賃金']):
+                    t = '労働問題'
+                elif any(k in civ_hits for k in ['社会保障','年金','医療保険','介護保険']):
+                    t = '社会保障制度'
+                else:
+                    t = '公民総合問題'
+                return {'theme': t, 'field': '公民', 'score': min(4, civ_score), 'reasons': civ_hits[:4]}
+
+            # 歴史: 時代名 or 代表語の複数一致、または中国王朝（厳格文脈）
+            his_hits = []
+            best_period = None
+            best_cnt = 0
+            for period, kws in self.history_periods.items():
+                cnt = sum(1 for kw in kws if kw in text)
+                if cnt > best_cnt:
+                    best_cnt = cnt
+                    best_period = period
+            if best_period and best_cnt >= 2:
+                his_hits = [kw for kw in self.history_periods.get(best_period, []) if kw in text][:4]
+                aspect = None
+                for key, name in [('政治','政治'),('文化','文化'),('経済','経済'),('社会','社会')]:
+                    if key in text:
+                        aspect = name; break
+                t = f"{best_period}時代の{aspect or '特徴'}"
+                return {'theme': t, 'field': '歴史', 'score': min(4, best_cnt), 'reasons': [best_period] + his_hits}
+
+            # 中国王朝（厳格パターンのみ）
+            if re.search(r'(?:中国|中華).*王朝', text) or re.search(r'(?:中国)?\s*[秦漢隋唐宋元明清](?:朝|王朝|帝|時代)', text):
+                # 接尾の側面語があれば具体化
+                for key, name in [('政治','政治'),('制度','制度'),('文化','文化'),('社会','社会')]:
+                    if key in text:
+                        return {'theme': f"中国王朝の{name}", 'field': '歴史', 'score': 2, 'reasons': ['中国王朝', name]}
+                return {'theme': '中国王朝の歴史', 'field': '歴史', 'score': 2, 'reasons': ['中国王朝']}
+
+            return None
+        except Exception:
+            return None
     
     def _determine_history_theme(self, text: str) -> str:
         """歴史分野のテーマ決定（subject_index.mdに基づく具体化）"""

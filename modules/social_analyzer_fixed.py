@@ -1051,7 +1051,12 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         # 主題インデックス（subject_index.md）で分野とテーマを上書き（高優先）
         if getattr(self, 'theme_kb', None) is not None:
             try:
-                theme, field_label, confidence = self.theme_kb.analyze(question_text)
+                # 逆引きでの厳密導出を優先
+                via = self.theme_kb.determine_theme_via_index(question_text)
+                if via:
+                    theme, field_label, _scores = via
+                else:
+                    theme, field_label, confidence = self.theme_kb.analyze(question_text)
             except Exception:
                 theme, field_label, confidence = (None, None, 0.0)
 
