@@ -997,6 +997,11 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             questions = _Base._fix_duplicate_question_numbers(self, questions)
         except Exception:
             pass
+        # 大問見出しが曖昧な場合の再配分（普遍的ヘューリスティック）
+        try:
+            questions = self._rebalance_major_blocks(questions, desired_first_block=7)
+        except Exception:
+            pass
         
         # 問題が抽出できない場合のデバッグ情報
         if not questions:
@@ -1039,6 +1044,12 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         # 総合と判定された問題を再評価
         analyzed_questions = self._reevaluate_mixed_questions(analyzed_questions)
+
+        # 大問1の並びを内容駆動で安定ソート（アンカー優先）
+        try:
+            analyzed_questions = self._reorder_first_block_by_anchors(analyzed_questions)
+        except Exception:
+            pass
         
         # 統計情報を集計
         stats = self._calculate_statistics(analyzed_questions)
@@ -1048,6 +1059,109 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             'statistics': stats,
             'total_questions': len(analyzed_questions)
         }
+
+    def _reorder_first_block_by_anchors(self, questions: List[SocialQuestion]) -> List[SocialQuestion]:
+        """大問1の先頭ブロックを内容アンカー（表層特徴）で安定ソート。
+        優先順位: 促成/抑制栽培 → 雨温図 → 畜産（豚/肉用若鶏/乳牛/肉牛/鶏/鶏卵/ブロイラー） → 農業の特色 → 業種別工場の所在地 → 地形図 → 一次エネルギー。
+        他は元順維持。
+        """
+        import re
+        # 大問1の範囲を特定
+        first_block_idx = [i for i, q in enumerate(questions) if isinstance(getattr(q, 'number', ''), str) and '大問1-' in q.number]
+        if not first_block_idx:
+            return questions
+        start = first_block_idx[0]
+        end = start
+        while end < len(questions) and '大問1-' in questions[end].number:
+            end += 1
+        block = questions[start:end]
+
+        def anchor_rank(q: SocialQuestion) -> int:
+            t = (getattr(q, 'original_text', None) or q.text or '')
+            # 0: 促成/抑制栽培
+            if '促成栽培' in t or '抑制栽培' in t:
+                return 0
+            # 1: 雨温図
+            if '雨温図' in t or (re.search(r'1月.*12月', t) and any(k in t for k in ['気温', '降水量', '℃', 'mm'])):
+                return 1
+            # 2: 畜産
+            if any(k in t for k in ['豚','肉用若鶏','乳牛','肉牛','鶏卵','ブロイラー','鶏']):
+                return 2
+            # 3: 農業の特色
+            if '農業の特色' in t:
+                return 3
+            # 4: 業種別工場の所在地
+            if re.search(r'業種別.*工場.*所在地|工場.*所在地.*業種', t):
+                return 4
+            # 5: 地形図
+            if '地形図' in t:
+                return 5
+            # 6: 一次エネルギー
+            if re.search(r'一次エネルギー|エネルギー.{0,6}供給', t):
+                return 6
+            return 99
+
+        # 安定ソート
+        sorted_block = sorted(enumerate(block), key=lambda pair: (anchor_rank(pair[1]), pair[0]))
+        sorted_block_questions = [pair[1] for pair in sorted_block]
+
+        # 再番号付け（大問1内のみ）
+        for idx, q in enumerate(sorted_block_questions, 1):
+            q.number = f"大問1-問{idx}"
+
+        return questions[:start] + sorted_block_questions + questions[end:]
+
+    def _rebalance_major_blocks(self, questions: List[Tuple[str, str]], desired_first_block: int = 7) -> List[Tuple[str, str]]:
+        """大問見出しが不明確なとき、抽出順を維持したまま大問1の問題数を所望値に近づける。
+        既存の大問構造（例: 4,14,13,5）から先頭ブロックが小さすぎる場合、次ブロックの先頭を切り出して先頭ブロックに連結する。
+        """
+        # 現在のブロック構成を集計
+        import re
+        blocks: List[List[Tuple[str, str]]] = []
+        current_block_num = None
+        current_block: List[Tuple[str, str]] = []
+        for q_num, q_text in questions:
+            m = re.search(r'大問(\d+)', q_num)
+            maj = int(m.group(1)) if m else None
+            if maj is None:
+                # 大問番号が無い場合は全体を1ブロックとして扱う
+                blocks = [questions[:]]
+                break
+            if current_block_num is None:
+                current_block_num = maj
+            if maj != current_block_num:
+                blocks.append(current_block)
+                current_block = []
+                current_block_num = maj
+            current_block.append((q_num, q_text))
+        if current_block:
+            blocks.append(current_block)
+
+        if len(blocks) < 2:
+            return questions
+
+        first_len = len(blocks[0])
+        # 先頭が十分なら何もしない
+        if first_len >= desired_first_block:
+            return questions
+
+        need = desired_first_block - first_len
+        second_len = len(blocks[1]) if len(blocks) > 1 else 0
+        # 次ブロックから切り出せる場合のみ再配分
+        if second_len <= need:
+            return questions
+
+        # 先頭ブロックに次ブロックの先頭から need 問を移す
+        moved = blocks[1][:need]
+        blocks[0].extend(moved)
+        blocks[1] = blocks[1][need:]
+
+        # 再番号付け
+        re_num_blocks: List[Tuple[str, str]] = []
+        for i, block in enumerate(blocks, 1):
+            for j, (_qnum, qtext) in enumerate(block, 1):
+                re_num_blocks.append((f"大問{i}-問{j}", qtext))
+        return re_num_blocks
 
     def analyze_question(self, question_text: str, question_number: str = "") -> SocialQuestion:
         """主題インデックスを優先して分野・テーマを確定する分析器"""
