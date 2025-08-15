@@ -131,54 +131,103 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         }
     
     def _detect_field(self, text: str) -> SocialField:
-        """改善された分野判定（重み付けスコアリング）"""
-        scores = {}
+        """問題文から分野を検出（バランスの取れた判定）"""
+        if not text:
+            return SocialField.MIXED
         
-        # 歴史的キーワードの強化判定
-        history_keywords = [
-            # 時代名
-            '縄文時代', '弥生時代', '古墳時代', '飛鳥時代', '奈良時代',
-            '平安時代', '鎌倉時代', '室町時代', '戦国時代', '安土桃山時代',
-            '江戸時代', '明治時代', '大正時代', '昭和時代', '平成時代', '令和時代',
-            # 歴史的事件
-            '戦争', '戦い', '乱', '変', '改革', '維新', '革命', '条約', '同盟',
-            # 歴史的組織・制度
-            '幕府', '朝廷', '将軍', '天皇', '藩', '大名', '武士',
-            # 中国王朝
-            '隋', '唐', '宋', '元', '明', '清', '中国の王朝', '中国王朝',
-            # その他歴史キーワード
-            '歴史', '年号', '西暦'
+        # 地理の特徴的なキーワード
+        geography_keywords = [
+            '地図', '地形図', '雨温図', '気候', '気温', '降水量',
+            '農業', '工業', '漁業', '産業', '貿易', '輸出', '輸入',
+            '都道府県', '地方', '平野', '盆地', '山地', '川', '湖', '海',
+            '人口', '都市', '過疎', '過密', '交通', '鉄道', '空港', '港',
+            '資源', 'エネルギー', '環境問題', '公害', '自然災害',
+            '北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州',
+            '農産物', '工業製品', '水産物', '特産品', '観光',
+            '国土', '領土', '排他的経済水域', '大陸棚'
         ]
         
-        # 歴史キーワードチェック
-        history_count = sum(1 for kw in history_keywords if kw in text)
-        if history_count >= 2:  # 2つ以上のキーワードで歴史確定
-            return SocialField.HISTORY
-        elif history_count == 1:  # 1つでも強いスコア
-            scores[SocialField.HISTORY] = scores.get(SocialField.HISTORY, 0) + 5.0
+        # 公民の特徴的なキーワード
+        civics_keywords = [
+            '憲法', '法律', '条文', '権利', '義務', '自由',
+            '選挙', '投票', '議会', '国会', '内閣', '裁判',
+            '政党', '政治', '民主主義', '主権', '三権分立',
+            '地方自治', '知事', '市長', '議員', '条例',
+            '税金', '予算', '財政', '社会保障', '年金', '医療', '福祉',
+            '経済', '市場', '需要', '供給', '価格', '企業', '労働',
+            '国連', '国際機関', 'ODA', 'PKO', 'NGO', 'SDGs',
+            '人権', '平等', '差別', '環境権', 'プライバシー'
+        ]
         
-        # 重み付けスコアの計算
-        for field, weighted_patterns in self.weighted_field_patterns.items():
-            score = scores.get(field, 0)
-            for pattern, weight in weighted_patterns:
-                if pattern.search(text):
-                    score += weight
-            if score > 0:
-                scores[field] = score
+        # 歴史の特徴的なキーワード
+        history_keywords = [
+            '縄文', '弥生', '古墳', '飛鳥', '奈良', '平安', '鎌倉', '室町',
+            '戦国', '安土桃山', '江戸', '明治', '大正', '昭和', '平成',
+            '時代', '世紀', '年号', '元号', '西暦',
+            '天皇', '将軍', '幕府', '朝廷', '藩', '武士', '貴族',
+            '戦争', '戦い', '乱', '変', '事件', '条約', '改革',
+            '文化', '仏教', '神道', 'キリスト教', '寺', '神社',
+            '遺跡', '遺産', '史跡', '城', '古文書',
+            # 中国王朝も歴史として扱う
+            '秦', '漢', '隋', '唐', '宋', '元', '明', '清', '王朝'
+        ]
         
-        # 通常パターンも併用（重みは1.0）
-        for field, patterns in self.field_patterns.items():
-            if field not in scores:
-                scores[field] = 0
-            additional_score = sum(1 for pattern in patterns if pattern.search(text))
-            scores[field] += additional_score
+        # 重要度の高いキーワード（これらが含まれていたら優先的にその分野と判定）
+        geography_strong = ['雨温図', '地形図', '地図', '気候区分', '農産物', '工業地帯', '都道府県']
+        civics_strong = ['選挙', '投票', '議会', '憲法', '三権分立', '人権', '税金', '条例']
+        history_strong = ['縄文', '弥生', '古墳', '幕府', '天皇', '将軍', '戦国', '明治維新']
         
-        # スコアがない場合
-        if not scores:
-            # 時事問題のキーワードが含まれているか確認
-            if self._is_current_affairs(text):
-                return SocialField.CURRENT_AFFAIRS
+        # スコアリング
+        geo_score = 0
+        civ_score = 0
+        his_score = 0
+        
+        # 強いキーワードのチェック（重み付け2倍）
+        for kw in geography_strong:
+            if kw in text:
+                geo_score += 2
+        
+        for kw in civics_strong:
+            if kw in text:
+                civ_score += 2
+        
+        for kw in history_strong:
+            if kw in text:
+                his_score += 2
+        
+        # 通常のキーワードチェック
+        for kw in geography_keywords:
+            if kw in text:
+                geo_score += 1
+        
+        for kw in civics_keywords:
+            if kw in text:
+                civ_score += 1
+        
+        for kw in history_keywords:
+            if kw in text:
+                his_score += 1
+        
+        # 最高スコアの分野を返す
+        max_score = max(geo_score, civ_score, his_score)
+        
+        if max_score == 0:
             return SocialField.MIXED
+        
+        # 同点の場合は総合とする
+        if (geo_score == max_score and civ_score == max_score) or \
+           (geo_score == max_score and his_score == max_score) or \
+           (civ_score == max_score and his_score == max_score):
+            return SocialField.MIXED
+        
+        if geo_score == max_score:
+            return SocialField.GEOGRAPHY
+        elif civ_score == max_score:
+            return SocialField.CIVICS
+        elif his_score == max_score:
+            return SocialField.HISTORY
+        
+        return SocialField.MIXED
         
         # 合計スコアを計算
         total_score = sum(scores.values())

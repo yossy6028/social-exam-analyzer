@@ -8,9 +8,15 @@ import os
 import logging
 from pathlib import Path
 from datetime import datetime
-import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
 import threading
+
+# tkinterは後で条件付きでインポート
+try:
+    import tkinter as tk
+    from tkinter import filedialog, messagebox, ttk
+    TKINTER_AVAILABLE = True
+except ImportError:
+    TKINTER_AVAILABLE = False
 
 # モジュールパスを追加
 sys.path.insert(0, str(Path(__file__).parent))
@@ -566,4 +572,162 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser(description='社会科入試問題分析ツール')
+    parser.add_argument('pdf_path', nargs='?', help='PDFファイルのパス')
+    parser.add_argument('--school', help='学校名')
+    parser.add_argument('--year', help='年度')
+    parser.add_argument('--debug', action='store_true', help='デバッグモード')
+    parser.add_argument('--dry-run', action='store_true', help='分析のみ実行（保存しない）')
+    
+    args = parser.parse_args()
+    
+    if args.pdf_path:
+        # コマンドライン実行モード
+        from pathlib import Path
+        import json
+        from modules.social_analyzer_fixed import FixedSocialAnalyzer as SocialAnalyzer
+        from modules.theme_knowledge_base import ThemeKnowledgeBase
+        from modules.social_excel_formatter import SocialExcelFormatter
+        from datetime import datetime
+        
+        try:
+            # PDFファイルを読み込み
+            pdf_path = Path(args.pdf_path)
+            if not pdf_path.exists():
+                print(f"エラー: ファイルが見つかりません: {pdf_path}")
+                exit(1)
+            
+            # PDFからテキストを抽出
+            from modules.ocr_handler import OCRHandler
+            ocr = OCRHandler()
+            pdf_text = ocr.process_pdf(str(pdf_path))
+            
+            if not pdf_text:
+                print(f"エラー: PDFからテキストを抽出できませんでした")
+                exit(1)
+            
+            # 分析実行
+            analyzer = SocialAnalyzer()
+            result = analyzer.analyze_document(pdf_text)
+            
+            # 結果に成功フラグを追加
+            if result:
+                result['success'] = bool(result.get('questions'))
+            
+            if result and result.get('success'):
+                # テキストファイル生成
+                theme_kb = ThemeKnowledgeBase()
+                save_dir = Path("/Users/yoshiikatsuhiko/Desktop/過去問_社会")
+                save_dir.mkdir(parents=True, exist_ok=True)
+                
+                school_name = args.school or pdf_path.stem.split('_')[0]
+                year = args.year or "2025"
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"{school_name}_{year}_テーマ一覧_{timestamp}.txt"
+                save_path = save_dir / filename
+                
+                # テキスト生成
+                output_lines = []
+                output_lines.append("="*60)
+                output_lines.append("社会科入試問題分析 - テーマ一覧")
+                output_lines.append("="*60)
+                output_lines.append("")
+                output_lines.append(f"学校名: {school_name}")
+                output_lines.append(f"年度: {year}年")
+                output_lines.append(f"分析日時: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}")
+                output_lines.append(f"総問題数: {result.get('total_questions', 0)}問")
+                output_lines.append("")
+                output_lines.append("【分野別出題状況】")
+                
+                # 分野別集計
+                field_counts = {}
+                for q in result.get('questions', []):
+                    # qはSocialQuestionオブジェクト
+                    field_name = q.field.value if hasattr(q, 'field') and hasattr(q.field, 'value') else 'MIXED'
+                    field_counts[field_name] = field_counts.get(field_name, 0) + 1
+                
+                for field, count in sorted(field_counts.items(), key=lambda x: x[1], reverse=True):
+                    percentage = (count / result.get('total_questions', 1)) * 100
+                    field_display = {
+                        'GEOGRAPHY': '地理',
+                        'HISTORY': '歴史',
+                        'CIVICS': '公民',
+                        'CURRENT_AFFAIRS': '時事問題',
+                        'MIXED': '総合'
+                    }.get(field, field)
+                    output_lines.append(f"  {field_display:10s}: {count:3d}問 ({percentage:5.1f}%)")
+                
+                output_lines.append("")
+                output_lines.append("【出題テーマ一覧】")
+                output_lines.append("")
+                
+                # 大問ごとのテーマ
+                current_major = None
+                for q in result.get('questions', []):
+                    # qはSocialQuestionオブジェクト
+                    # 問題番号から大問番号を推定（例：大問1-問3 -> 1）
+                    q_num = q.number if hasattr(q, 'number') else '問?'
+                    major_num = 1
+                    if '-' in q_num:
+                        try:
+                            major_num = int(q_num.split('-')[0].replace('大問', ''))
+                        except:
+                            major_num = 1
+                    if current_major != major_num:
+                        current_major = major_num
+                        output_lines.append(f"▼ 大問 {current_major}")
+                        output_lines.append("-"*40)
+                    
+                    # テーマ決定
+                    field_value = q.field.value if hasattr(q, 'field') and hasattr(q.field, 'value') else 'MIXED'
+                    field_name = {
+                        'GEOGRAPHY': '地理',
+                        'HISTORY': '歴史',
+                        'CIVICS': '公民',
+                        'CURRENT_AFFAIRS': '時事問題',
+                        'MIXED': '総合'
+                    }.get(field_value, '総合')
+                    
+                    question_text = q.text if hasattr(q, 'text') else ''
+                    question_num = q.number if hasattr(q, 'number') else '問?'
+                    # トピックがあればそれを使用、なければテーマを決定
+                    if hasattr(q, 'topic') and q.topic:
+                        theme = q.topic
+                    else:
+                        theme = theme_kb.determine_theme(question_text[:200], field_name)
+                    output_lines.append(f"  {question_num}: {theme} [{field_name}]")
+                
+                output_lines.append("")
+                output_lines.append("="*60)
+                output_lines.append("分析終了")
+                output_lines.append("")
+                
+                # ファイル保存
+                if not args.dry_run:
+                    with open(save_path, 'w', encoding='utf-8') as f:
+                        output_text = '\n'.join(output_lines)
+                        f.write(output_text)
+                    print(f"✅ テキストファイル保存完了: {save_path}")
+                
+                # デバッグ出力
+                if args.debug:
+                    output_text = '\n'.join(output_lines)
+                    print(output_text)
+            else:
+                print(f"❌ 分析に失敗しました: {result.get('error_message', 'Unknown error') if result else 'Unknown error'}")
+        
+        except Exception as e:
+            print(f"エラー: {e}")
+            if args.debug:
+                import traceback
+                traceback.print_exc()
+    else:
+        # GUI モード
+        try:
+            import tkinter as tk
+            app = SocialAnalyzerApp()
+            app.mainloop()
+        except ImportError:
+            print("GUI モードは利用できません。コマンドラインモードを使用してください。")
+            print("使用例: python main.py PDFファイルパス --school 学校名 --year 年度")

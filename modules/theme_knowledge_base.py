@@ -6,6 +6,7 @@ social_studies_curriculum.mdとsubject_index.mdの内容を活用してテーマ
 import re
 from typing import Dict, List, Optional, Tuple
 import logging
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +15,131 @@ class ThemeKnowledgeBase:
     """カリキュラムと主題インデックスに基づくテーマ決定"""
     
     def __init__(self):
+        self.subject_index_path = Path(__file__).parent.parent / 'docs' / 'subject_index.md'
         self.initialize_knowledge()
+        self.load_subject_index()
+    
+    def load_subject_index(self):
+        """subject_index.mdから知識を読み込む"""
+        if not self.subject_index_path.exists():
+            logger.warning(f"subject_index.md not found at {self.subject_index_path}")
+            return
+        
+        try:
+            with open(self.subject_index_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 歴史分野の情報を抽出
+            self._parse_history_section(content)
+            # 公民分野の情報を抽出
+            self._parse_civics_section(content)
+            # 地理分野の情報を抽出
+            self._parse_geography_section(content)
+            
+            logger.info("Successfully loaded subject_index.md")
+        except Exception as e:
+            logger.error(f"Error loading subject_index.md: {e}")
+    
+    def _parse_history_section(self, content: str):
+        """歴史分野のセクションをパース"""
+        history_section = re.search(r'### 歴史分野の分類(.*?)(?=###|$)', content, re.DOTALL)
+        if not history_section:
+            return
+        
+        section_text = history_section.group(1)
+        
+        # 各時代の情報を抽出して既存の辞書を更新
+        periods = re.findall(r'- (.*?)(?:\(|（)(.*?)(?:\)|）)\n\s*- 代表語: (.*?)\n\s*- 主題テンプレート例: (.*?)\n', section_text)
+        
+        for period_name, period_desc, keywords, templates in periods:
+            # キーワードをリスト化
+            keyword_list = [k.strip() for k in keywords.split('、')]
+            
+            # 時代名の正規化（例：「原始・古代（旧石器・縄文・弥生）」から各時代を抽出）
+            if '旧石器' in period_desc:
+                self.history_periods['旧石器'] = keyword_list[:4]  # 最初の数個
+            if '縄文' in period_desc:
+                self.history_periods['縄文'] = [k for k in keyword_list if '縄文' in k or '土偶' in k or '貝塚' in k or '三内丸山' in k]
+            if '弥生' in period_desc:
+                self.history_periods['弥生'] = [k for k in keyword_list if '弥生' in k or '稲作' in k or '登呂' in k or '吉野ヶ里' in k]
+            
+            # 単一時代の場合
+            if '・' not in period_name:
+                period_key = period_name.replace('時代', '')
+                if period_key in self.history_periods:
+                    # 既存のキーワードに追加
+                    self.history_periods[period_key].extend(keyword_list)
+                    self.history_periods[period_key] = list(set(self.history_periods[period_key]))  # 重複除去
+    
+    def _parse_civics_section(self, content: str):
+        """公民分野のセクションをパース"""
+        civics_section = re.search(r'### 公民分野の分類(.*?)(?=###|$)', content, re.DOTALL)
+        if not civics_section:
+            return
+        
+        section_text = civics_section.group(1)
+        
+        # 各カテゴリの情報を抽出
+        categories = re.findall(r'- (.*?)\n\s*- (.*?):(.*?)\n', section_text)
+        
+        for category_name, label, content_text in categories:
+            if ':' in content_text:
+                continue  # 次のカテゴリの開始
+            
+            # キーワードをリスト化
+            keywords = [k.strip() for k in content_text.split('、')]
+            
+            # カテゴリ名の正規化
+            if '政治' in category_name:
+                self.civics_themes['政治'].extend(keywords)
+            elif '人権' in category_name:
+                self.civics_themes['人権'].extend(keywords)
+            elif '経済' in category_name:
+                self.civics_themes['経済'].extend(keywords)
+            elif '国際' in category_name:
+                self.civics_themes['国際'].extend(keywords)
+            elif '憲法' in category_name:
+                self.civics_themes['憲法'].extend(keywords)
+            elif '社会' in category_name:
+                self.civics_themes['社会'].extend(keywords)
+    
+    def _parse_geography_section(self, content: str):
+        """地理分野のセクションをパース"""
+        geography_section = re.search(r'### 地理分野の分類(.*?)(?=###|---|\Z)', content, re.DOTALL)
+        if not geography_section:
+            return
+        
+        section_text = geography_section.group(1)
+        
+        # 世界地理の情報を抽出
+        world_geo = re.search(r'- 世界地理(.*?)(?=- 日本地理)', section_text, re.DOTALL)
+        if world_geo:
+            # 各州の情報を抽出してgeography_themesに追加
+            self.geography_themes['世界地理'] = []
+            regions = re.findall(r'(アジア|ヨーロッパ|アフリカ|北アメリカ|南アメリカ|オセアニア)(?:（|[(])(.*?)(?:）|[)])', world_geo.group(1))
+            for region, keywords in regions:
+                keyword_list = [k.strip() for k in keywords.split('、')]
+                self.geography_themes['世界地理'].extend(keyword_list)
+        
+        # 日本地理の情報を抽出
+        japan_geo = re.search(r'- 日本地理(.*?)$', section_text, re.DOTALL)
+        if japan_geo:
+            # 自然、地域、産業などの情報を抽出
+            nature_match = re.search(r'日本の自然.*?:(.*?)／', japan_geo.group(1))
+            if nature_match:
+                nature_keywords = [k.strip() for k in nature_match.group(1).split('、')]
+                self.geography_themes['地形'].extend(nature_keywords[:10])
+                self.geography_themes['気候'].extend(nature_keywords[10:])
+            
+            industry_match = re.search(r'日本の産業.*?:(.*?)(?:、現代課題|$)', japan_geo.group(1))
+            if industry_match:
+                industry_keywords = [k.strip() for k in industry_match.group(1).split('、')]
+                self.geography_themes['農業'].extend([k for k in industry_keywords if '農' in k or '畑' in k or '酪農' in k])
+                self.geography_themes['漁業'].extend([k for k in industry_keywords if '漁' in k or '養殖' in k])
+                self.geography_themes['工業'].extend([k for k in industry_keywords if '工業' in k or 'ハイテク' in k])
     
     def initialize_knowledge(self):
-        """知識ベースの初期化"""
+        """知識ベースの初期化（デフォルト値）"""
         # 歴史時代区分と代表的キーワード
         self.history_periods = {
             '旧石器': ['打製石器', '岩宿', '野尻湖', 'ナウマンゾウ'],
@@ -50,7 +172,8 @@ class ThemeKnowledgeBase:
             '都市': ['過密', '過疎', '政令指定都市', '中核市', '都市問題'],
             '交通': ['新幹線', '高速道路', '空港', '港湾'],
             '資源': ['エネルギー', '鉱産資源', '森林資源', '水資源'],
-            '環境': ['公害', '環境問題', '地球温暖化', 'リサイクル', '再生可能エネルギー']
+            '環境': ['公害', '環境問題', '地球温暖化', 'リサイクル', '再生可能エネルギー'],
+            '世界地理': []  # load_subject_indexで追加
         }
         
         # 公民分野のテーマパターン
@@ -404,6 +527,8 @@ class ThemeKnowledgeBase:
                 return "日本国憲法の原則"
             elif detected_theme == '政治':
                 if '選挙' in text:
+                    if '東京都知事' in text:
+                        return "東京都知事選挙"
                     return "選挙制度"
                 elif '国会' in text:
                     return "国会の仕組み"
@@ -430,6 +555,10 @@ class ThemeKnowledgeBase:
     
     def _determine_general_theme(self, text: str, field: str) -> str:
         """時事・総合分野のテーマ決定"""
+        # 大阪万博関連
+        if '大阪万博' in text or '万博' in text:
+            return "大阪万博2025"
+        
         # SDGs関連
         if 'SDGs' in text or '持続可能' in text:
             goals = re.findall(r'目標(\d+)', text)
@@ -453,6 +582,10 @@ class ThemeKnowledgeBase:
             return "感染症対策"
         elif 'AI' in text or '人工知能' in text:
             return "AI技術"
+        elif 'ウクライナ' in text:
+            return "ウクライナ情勢"
+        elif 'パレスチナ' in text or 'ガザ' in text:
+            return "中東情勢"
         
         return f"{field}総合問題"
     
