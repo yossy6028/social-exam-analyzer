@@ -152,6 +152,9 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             import re as _re
             if _re.search(r'(?:中国|中華).*王朝', text) or _re.search(r'(?:中国)?\s*[秦漢隋唐宋元明清](?:朝|王朝|帝|時代)', text):
                 return SocialField.HISTORY
+            # 1.5) 雨温図/月ラベル+気温/降水量 → 地理（強制）
+            if ('雨温図' in text) or (_re.search(r'1月.*2月.*3月.*4月.*5月.*6月.*7月.*8月.*9月.*10月.*11月.*12月', text) and any(k in text for k in ['気温','降水量','℃','mm'])):
+                return SocialField.GEOGRAPHY
             # 2) 地方×産業/農業/工業/漁業/気候/地形/人口 → 地理
             if (any(r in text for r in ['北海道','東北地方','関東地方','中部地方','近畿地方','中国地方','四国地方','九州地方','沖縄'])
                 and any(k in text for k in ['産業','農業','工業','漁業','気候','地形','人口','地図','グラフ'])):
@@ -812,7 +815,15 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         # 最も具体的なテーマを返す
         if specific_themes:
-            return specific_themes[0]
+            t = specific_themes[0]
+            # 誤った後置語の除去
+            t = t.replace('の業績', '').replace('理由の業績', '')
+            # 典型誤認の補正
+            if '勘合' in t or '勘合' in text:
+                return '勘合貿易'
+            if '核兵器禁止' in t or '核兵器禁止' in text:
+                return '核兵器禁止条約'
+            return t
         
         # 下線部問題の処理（既存のロジック）
         if '下線部' in text:
@@ -854,6 +865,9 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         # 国際関係
         if any(word in text for word in ['国連', 'NATO', 'EU', '条約', '協定']):
+            # 欠落の補完
+            if '核兵器禁止' in text:
+                return '核兵器禁止条約'
             return '国際機関と条約'
         
         # 憲法・法律
@@ -1047,6 +1061,26 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             is_current_affairs=self._is_current_affairs(question_text),
             keywords=self._extract_keywords(question_text),
         )
+
+        # 表層テーマ抽出（素直な表現を最優先）
+        if getattr(self, 'theme_kb', None) is not None:
+            try:
+                surface = self.theme_kb.extract_surface_theme_field(question_text)
+            except Exception:
+                surface = None
+            if surface:
+                s_theme, s_field_label = surface
+                # 分野を優先的に上書き
+                if s_field_label == '地理':
+                    question.field = SocialField.GEOGRAPHY
+                elif s_field_label == '歴史':
+                    question.field = SocialField.HISTORY
+                elif s_field_label == '公民':
+                    question.field = SocialField.CIVICS
+                # テーマを確定
+                question.topic = s_theme
+                # 表層で確定できたら他の推論はスキップ
+                return question
 
         # 主題インデックス（subject_index.md）で分野とテーマを上書き（高優先）
         if getattr(self, 'theme_kb', None) is not None:

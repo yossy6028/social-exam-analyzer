@@ -396,6 +396,12 @@ class ThemeKnowledgeBase:
         - subject_indexのヒット語（設問/選択肢/資料）に重みを置いた分野推定
         - 分野確定後、その分野の決定器で2文節テーマに具体化
         """
+        # 0) 表層パターンから素直にテーマを抽出（ユーザー意図: そのままの表現を優先）
+        surface = self._extract_surface_theme_and_field(text)
+        if surface:
+            theme, field = surface
+            return self._normalize_theme(theme), field, 0.9
+
         field, score = self.estimate_field(text)
         if not field:
             return None, None, 0.0
@@ -416,12 +422,87 @@ class ThemeKnowledgeBase:
         # 厳密判定でテーマが出ればそれを優先
         strict = self._strict_match_subject_index(text, field)
         if strict and strict.get('theme'):
-            theme = strict['theme']
+            theme = self._normalize_theme(strict['theme'])
         else:
-            theme = self.determine_theme(text, field)
+            theme = self._normalize_theme(self.determine_theme(text, field))
         # 単純なスコア正規化（上限0.95）
         confidence = min(0.95, 0.2 + 0.1 * max(1, score))
         return theme, field, confidence
+
+    def _extract_surface_theme_and_field(self, text: str) -> Optional[Tuple[str, str]]:
+        """問題文・選択肢から素直なテーマを表層パターンで抽出し、分野も同時特定。
+        戻り値: (theme, field) または None
+        """
+        import re
+        if not text:
+            return None
+        t = text
+        # 正規化（全角記号を統一）
+        t = t.replace('　', ' ').replace('：', ':').replace('，', '、')
+
+        # 固定テーマの優先表層パターン
+        fixed_patterns: List[Tuple[re.Pattern, Tuple[str, str]]] = [
+            (re.compile(r'地形図'), ("地形図の読み取り", '地理')),
+            (re.compile(r'一次エネルギー.*供給|エネルギー.{0,6}供給'), ("一次エネルギーの供給", '地理')),
+            (re.compile(r'世界.*(地域別)?人口.*面積|人口.*面積.*世界'), ("世界の地域別人口と面積", '地理')),
+            (re.compile(r'循環型社会'), ("循環型社会", '公民')),
+            (re.compile(r'業種別.*工場.*所在地|工場.*所在地.*業種'), ("業種別工場の所在地", '地理')),
+            (re.compile(r'阪神[・\s]?淡路大震災|兵庫県南部地震'), ("阪神淡路大震災", '地理')),
+        ]
+        for pat, (theme_name, field_name) in fixed_patterns:
+            if pat.search(t):
+                return (self._normalize_theme(theme_name), field_name)
+
+        # 汎用テンプレート: Xの特色 / Xの特徴 / 農業の特色
+        m = re.search(r'([一-龥ァ-ヴーA-Za-z0-9・\-]{2,})の特色', t)
+        if m:
+            x = m.group(1).strip()
+            # 分野はキーワードで判定
+            if any(k in x for k in ['農業','畜産','工業','工場','資源','人口','面積','気候','地形']):
+                return (self._normalize_theme(f"{x}の特色"), '地理')
+            return (self._normalize_theme(f"{x}の特色"), '地理')
+        m2 = re.search(r'([一-龥ァ-ヴーA-Za-z0-9・\-]{2,})の特徴', t)
+        if m2:
+            x = m2.group(1).strip()
+            if any(k in x for k in ['時代','奈良','平安','鎌倉','室町','江戸','明治','大正','昭和','平成','令和']):
+                return (self._normalize_theme(f"{x}の特徴"), '歴史')
+            return (self._normalize_theme(f"{x}の特徴"), '地理')
+        # 農業の特色（単独）
+        if '農業の特色' in t:
+            return (self._normalize_theme('農業の特色'), '地理')
+
+        # トピック単語（単独でもテーマ化）
+        single_terms = [
+            ('促成栽培', ('促成栽培', '地理')),
+            ('抑制栽培', ('抑制栽培', '地理')),
+        ]
+        for key, val in single_terms:
+            if key in t:
+                return (self._normalize_theme(val[0]), val[1])
+
+        return None
+
+    # 公開API: 表層抽出（外部からも呼べるように）
+    def extract_surface_theme_field(self, text: str) -> Optional[Tuple[str, str]]:
+        return self._extract_surface_theme_and_field(text)
+
+    def _normalize_theme(self, theme: str) -> str:
+        """テーマの軽微な誤字・OCRゆらぎを補正"""
+        if not theme:
+            return theme
+        replacements = {
+            '日本の一': '日本の位置',
+            '核兵器禁止条の': '核兵器禁止条約',
+        }
+        for a, b in replacements.items():
+            if a in theme:
+                theme = theme.replace(a, b)
+        # 不要な連結・後置の除去
+        for suffix in ['の業績', '理由の業績', '業績']:
+            if theme.endswith(suffix):
+                theme = theme[: -len(suffix)]
+        theme = theme.strip(' ・-:\\/\u3000')
+        return theme
 
     def _strict_match_subject_index(self, text: str, field: Optional[str]) -> Optional[Dict[str, object]]:
         """subject_index.md の語彙と設問・選択肢・資料語を厳密照合してテーマを導出。
@@ -453,7 +534,7 @@ class ThemeKnowledgeBase:
                         geo_hits.extend(local_hit)
                 if geo_score >= 1:
                     return {
-                        'theme': f"{region}の{('特徴' if len(geo_hits)==0 else '特色')}",
+                        'theme': self._normalize_theme(f"{region}の{('特徴' if len(geo_hits)==0 else '特色')}") ,
                         'field': '地理',
                         'score': 1 + min(3, geo_score),
                         'reasons': [region] + geo_hits[:3]
@@ -474,7 +555,7 @@ class ThemeKnowledgeBase:
                     '25': '生存権','26': '教育を受ける権利・義務教育','27': '勤労の権利と義務','28': '労働三権（団結・団体交渉・争議権）',
                 }
                 title = art_map.get(art[0], f"憲法第{art[0]}条")
-                return {'theme': title, 'field': '公民', 'score': 3, 'reasons': [f"第{art[0]}条"]}
+                return {'theme': self._normalize_theme(title), 'field': '公民', 'score': 3, 'reasons': [f"第{art[0]}条"]}
             if civ_score >= 2:
                 # 代表語に応じて具体化
                 if any(k in civ_hits for k in ['選挙','小選挙区','比例代表']):
@@ -493,7 +574,7 @@ class ThemeKnowledgeBase:
                     t = '社会保障制度'
                 else:
                     t = '公民総合問題'
-                return {'theme': t, 'field': '公民', 'score': min(4, civ_score), 'reasons': civ_hits[:4]}
+                return {'theme': self._normalize_theme(t), 'field': '公民', 'score': min(4, civ_score), 'reasons': civ_hits[:4]}
 
             # 歴史: 時代名 or 代表語の複数一致、または中国王朝（厳格文脈）
             his_hits = []
@@ -511,7 +592,7 @@ class ThemeKnowledgeBase:
                     if key in text:
                         aspect = name; break
                 t = f"{best_period}時代の{aspect or '特徴'}"
-                return {'theme': t, 'field': '歴史', 'score': min(4, best_cnt), 'reasons': [best_period] + his_hits}
+                return {'theme': self._normalize_theme(t), 'field': '歴史', 'score': min(4, best_cnt), 'reasons': [best_period] + his_hits}
 
             # 中国王朝（厳格パターンのみ）
             if re.search(r'(?:中国|中華).*王朝', text) or re.search(r'(?:中国)?\s*[秦漢隋唐宋元明清](?:朝|王朝|帝|時代)', text):
@@ -684,7 +765,40 @@ class ThemeKnowledgeBase:
     
     def _determine_geography_theme(self, text: str) -> str:
         """地理分野のテーマ決定（subject_index.mdに基づく具体化）"""
-        # 特定の地域・地形を探す
+        import re as _re
+        # 0) 雨温図の強力検出（ラベルが無い場合でも）
+        month_seq = _re.search(r'1月.*2月.*3月.*4月.*5月.*6月.*7月.*8月.*9月.*10月.*11月.*12月', text)
+        if ('雨温図' in text) or (month_seq and any(k in text for k in ['気温', '降水量', '℃', 'mm'])):
+            return "雨温図の読み取り"
+
+        # 1) 農業・畜産などの具体キーワードを最優先
+        # 1-1) 栽培技術
+        if '促成栽培' in text:
+            return '促成栽培'
+        if '抑制栽培' in text:
+            return '抑制栽培'
+
+        # 1-2) 畜産（動物種を優先的に具体化）
+        livestock_terms = {
+            '肉用若鶏': '肉用若鶏の飼育数',
+            'ブロイラー': '肉用若鶏の飼育数',
+            '豚': '豚の飼育数',
+            '乳牛': '乳牛の飼育数',
+            '肉牛': '肉牛の飼育数',
+            '鶏': '鶏の飼育数',
+            '鶏卵': '鶏卵の生産量',
+        }
+        found = []
+        for k, v in livestock_terms.items():
+            if k in text:
+                found.append(v)
+        if found:
+            # 2つ以上あれば連結（2つまで）
+            if len(found) >= 2:
+                return '・'.join(found[:2])
+            return found[0]
+        
+        # 2) 特定の地域・地形を探す（上の具体語にヒットしなかった場合のみ）
         specific_regions = {
             '関東平野': '関東平野の特徴',
             '濃尾平野': '濃尾平野の農業',
@@ -701,11 +815,10 @@ class ThemeKnowledgeBase:
             '阪神工業地帯': '阪神工業地帯',
             '北九州工業地帯': '北九州工業地帯'
         }
-        
         for region_key, theme_name in specific_regions.items():
             if region_key in text:
                 return theme_name
-        
+
         # 都道府県の特産品・産業
         prefecture_industries = {
             '北海道': ['酪農', '畑作', '水産業', '観光'],
@@ -732,7 +845,7 @@ class ThemeKnowledgeBase:
                         return f"{prefecture}の{industry}"
                 return f"{prefecture}の産業"
         
-        # 農業の具体化
+        # 3) 農業の具体化（品目・技術を優先）
         agricultural_products = {
             '米': '稲作農業',
             'コシヒカリ': 'ブランド米生産',
