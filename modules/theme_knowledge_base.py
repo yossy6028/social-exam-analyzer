@@ -72,16 +72,8 @@ class ThemeKnowledgeBase:
                     self.history_periods[period_key].extend(keyword_list)
                     self.history_periods[period_key] = list(set(self.history_periods[period_key]))  # 重複除去
         
-        # 中国王朝を歴史分野として明示的に追加（重要な修正）
-        chinese_dynasties = ['秦', '漢', '隋', '唐', '宋', '元', '明', '清', '三国', '晋', '五代', '十国']
-        self.history_periods['中国王朝'] = chinese_dynasties
-        
-        # 歴史分野の特徴的キーワードを追加
-        history_specific_keywords = [
-            '王朝', '皇帝', '皇后', '太子', '宦官', '科挙', '郡県制', '封建制',
-            '律令制', '三省六部', '中央集権', '地方分権', '皇室', '貴族'
-        ]
-        self.history_periods['古代中国制度'] = history_specific_keywords
+        # 中国王朝は単漢字による誤検出が多いため、辞書への直接追加は行わない
+        # 必要な検出は _determine_history_theme 内で文脈に基づき厳密に実施する
         
         logger.info(f"歴史分野のキーワード更新: {len(self.history_periods)}カテゴリ")
     
@@ -301,11 +293,26 @@ class ThemeKnowledgeBase:
 
     def analyze(self, text: str) -> Tuple[Optional[str], Optional[str], float]:
         """テキストから (テーマ, 分野, 信頼度) を返す。
-        分野は主題インデックス優先で推定し、その分野の決定器でテーマを生成。
+        - subject_indexのヒット語（設問/選択肢/資料）に重みを置いた分野推定
+        - 分野確定後、その分野の決定器で2文節テーマに具体化
         """
         field, score = self.estimate_field(text)
         if not field:
             return None, None, 0.0
+        # 選択肢語彙も足掛かりに（設問内の「ア〜エ」「①〜⑩」周辺の名詞を拾う）
+        try:
+            import re
+            choices = re.findall(r'[①-⑩ア-エ]\s*([^①-⑩ア-エ]{2,30})', text)
+            if choices:
+                # 代表名詞のみ抽出して末尾に付与（過学習を避けて短く）
+                noun_candidates = []
+                for c in choices[:8]:
+                    ns = re.findall(r'[一-龥ァ-ヴー]{2,}', c)
+                    noun_candidates.extend(ns[:2])
+                if noun_candidates:
+                    text = (text + ' ' + ' '.join(noun_candidates[:10]))[:1500]
+        except Exception:
+            pass
         theme = self.determine_theme(text, field)
         # 単純なスコア正規化（上限0.95）
         confidence = min(0.95, 0.2 + 0.1 * max(1, score))
@@ -393,8 +400,8 @@ class ThemeKnowledgeBase:
             if dynasty == '明' and any(bad in text for bad in ['明治', '文明', '証明', '説明', '照明', '明らか']):
                 continue
             # より正確な王朝検出（接尾辞や文脈語を要求）
-            dynasty_pattern = re.compile(rf'{dynasty}(?:朝|王朝|帝|時代|の|について|における)')
-            if dynasty_pattern.search(text) or ('中国' in text and dynasty in text):
+            dynasty_pattern = re.compile(rf'(?:中国)?\s*{dynasty}(?:朝|王朝|帝|時代)(?:の|について|における)?')
+            if dynasty_pattern.search(text) or (('中国' in text or '中華' in text) and dynasty in text):
                 if ('中国' in text or '王朝' in text or '皇帝' in text or '朝廷' in text):
                     return f"{dynasty}朝の特徴"
                 elif '政治' in text:

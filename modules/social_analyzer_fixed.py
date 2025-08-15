@@ -148,8 +148,9 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
 
         # 早期判定ルール（誤分類の主因を先に潰す）
         try:
-            # 1) 中国の王朝 → 歴史
-            if ('王朝' in text) and ('中国' in text or '朝' in text):
+            # 1) 中国の王朝 → 歴史（厳格化: 王朝/朝/帝/時代 の接尾や「中国」「中華」が必要）
+            import re as _re
+            if _re.search(r'(?:中国|中華).*王朝', text) or _re.search(r'(?:中国)?\s*[秦漢隋唐宋元明清](?:朝|王朝|帝|時代)', text):
                 return SocialField.HISTORY
             # 2) 地方×産業/農業/工業/漁業/気候/地形/人口 → 地理
             if (any(r in text for r in ['北海道','東北地方','関東地方','中部地方','近畿地方','中国地方','四国地方','九州地方','沖縄'])
