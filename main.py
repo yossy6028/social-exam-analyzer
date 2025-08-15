@@ -346,7 +346,32 @@ class SocialExamAnalyzerGUI:
                                 display_num = f"問{m.group(2)}"
                         except Exception:
                             pass
-                        self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}]\n")
+                        # 主要キーワード（最大5件）
+                        keywords = []
+                        try:
+                            # 元のオブジェクトから検索
+                            for q in self.analysis_result.get('questions', []):
+                                if q.number == num:
+                                    keywords = list(getattr(q, 'keywords', []) or [])
+                                    break
+                        except Exception:
+                            keywords = []
+                        # 関連語候補
+                        related = []
+                        try:
+                            related = self.theme_knowledge.suggest_related_terms(theme, field, limit=3)
+                        except Exception:
+                            related = []
+                        if keywords and related:
+                            related = [r for r in related if r not in keywords]
+                        if keywords and related:
+                            self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords[:5])} | 関連語候補: {'、'.join(related)}\n")
+                        elif keywords:
+                            self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords[:5])}\n")
+                        elif related:
+                            self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}] | 関連語候補: {'、'.join(related)}\n")
+                        else:
+                            self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}]\n")
                 else:
                     self.result_text.insert(tk.END, "  （テーマ情報なし）\n")
         else:
@@ -470,8 +495,11 @@ class SocialExamAnalyzerGUI:
                         if not topic:
                             base_text = getattr(q, 'original_text', None) or q.text
                             topic = self._infer_fallback_theme(base_text, q.field.value)
+                        # 重要語は subject_index.md の語のみから抽出
+                        base_text = getattr(q, 'original_text', None) or q.text or ''
+                        keywords = self.theme_knowledge.extract_important_terms(base_text, q.field.value, limit=5)
                         
-                        grouped_themes[major_num].append((q.number, topic if topic else '（テーマ不明）', q.field.value))
+                        grouped_themes[major_num].append((q.number, topic if topic else '（テーマ不明）', q.field.value, keywords[:5]))
                     
                     # 大問ごとに出力
                     def _to_int(s):
@@ -487,7 +515,7 @@ class SocialExamAnalyzerGUI:
                         
                         themes = grouped_themes[major_num]
                         if themes:
-                            for num, theme, field in themes:
+                            for num, theme, field, keywords in themes:
                                 # 問題番号を整形
                                 display_num = num
                                 try:
@@ -498,7 +526,22 @@ class SocialExamAnalyzerGUI:
                                         display_num = f"問{m.group(2)}"
                                 except Exception:
                                     pass
-                                f.write(f"  {display_num}: {theme} [{field}]\n")
+                                # 関連語候補
+                                related = []
+                                try:
+                                    related = self.theme_knowledge.suggest_related_terms(theme, field, limit=3)
+                                except Exception:
+                                    related = []
+                                if keywords and related:
+                                    related = [r for r in related if r not in keywords]
+                                if keywords and related:
+                                    f.write(f"  {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)} | 関連語候補: {'、'.join(related)}\n")
+                                elif keywords:
+                                    f.write(f"  {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)}\n")
+                                elif related:
+                                    f.write(f"  {display_num}: {theme} [{field}] | 関連語候補: {'、'.join(related)}\n")
+                                else:
+                                    f.write(f"  {display_num}: {theme} [{field}]\n")
                         else:
                             f.write("  （テーマ情報なし）\n")
                 else:
@@ -532,12 +575,11 @@ class SocialExamAnalyzerGUI:
             # パターン1: 大問X-問Y / 大問X
             m = re.search(r'大問(\d+)', number_str)
             if m:
+                # 大問番号は出現順で別途正規化するため、
+                # ここでは数値をそのまま返す（異常値はログのみ）
                 major_num = int(m.group(1))
-                # 異常値チェック（中学入試で大問10以上は稀）
                 if major_num > 10:
-                    # 異常な大問番号の場合は1を返す
-                    logger.warning(f"異常な大問番号を検出: {major_num} → 1に補正")
-                    return "1"
+                    logger.warning(f"異常な大問番号を検出: {major_num}")
                 return str(major_num)
             # パターン2: X-問Y / X.Y
             m2 = re.match(r'\s*(\d+)[\-\.]', number_str)
@@ -692,7 +734,19 @@ if __name__ == "__main__":
                         theme = q.topic
                     else:
                         theme = theme_kb.determine_theme(question_text[:200], field_name)
-                    output_lines.append(f"  {question_num}: {theme} [{field_name}]")
+                    # 主要語・関連語候補
+                    keywords = theme_kb.extract_important_terms(question_text or '', field_name, limit=5)
+                    related = theme_kb.suggest_related_terms(theme, field_name, limit=3)
+                    if keywords and related:
+                        related = [r for r in related if r not in keywords]
+                    if keywords and related:
+                        output_lines.append(f"  {question_num}: {theme} [{field_name}] | 主要語: {'、'.join(keywords[:5])} | 関連語候補: {'、'.join(related)}")
+                    elif keywords:
+                        output_lines.append(f"  {question_num}: {theme} [{field_name}] | 主要語: {'、'.join(keywords[:5])}")
+                    elif related:
+                        output_lines.append(f"  {question_num}: {theme} [{field_name}] | 関連語候補: {'、'.join(related)}")
+                    else:
+                        output_lines.append(f"  {question_num}: {theme} [{field_name}]")
                 
                 output_lines.append("")
                 output_lines.append("="*60)

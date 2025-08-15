@@ -18,6 +18,32 @@ class ThemeKnowledgeBase:
         self.subject_index_path = Path(__file__).parent.parent / 'docs' / 'subject_index.md'
         self.initialize_knowledge()
         self.load_subject_index()
+        # subject_index外でも特異性が高い語のホワイトリスト（分野別）
+        self.high_specific_terms = {
+            '地理': set([
+                # 地形図読図・測地
+                '等高線','縮尺','尾根','谷','比高','標高','方位','経度','緯度','海抜','等値線',
+                # 典型地形（subject_index補完）
+                'カルデラ','砂州','砂丘','沖積平野','洪積台地','段丘','準平原',
+                # 農業技法・作付
+                '輪作','二毛作','混作','単作','施設園芸','促成栽培','抑制栽培',
+                # エネルギー・環境詳細
+                '再生可能エネルギー','原子力','火力','水力','地熱','風力','太陽光',
+                '四大公害病','酸性雨','PM2.5',
+                # 工業・産業詳細
+                '四大工業地帯','京葉工業地域','東海工業地域','瀬戸内工業地域','京浜工業地帯','阪神工業地帯','中京工業地帯','北九州工業地帯',
+                '精密機械','自動車工業','鉄鋼業','石油化学'
+            ]),
+            '公民': set([
+                '内閣不信任決議','違憲審査制','弾劾裁判','再可決','国政調査権','議院内閣制',
+                '政令','省令','条約承認','司法権の独立','二院制の優越','常会','臨時会','特別会'
+            ]),
+            '歴史': set([
+                # 近世〜近現代の固有事件（subject_index補完）
+                '島原の乱','生類憐れみの令','下関条約','ポーツマス条約','治安維持法','普通選挙法',
+                '五箇条の御誓文','版籍奉還','廃藩置県','士農工商','禁中並公家諸法度'
+            ])
+        }
     
     def load_subject_index(self):
         """subject_index.mdから知識を読み込む"""
@@ -429,6 +455,133 @@ class ThemeKnowledgeBase:
         confidence = min(0.95, 0.2 + 0.1 * max(1, score))
         return theme, field, confidence
 
+    def extract_important_terms(self, text: str, field: Optional[str] = None, limit: int = 5) -> List[str]:
+        """重要語句を抽出。
+        優先順: subject_index語（逆引き命中）> 高特異語ホワイトリスト > その他除外。
+        - フィールド指定がある場合はその分野の語に限定
+        - 出現順を優先しつつ重複排除、最大limit件
+        """
+        import re
+        if not text:
+            return []
+        tks = re.findall(r'[一-龥ァ-ヴー]{2,}', text)
+        if not tks:
+            return []
+        picked: List[str] = []
+        seen = set()
+        # 1) subject_index命中語を優先
+        for tk in tks:
+            if tk in seen:
+                continue
+            entries = self.term_index.get(tk)
+            if not entries:
+                continue
+            if field and all(f != field for f, _cat in entries):
+                continue
+            picked.append(tk)
+            seen.add(tk)
+            if len(picked) >= max(1, limit):
+                return picked
+        # 2) フィールド別の高特異ホワイトリストから補完
+        allowed_set = None
+        if field:
+            allowed_set = self.high_specific_terms.get(field, set())
+        else:
+            # 全分野の和集合
+            from itertools import chain
+            allowed_set = set(chain.from_iterable(self.high_specific_terms.values()))
+        if allowed_set:
+            for tk in tks:
+                if tk in seen:
+                    continue
+                if tk in allowed_set:
+                    picked.append(tk)
+                    seen.add(tk)
+                    if len(picked) >= max(1, limit):
+                        break
+        return picked
+
+    def suggest_related_terms(self, theme: str, field: Optional[str] = None, limit: int = 3) -> List[str]:
+        """テーマと分野から、subject_index.md に基づく関連語候補を返す（出現有無に関わらず）。
+        - 分野に応じて該当カテゴリの語を返す
+        - 歴史: テーマ内の時代名から該当カテゴリを特定
+        - 地理: テーマ内のキーワード（農業/気候/地形/工業/世界地理など）から選択
+        - 公民: 憲法/政治/経済/国際/社会/人権カテゴリー
+        """
+        theme = (theme or '').strip()
+        res: List[str] = []
+        try:
+            if (field or '').strip() == '歴史':
+                # 時代名を特定
+                for period in self.history_periods.keys():
+                    if period in theme:
+                        res = list(self.history_periods.get(period, []))
+                        break
+                # 時代名が見つからない場合、代表的語を少数提示
+                if not res:
+                    # 歴史の代表語を集約（上位から）
+                    aggregate = []
+                    for k in ['奈良','平安','鎌倉','室町','江戸','明治','大正','昭和戦前','昭和戦後']:
+                        aggregate += self.history_periods.get(k, [])
+                    res = aggregate
+            elif (field or '').strip() == '地理':
+                # テーマからカテゴリ推定（資源/環境/農業/工業/地形図/地形/世界地理の順で特異性を優先）
+                cat = None
+                if '資源' in theme:
+                    cat = '資源'
+                elif '環境' in theme:
+                    cat = '環境'
+                elif '農業' in theme:
+                    cat = '農業'
+                elif '工業' in theme:
+                    cat = '工業'
+                elif '地形図' in theme:
+                    # 地形図の読図用語を優先
+                    return ['等高線','縮尺','尾根'][:max(1, limit)]
+                elif '世界' in theme or '世界地理' in theme:
+                    cat = '世界地理'
+                elif '地形' in theme or '地形図' in theme:
+                    cat = '地形'
+                if not cat:
+                    cat = '地形'
+                raw = list(self.geography_themes.get(cat, []))
+                # 特異性の弱い語を除外（汎用語フィルタ）
+                generic_geo = set(['山地','山脈','平野','地方','人口','都市','気候','地形','世界','地域'])
+                # 地形カテゴリはより特異な地形語を優先
+                if cat == '地形':
+                    priority = ['扇状地','三角州','リアス海岸','盆地','台地']
+                    ordered = [t for t in priority if t in raw]
+                    # 残りから汎用語を除いて追加
+                    ordered += [t for t in raw if t not in ordered and t not in generic_geo]
+                    raw = ordered
+                else:
+                    raw = [t for t in raw if t not in generic_geo]
+                res = raw
+            elif (field or '').strip() == '公民':
+                # 公民カテゴリー推定
+                mapping = [
+                    ('憲法', '憲法'), ('人権', '人権'), ('政治', '政治'), ('経済', '経済'), ('国際', '国際'), ('社会', '社会')
+                ]
+                cat = None
+                for key, v in mapping:
+                    if key in theme:
+                        cat = v; break
+                if not cat:
+                    cat = '政治'
+                res = list(self.civics_themes.get(cat, []))
+        except Exception:
+            res = []
+        # 重複を除き上位limit件
+        seen = set()
+        out = []
+        for t in res:
+            if t and (t not in seen):
+                out.append(t)
+                seen.add(t)
+            if len(out) >= max(1, limit):
+                break
+        return out
+
     def _extract_surface_theme_and_field(self, text: str) -> Optional[Tuple[str, str]]:
         """問題文・選択肢から素直なテーマを表層パターンで抽出し、分野も同時特定。
         戻り値: (theme, field) または None
@@ -448,6 +601,10 @@ class ThemeKnowledgeBase:
             (re.compile(r'循環型社会'), ("循環型社会", '公民')),
             (re.compile(r'業種別.*工場.*所在地|工場.*所在地.*業種'), ("業種別工場の所在地", '地理')),
             (re.compile(r'阪神[・\s]?淡路大震災|兵庫県南部地震'), ("阪神淡路大震災", '地理')),
+            # 雨温図（ラベル欠落でも月並び+単位語で検出）
+            (re.compile(r'雨温図|1月.*2月.*3月.*4月.*5月.*6月.*7月.*8月.*9月.*10月.*11月.*12月.*?(気温|降水量|℃|mm|平均気温|年較差)'), ("雨温図の読み取り", '地理')),
+            # 畜産（単独語でテーマ化）
+            (re.compile(r'酪農|乳牛|肉牛|養豚|養鶏|ブロイラー|鶏卵|畜産'), ("畜産業", '地理')),
         ]
         for pat, (theme_name, field_name) in fixed_patterns:
             if pat.search(t):
@@ -475,6 +632,10 @@ class ThemeKnowledgeBase:
         single_terms = [
             ('促成栽培', ('促成栽培', '地理')),
             ('抑制栽培', ('抑制栽培', '地理')),
+            ('施設園芸', ('施設園芸農業', '地理')),
+            ('ビニールハウス', ('施設園芸農業', '地理')),
+            ('ハウス栽培', ('施設園芸農業', '地理')),
+            ('温室', ('施設園芸農業', '地理')),
         ]
         for key, val in single_terms:
             if key in t:
@@ -605,6 +766,112 @@ class ThemeKnowledgeBase:
             return None
         except Exception:
             return None
+
+    # 汎用スコアリング式テーマ決定（多角的根拠を統合）
+    def decide_theme_with_scoring(self, text: str) -> Dict[str, object]:
+        """
+        多源の根拠（表層/逆引き/単位・資料特徴/テンプレ）をスコアリングし、最も妥当なテーマを決定。
+        戻り値: { theme, field, confidence, reasons: List[str] }
+        """
+        import re
+        candidates: List[Dict[str, object]] = []
+        reasons_all: List[str] = []
+
+        def add(theme: str, field: str, score: int, reasons: List[str], tag: str):
+            candidates.append({
+                'theme': self._normalize_theme(theme),
+                'field': field,
+                'score': score,
+                'reasons': reasons,
+                'tag': tag,
+            })
+
+        t = text or ''
+        # OCRゆらぎ対策: 空白/改行を除去した比較用も用意
+        import re as _re
+        t_comp = _re.sub(r'\s+', '', t)
+        # 1) 表層（固定表現・テンプレ）
+        surface = self._extract_surface_theme_and_field(t)
+        if surface:
+            s_theme, s_field = surface
+            add(s_theme, s_field, 80, ['surface'], 'surface')
+
+        # 2) 強証拠アンカー（本文優先）
+        # 2-1 雨温図
+        roman_months = r'Ⅰ|Ⅱ|Ⅲ|Ⅳ|Ⅴ|Ⅵ|Ⅶ|Ⅷ|Ⅸ|Ⅹ|Ⅺ|Ⅻ'
+        if ('雨温図' in t) or (re.search(r'1月.*2月.*3月.*4月.*5月.*6月.*7月.*8月.*9月.*10月.*11月.*12月', t) and any(k in t for k in ['気温','降水量','℃','mm','平均気温','年較差','最高気温','最低気温'])) or (re.search(rf'({roman_months}).*({roman_months}).*({roman_months}).*({roman_months})', t) and any(k in t for k in ['気温','降水量','℃','mm'])):
+            add('雨温図の読み取り', '地理', 90, ['雨温図'], 'anchor')
+        # 2-2 栽培技法（促成 > 抑制 を優先）
+        if '促成栽培' in t or re.search(r'促\s*成\s*栽\s*培', t):
+            add('促成栽培', '地理', 85, ['促成栽培'], 'anchor')
+        if '抑制栽培' in t or re.search(r'抑\s*制\s*栽\s*培', t):
+            add('抑制栽培', '地理', 85, ['抑制栽培'], 'anchor')
+        # 施設園芸（ハウス/温室含む）
+        if re.search(r'施設園芸|ビニールハウス|ハウス栽培|温室', t):
+            add('施設園芸農業', '地理', 84, ['施設園芸/ハウス/温室'], 'anchor')
+        # 2-3 畜産
+        livestock_hits = [kw for kw in ['豚','肉用若鶏','乳牛','肉牛','鶏','鶏卵','ブロイラー','酪農'] if kw in t]
+        if livestock_hits:
+            # 具体語があれば飼育数系に寄せる
+            theme = '・'.join([('肉用若鶏の飼育数' if h in ['肉用若鶏','ブロイラー'] else ('鶏卵の生産量' if h=='鶏卵' else f'{h}の飼育数')) for h in livestock_hits[:2]])
+            add(theme, '地理', 82, livestock_hits, 'anchor')
+        # 2-4 地形図
+        if '地形図' in t or any(k in t for k in ['等高線','尾根','谷','縮尺']) or re.search(r'\b(50|100|150|200)\b', t):
+            add('地形図の読み取り', '地理', 78, ['地形図/等高線/尾根/谷/縮尺'], 'anchor')
+        # 2-5 一次エネルギー
+        if re.search(r'一次エネルギー|エネルギー.{0,6}供給|構成比', t):
+            add('一次エネルギーの供給', '地理', 76, ['一次エネルギー/供給/構成比'], 'anchor')
+        # 2-6 工場所在地
+        if re.search(r'業種別.*工場.*所在地|工場.*所在地.*業種|製造業|出荷額|立地', t):
+            add('業種別工場の所在地', '地理', 74, ['工場所在地'], 'anchor')
+
+        # 3) subject_index 逆引き
+        strict = self._strict_match_subject_index(t, None)
+        if strict and strict.get('theme'):
+            # 基本 70 点 + 逆引きのカテゴリヒット数に比例
+            base = 70
+            add(strict['theme'], strict.get('field',''), base, ['reverse-index'], 'index')
+
+        # 4) テンプレ（Xの特色/特徴）
+        m = re.search(r'([一-龥ァ-ヴーA-Za-z0-9・\-]{2,})の特色', t)
+        if m:
+            x = m.group(1).strip()
+            add(f'{x}の特色', '地理', 60, [f'{x}の特色'], 'template')
+        m2 = re.search(r'([一-龥ァ-ヴーA-Za-z0-9・\-]{2,})の特徴', t)
+        if m2:
+            x = m2.group(1).strip()
+            # 時代語なら歴史側へ
+            if any(k in x for k in ['時代','奈良','平安','鎌倉','室町','江戸','明治','大正','昭和','平成','令和']):
+                add(f'{x}の特徴', '歴史', 62, [f'{x}の特徴'], 'template')
+            else:
+                add(f'{x}の特徴', '地理', 58, [f'{x}の特徴'], 'template')
+
+        # 5) 公民・条文
+        art = re.findall(r'第(\d+)条', t)
+        if art:
+            add(f'憲法第{art[0]}条', '公民', 80, [f'第{art[0]}条'], 'anchor')
+
+        if not candidates:
+            return {'theme': None, 'field': None, 'confidence': 0.0, 'reasons': []}
+
+        # 分野整合性の微調整（地理の強証拠は地理優先）
+        for c in candidates:
+            th, fld = c['theme'], c['field']
+            if any(k in str(th) for k in ['雨温図','地形図','栽培','飼育数','エネルギー','工場','特色']) and fld != '地理':
+                c['field'] = '地理'
+
+        # 最終選定（score降順、同点は surface/anchor > index > template）
+        rank_tag = {'anchor': 0, 'surface': 0, 'index': 1, 'template': 2}
+        candidates.sort(key=lambda c: (-int(c['score']), rank_tag.get(str(c.get('tag')), 3)))
+        top = candidates[0]
+        conf = min(0.98, 0.5 + int(top['score'])/100.0)
+        return {
+            'theme': self._normalize_theme(str(top['theme'])),
+            'field': str(top['field']) if top['field'] else None,
+            'confidence': conf,
+            'reasons': top.get('reasons', []),
+        }
+        
     
     def _determine_history_theme(self, text: str) -> str:
         """歴史分野のテーマ決定（subject_index.mdに基づく具体化）"""

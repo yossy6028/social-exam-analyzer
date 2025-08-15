@@ -14,14 +14,16 @@ class ImprovedQuestionExtractor:
     """改善された問題抽出器"""
     
     def __init__(self):
-        # 大問パターン
+        # 大問パターン（優先順位順）
         self.major_patterns = [
-            re.compile(r'^(\d+)[\.。]\s*(.+?)$', re.MULTILINE),  # 1. 次の〜
-            re.compile(r'^[一二三四五六七八九十]+[\.。]\s*(.+?)$', re.MULTILINE),  # 一. 次の〜
-            re.compile(r'^第(\d+)問\s*(.+?)$', re.MULTILINE),  # 第1問
-            re.compile(r'^大問(\d+)\s*(.+?)$', re.MULTILINE),  # 大問1
-            re.compile(r'^\[(\d+)\]\s*(.+?)$', re.MULTILINE),  # [1] 次の〜
-            re.compile(r'^【(\d+)】\s*(.+?)$', re.MULTILINE),  # 【1】次の〜
+            # 明示的な大問表記
+            re.compile(r'^大問\s*(\d+)', re.MULTILINE),  # 大問1
+            re.compile(r'^第\s*(\d+)\s*問', re.MULTILINE),  # 第1問
+            re.compile(r'^【\s*(\d+)\s*】', re.MULTILINE),  # 【1】
+            re.compile(r'^\[\s*(\d+)\s*\]', re.MULTILINE),  # [1]
+            # 数字のみの大問パターン（行頭の数字）
+            re.compile(r'^(\d+)\s*[\.。]\s*(?:次の|下記の|以下の)', re.MULTILINE),  # 1. 次の〜
+            re.compile(r'^[一二三四五六七八九十]+[\.。]\s*(?:次の|下記の|以下の)', re.MULTILINE),  # 一. 次の〜
         ]
         
         # 小問パターン（優先順位順）
@@ -93,23 +95,50 @@ class ImprovedQuestionExtractor:
         return questions
     
     def _find_major_sections(self, text: str) -> List[Tuple[str, str]]:
-        """大問セクションを見つける"""
+        """大問セクションを見つける（改良版）"""
         major_sections = []
         
+        # まず明示的な大問マーカーを探す
         for pattern in self.major_patterns:
             matches = list(pattern.finditer(text))
             if matches:
                 logger.debug(f"大問パターンマッチ: {len(matches)}件")
                 
+                # マッチ数が異常に多い場合（10以上）は誤検出の可能性
+                if len(matches) > 10:
+                    logger.warning(f"大問マッチ数が異常: {len(matches)}件 → スキップ")
+                    continue
+                
                 for i, match in enumerate(matches):
                     major_num = match.group(1) if match.lastindex >= 1 else str(i + 1)
+                    
+                    # 異常な大問番号をチェック
+                    try:
+                        if major_num.isdigit() and int(major_num) > 10:
+                            logger.warning(f"異常な大問番号: {major_num} → スキップ")
+                            continue
+                    except:
+                        pass
+                    
                     start = match.start()
                     end = matches[i + 1].start() if i < len(matches) - 1 else len(text)
                     
                     section_text = text[start:end]
+                    
+                    # セクションが短すぎる場合はスキップ
+                    if len(section_text.strip()) < 50:
+                        continue
+                        
                     major_sections.append((major_num, section_text))
                 
-                break  # 最初にマッチしたパターンを使用
+                # 有効な大問が見つかった場合のみbreak
+                if major_sections:
+                    break
+        
+        # 大問が見つからない、または少なすぎる場合の補正
+        if not major_sections or len(major_sections) > 8:
+            logger.info("大問構造が不明確なため、問題番号リセットから推定します")
+            return []  # 空を返して、後続の処理で問題番号リセットから推定
         
         return major_sections
     
@@ -117,12 +146,17 @@ class ImprovedQuestionExtractor:
         """小問を抽出（大問の説明文も含める）"""
         minor_questions = []
         
-        # 大問の説明文を抽出（最初の100文字程度）
+        # 大問の説明文（本文）を抽出し、選択肢・資料と分離
         context = ""
+        # 問1以前の本文（最大300文字）
         first_question_pos = text.find("問")
         if first_question_pos > 0:
-            # 問1の前の文章を文脈として保存
-            context = text[:min(first_question_pos, 200)].strip()
+            pre = text[:min(first_question_pos, 300)]
+            # 選択肢先頭（ア./イ./①…）が混入していたらそこまでを本文とみなす
+            m = re.search(r'(\n|^)[\s　]*([ア-ン]|[①-⑩])[\．\.\s　]', pre)
+            if m:
+                pre = pre[:m.start()]
+            context = pre.strip()
             if context:
                 context = context + "\n"
         
@@ -130,13 +164,19 @@ class ImprovedQuestionExtractor:
             matches = pattern.findall(text)
             if matches:
                 for num, q_text in matches:
-                    # 問1の場合は文脈を含める
-                    if num in ['1', '１']:
-                        q_text = context + q_text
+                    # 本文・選択肢・資料のスコープ分離
+                    main_part = q_text
+                    # 選択肢以降を切り落とし、本文の地の文を強調
+                    m2 = re.search(r'(\n|^)[\s　]*([ア-ン]|[①-⑩])[\．\.\s　]', main_part)
+                    if m2:
+                        main_part = main_part[:m2.start()]
+                    # 問1の場合は大問本文も前置
+                    if num in ['1', '１'] and context:
+                        main_part = context + main_part
                     
-                    q_text = self._clean_question_text(q_text)
-                    if self._is_valid_question(q_text):
-                        minor_questions.append((num, q_text))
+                    main_part = self._clean_question_text(main_part)
+                    if self._is_valid_question(main_part):
+                        minor_questions.append((num, main_part))
                 
                 if minor_questions:
                     break  # 最初にマッチしたパターンを使用
@@ -151,7 +191,8 @@ class ImprovedQuestionExtractor:
         result = []
         current_major = 1
         previous_num = 0
-        max_major = 10  # 大問の最大数を制限（異常な大問番号を防ぐ）
+        max_major = 5  # 中学入試の社会は通常3-5大問
+        question_count_in_major = 0
         
         for num_str, q_text in minor_questions:
             try:
@@ -161,29 +202,55 @@ class ImprovedQuestionExtractor:
                 logger.warning(f"問題番号の変換に失敗: {num_str}")
                 continue
             
-            # リセット検出ロジックを改善
-            # 問1に戻った場合のみリセットとして扱う（より厳密に）
-            if num == 1 and previous_num >= 3:  # 前の問題が3以上の場合のみリセット
-                if current_major < max_major:  # 大問数の上限チェック
-                    current_major += 1
-                    logger.debug(f"問題番号リセット検出: 問{previous_num}→問1, 大問{current_major}へ")
-                else:
-                    logger.warning(f"大問数が上限({max_major})に達しました。リセットを無視します。")
-            
-            # 問題番号が大きく逆行した場合（5→1など）もリセットとして扱う
-            elif previous_num > 0 and num < previous_num and (previous_num - num) >= 4:
+            # より厳密なリセット検出
+            # 条件1: 問1に戻った場合（前の問題が3以上）
+            # 条件2: 現在の大問内で既に5問以上あり、問1に戻った
+            if num == 1 and (previous_num >= 3 or question_count_in_major >= 5):
                 if current_major < max_major:
                     current_major += 1
+                    question_count_in_major = 0
+                    logger.debug(f"問題番号リセット検出: 問{previous_num}→問1, 大問{current_major}へ")
+            
+            # 通常の問題番号の連続性チェック
+            # 問題番号が10以上離れて小さくなった場合はリセットの可能性
+            elif previous_num > 0 and num < previous_num and (previous_num - num) >= 10:
+                if current_major < max_major:
+                    current_major += 1
+                    question_count_in_major = 0
                     logger.debug(f"大幅な番号逆行検出: 問{previous_num}→問{num}, 大問{current_major}へ")
             
             result.append((f"大問{current_major}-問{num}", q_text))
             previous_num = num
+            question_count_in_major += 1
         
         # 結果の妥当性チェック
         major_counts = {}
         for q_id, _ in result:
             major_part = q_id.split('-')[0]
             major_counts[major_part] = major_counts.get(major_part, 0) + 1
+        
+        # 異常な大問数の検出と修正
+        if len(major_counts) > max_major:
+            logger.warning(f"異常な大問数を検出: {len(major_counts)}個 → 再割り当て")
+            # 問題を均等に再配分
+            total_questions = len(result)
+            questions_per_major = max(5, total_questions // 4)  # 1大問あたり最低5問
+            
+            corrected_result = []
+            for idx, (old_id, q_text) in enumerate(result):
+                # 新しい大問番号を計算
+                new_major = min((idx // questions_per_major) + 1, 4)
+                # 問題番号を抽出
+                q_num = old_id.split('問')[-1] if '問' in old_id else str(idx + 1)
+                corrected_result.append((f"大問{new_major}-問{q_num}", q_text))
+            
+            result = corrected_result
+            
+            # 修正後の大問構造を再計算
+            major_counts = {}
+            for q_id, _ in result:
+                major_part = q_id.split('-')[0]
+                major_counts[major_part] = major_counts.get(major_part, 0) + 1
         
         logger.info(f"検出された大問構造: {dict(major_counts)}")
         

@@ -23,6 +23,7 @@ except ImportError:
         from modules.social_analyzer import SocialAnalyzer
 from modules.text_formatter import TextFormatter
 from modules.ocr_handler import OCRHandler
+from modules.theme_knowledge_base import ThemeKnowledgeBase
 
 # ロギング設定
 logging.basicConfig(
@@ -43,6 +44,7 @@ class SocialExamAnalyzerCLI:
         self.analyzer = SocialAnalyzer()
         self.formatter = TextFormatter()
         self.ocr_handler = OCRHandler()
+        self.theme_knowledge = ThemeKnowledgeBase()
         
     def print_header(self):
         """ヘッダー表示"""
@@ -182,45 +184,78 @@ class SocialExamAnalyzerCLI:
         # テーマ一覧（大問ごとに区切って表示）
         print("\n【出題テーマ一覧】")
         questions = analysis_result.get('questions', [])
-        
+
         if questions:
-            # 大問ごとにグループ化
+            # 大問番号を出現順で正規化（異常値の補正を含む）
+            raw_groups = []
+            for q in questions:
+                raw_major = self._extract_major_number(q.number)
+                raw_groups.append(raw_major)
+            normalized_map = {}
+            order = []
+            for m in raw_groups:
+                if m not in normalized_map:
+                    order.append(m)
+                    normalized_map[m] = str(len(order))
+
             grouped_themes = {}
             for q in questions:
-                # 問題番号から大問番号を推定
-                if '問' in q.number:
-                    # "問1", "問2" のような形式から大問番号を推定
-                    q_num = q.number.replace('問', '').strip()
-                    if '-' in q_num or '.' in q_num:
-                        # "1-1", "1.1" のような形式
-                        major_num = q_num.split('-')[0].split('.')[0]
-                    else:
-                        # 単純な番号の場合、10問ごとに大問として区切る
-                        try:
-                            num_val = int(q_num)
-                            major_num = str((num_val - 1) // 10 + 1)
-                        except:
-                            major_num = '1'
-                else:
-                    major_num = '1'
-                
+                major_num_raw = self._extract_major_number(q.number)
+                major_num = normalized_map.get(major_num_raw, major_num_raw)
                 if major_num not in grouped_themes:
                     grouped_themes[major_num] = []
-                
-                if q.topic:
-                    grouped_themes[major_num].append((q.number, q.topic, q.field.value))
-            
-            # 大問ごとに表示
-            for major_num in sorted(grouped_themes.keys(), key=lambda x: int(x) if x.isdigit() else 0):
+
+                # テーマがない場合でもフォールバック推定して必ず掲載
+                topic = q.topic
+                if not topic:
+                    base_text = getattr(q, 'original_text', None) or q.text
+                    topic = self._infer_fallback_theme(base_text, q.field.value)
+                # 重要語は subject_index.md の語のみから抽出
+                base_text = getattr(q, 'original_text', None) or q.text or ''
+                keywords = self.theme_knowledge.extract_important_terms(base_text, q.field.value, limit=5)
+                grouped_themes[major_num].append((q.number, topic if topic else '（テーマ不明）', q.field.value, keywords[:5]))
+
+            # 大問ごとに表示（数値としてソート）
+            def _to_int(s):
+                try:
+                    return int(s)
+                except:
+                    return 0
+
+            for major_num in sorted(grouped_themes.keys(), key=_to_int):
                 if len(grouped_themes) > 1:
                     print(f"\n  ▼ 大問 {major_num}")
                     print("  " + "-" * 40)
-                
+
                 themes = grouped_themes[major_num]
                 if themes:
-                    for num, theme, field in themes:
-                        # 分野も併記してより分かりやすく
-                        print(f"    {num}: {theme} [{field}]")
+                    for num, theme, field, keywords in themes:
+                        # 問題番号の表示を整形（大問X-問Y -> 問Y）
+                        display_num = num
+                        try:
+                            import re
+                            m = re.search(r'大問(\d+)[\-－―]?問?\s*(.+)', num)
+                            if m:
+                                display_num = f"問{m.group(2)}"
+                        except Exception:
+                            pass
+                        # 関連語候補（subject_index由来、出現有無に関わらず提示）
+                        related = []
+                        try:
+                            related = self.theme_knowledge.suggest_related_terms(theme, field, limit=3)
+                        except Exception:
+                            related = []
+                        # 既存の主要語と重複は省く
+                        if keywords and related:
+                            related = [r for r in related if r not in keywords]
+                        if keywords and related:
+                            print(f"    {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)} | 関連語候補: {'、'.join(related)}")
+                        elif keywords:
+                            print(f"    {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)}")
+                        elif related:
+                            print(f"    {display_num}: {theme} [{field}] | 関連語候補: {'、'.join(related)}")
+                        else:
+                            print(f"    {display_num}: {theme} [{field}]")
                 else:
                     print("    （テーマ情報なし）")
         else:
@@ -301,6 +336,37 @@ class SocialExamAnalyzerCLI:
                 break
         
         print("\nご利用ありがとうございました。")
+
+    def _extract_major_number(self, number_str: str) -> str:
+        """設問番号文字列から大問番号を堅牢に抽出（GUIと同一ロジック）"""
+        try:
+            import re
+            m = re.search(r'大問(\d+)', number_str)
+            if m:
+                # 出現順で正規化するため、ここでは値を保持
+                major_num = int(m.group(1))
+                if major_num > 10:
+                    logger.warning(f"異常な大問番号を検出: {major_num}")
+                return str(major_num)
+            m2 = re.match(r'\s*(\d+)[\-\.]', number_str)
+            if m2:
+                return m2.group(1)
+            if '問' in number_str:
+                y = number_str.split('問')[-1]
+                y = y.split('-')[0].split('.')[0].strip()
+                num_val = int(y)
+                return str((num_val - 1) // 10 + 1)
+        except:
+            pass
+        return '1'
+
+    def _infer_fallback_theme(self, text: str, field_label: str) -> str:
+        """テーマ未検出時の推定（知識ベースで補完）"""
+        try:
+            return self.theme_knowledge.determine_theme(text, field_label)
+        except Exception as e:
+            logger.warning(f"テーマ推定エラー(CLI): {e}")
+            return f"{field_label}問題"
 
 
 def main():
