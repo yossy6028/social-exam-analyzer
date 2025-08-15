@@ -1021,11 +1021,7 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             questions = _Base._fix_duplicate_question_numbers(self, questions)
         except Exception:
             pass
-        # 大問見出しが曖昧な場合の再配分（普遍的ヘューリスティック）
-        try:
-            questions = self._rebalance_major_blocks(questions, desired_first_block=7)
-        except Exception:
-            pass
+        # 再配分は無効化（検出順を尊重して先頭大問の小問数を確保）
         
         # 問題が抽出できない場合のデバッグ情報
         if not questions:
@@ -1057,6 +1053,11 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
                 pass
             # 元のテキストも保持
             analyzed_question.original_text = main_text
+            # 選択肢を含む元テキストも保持（テーマ決定時に特異語を拾えるように）
+            try:
+                analyzed_question.full_text = q_text
+            except Exception:
+                pass
             # ログ: 各設問の主題・分野を可視化
             try:
                 logger.info(

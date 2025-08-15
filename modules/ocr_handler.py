@@ -48,23 +48,55 @@ class OCRHandler:
             text = self._extract_with_google_vision(pdf_path)
             if text:
                 logger.info("Google Cloud Vision APIでテキスト抽出成功")
-                return text
+                return self._normalize_ocr_text(text)
         
         # 2. pdfplumberを試行
         text = self._extract_with_pdfplumber(pdf_path)
         if text:
             logger.info("pdfplumberでテキスト抽出成功")
-            return text
+            return self._normalize_ocr_text(text)
         
         # 3. pdftotextコマンドを試行
         text = self._extract_with_pdftotext(pdf_path)
         if text:
             logger.info("pdftotextでテキスト抽出成功")
-            return text
+            return self._normalize_ocr_text(text)
         
         # 4. すべて失敗した場合はダミーテキストを返す
         logger.warning("PDF処理に失敗しました。ダミーテキストを使用します")
         return self._get_dummy_text()
+
+    def _normalize_ocr_text(self, text: str) -> str:
+        """OCR後テキストの正規化（誤分割・全角記号・丸数字などを補正）"""
+        if not text:
+            return text
+        t = text
+        # 全角空白→半角
+        t = t.replace('\u3000', ' ')
+        # 丸数字→半角
+        circ_pairs = [
+            ('①','1'),('②','2'),('③','3'),('④','4'),('⑤','5'),
+            ('⑥','6'),('⑦','7'),('⑧','8'),('⑨','9'),('⑩','10')
+        ]
+        for a,b in circ_pairs:
+            t = t.replace(a,b)
+        # 全角→半角の一般的な数字
+        t = t.translate(str.maketrans('０１２３４５６７８９', '0123456789'))
+        # チルダ統一
+        t = t.replace('～', '〜')
+        # 日本語の連続間の空白を除去（促 成 栽 培 → 促成栽培）
+        t = re.sub(r'(?<=[一-龥ぁ-んァ-ヴー])\s+(?=[一-龥ぁ-んァ-ヴー])', '', t)
+        # 日本語+語尾記号間の不要空白削除
+        t = re.sub(r'(?<=[一-龥ぁ-んァ-ヴー])\s+(?=[）\)])', '', t)
+        # 記号と日本語の連結部の空白除去
+        t = re.sub(r'(?<=\()\s+(?=[一-龥ぁ-んァ-ヴー])', '', t)
+        # 日本語間に挟まる改行を削除（語の分断対策）
+        t = re.sub(r'(?<=[一-龥ぁ-んァ-ヴー])\n+(?=[一-龥ぁ-んァ-ヴー])', '', t)
+        # 連続改行の整理
+        t = re.sub(r'\n{3,}', '\n\n', t)
+        # 行内の多重空白を整理
+        t = re.sub(r'[ \t]{2,}', ' ', t)
+        return t
     
     def _extract_with_google_vision(self, pdf_path: str) -> Optional[str]:
         """Google Cloud Vision APIでテキスト抽出"""

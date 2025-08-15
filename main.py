@@ -693,41 +693,54 @@ if __name__ == "__main__":
                 output_lines.append("【出題テーマ一覧】")
                 output_lines.append("")
                 
-                # 大問ごとのテーマ
-                current_major = None
-                for q in result.get('questions', []):
-                    # qはSocialQuestionオブジェクト
-                    # 問題番号から大問番号を推定（例：大問1-問3 -> 1）
-                    q_num = q.number if hasattr(q, 'number') else '問?'
-                    major_num = 1
-                    if '-' in q_num:
-                        try:
-                            major_num = int(q_num.split('-')[0].replace('大問', ''))
-                        except:
-                            major_num = 1
-                    if current_major != major_num:
-                        current_major = major_num
-                        output_lines.append(f"▼ 大問 {current_major}")
-                        output_lines.append("-"*40)
-                    
-                    # テーマ決定
-                    field_value = q.field.value if hasattr(q, 'field') and hasattr(q.field, 'value') else '総合'
-                    # field_valueは既に日本語なのでそのまま使用
-                    field_name = field_value
-                    
-                    question_text = q.text if hasattr(q, 'text') else ''
-                    question_num = q.number if hasattr(q, 'number') else '問?'
-                    # トピックがあればそれを使用、なければテーマを決定
-                    if hasattr(q, 'topic') and q.topic:
-                        theme = q.topic
+                # 大問ごとのテーマ（バケット化・正規化）
+                questions_list = list(result.get('questions', []))
+                import re as _re
+                # 1) リセット検出に基づく堅牢なバケット化（問1→問2→…が途切れるまでを1バケット）
+                buckets = []
+                current_bucket = []
+                prev_minor = 0
+                for q in questions_list:
+                    qn = getattr(q, 'number', '') or ''
+                    m = _re.search(r'問\s*(\d+)', qn)
+                    try:
+                        minor = int(m.group(1)) if m else None
+                    except Exception:
+                        minor = None
+                    if minor == 1 and prev_minor >= 2:
+                        if current_bucket:
+                            buckets.append(current_bucket)
+                        current_bucket = [q]
                     else:
-                        theme = theme_kb.determine_theme(question_text[:200], field_name)
-                    # 主要語のみ
-                    keywords = theme_kb.extract_important_terms(question_text or '', field_name, limit=5)
-                    if keywords:
-                        output_lines.append(f"  {question_num}: {theme} [{field_name}] | 主要語: {'、'.join(keywords[:5])}")
-                    else:
-                        output_lines.append(f"  {question_num}: {theme} [{field_name}]")
+                        current_bucket.append(q)
+                    prev_minor = minor if minor is not None else prev_minor
+                if current_bucket:
+                    buckets.append(current_bucket)
+
+                # 2) 出力用に {major: [qs]} へ変換
+                grouped = {str(i+1): bucket for i, bucket in enumerate(buckets)}
+                # 4) 出力（major数値順）
+                def _to_int(s):
+                    try:
+                        return int(s)
+                    except:
+                        return 0
+                for major in sorted(grouped.keys(), key=_to_int):
+                    output_lines.append(f"▼ 大問 {major}")
+                    output_lines.append("-"*40)
+                    for q in grouped[major]:
+                        field_name = (getattr(getattr(q, 'field', None), 'value', None) or '総合')
+                        # 選択肢を含む完全な設問テキストを優先（特異語も拾う）
+                        question_text = getattr(q, 'full_text', None) or getattr(q, 'text', '') or ''
+                        question_num = getattr(q, 'number', '') or '問?'
+                        # テーマ決定（特異語優先）: q.topicに依存せず全文から再決定
+                        theme = theme_kb.determine_theme(question_text[:500], field_name)
+                        # 主要語のみ
+                        keywords = theme_kb.extract_important_terms(question_text or '', field_name, limit=5)
+                        if keywords:
+                            output_lines.append(f"  {question_num}: {theme} [{field_name}] | 主要語: {'、'.join(keywords[:5])}")
+                        else:
+                            output_lines.append(f"  {question_num}: {theme} [{field_name}]")
                 
                 output_lines.append("")
                 output_lines.append("="*60)

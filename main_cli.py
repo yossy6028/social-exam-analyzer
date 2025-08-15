@@ -186,51 +186,42 @@ class SocialExamAnalyzerCLI:
         questions = analysis_result.get('questions', [])
 
         if questions:
-            # 大問番号を出現順で正規化（異常値の補正を含む）
-            raw_groups = []
+            # リセット検出に基づく堅牢なバケット化
+            import re as _re
+            buckets = []
+            current_bucket = []
+            prev_minor = 0
             for q in questions:
-                raw_major = self._extract_major_number(q.number)
-                raw_groups.append(raw_major)
-            normalized_map = {}
-            order = []
-            for m in raw_groups:
-                if m not in normalized_map:
-                    order.append(m)
-                    normalized_map[m] = str(len(order))
-
-            grouped_themes = {}
-            for q in questions:
-                major_num_raw = self._extract_major_number(q.number)
-                major_num = normalized_map.get(major_num_raw, major_num_raw)
-                if major_num not in grouped_themes:
-                    grouped_themes[major_num] = []
-
-                # テーマがない場合でもフォールバック推定して必ず掲載
-                topic = q.topic
-                if not topic:
-                    base_text = getattr(q, 'original_text', None) or q.text
-                    topic = self._infer_fallback_theme(base_text, q.field.value)
-                # 重要語は subject_index.md の語のみから抽出
-                base_text = getattr(q, 'original_text', None) or q.text or ''
-                keywords = self.theme_knowledge.extract_important_terms(base_text, q.field.value, limit=5)
-                grouped_themes[major_num].append((q.number, topic if topic else '（テーマ不明）', q.field.value, keywords[:5]))
-
-            # 大問ごとに表示（数値としてソート）
-            def _to_int(s):
+                qn = getattr(q, 'number', '') or ''
+                m = _re.search(r'問\s*(\d+)', qn)
                 try:
-                    return int(s)
-                except:
-                    return 0
+                    minor = int(m.group(1)) if m else None
+                except Exception:
+                    minor = None
+                if minor == 1 and prev_minor >= 2:
+                    if current_bucket:
+                        buckets.append(current_bucket)
+                    current_bucket = [q]
+                else:
+                    current_bucket.append(q)
+                prev_minor = minor if minor is not None else prev_minor
+            if current_bucket:
+                buckets.append(current_bucket)
 
-            for major_num in sorted(grouped_themes.keys(), key=_to_int):
-                if len(grouped_themes) > 1:
-                    print(f"\n  ▼ 大問 {major_num}")
+            # 大問ごとに表示
+            for i, bucket in enumerate(buckets, 1):
+                if len(buckets) > 1:
+                    print(f"\n  ▼ 大問 {i}")
                     print("  " + "-" * 40)
 
-                themes = grouped_themes[major_num]
-                if themes:
-                    for num, theme, field, keywords in themes:
-                        # 問題番号の表示を整形（大問X-問Y -> 問Y）
+                if bucket:
+                    for q in bucket:
+                        # テーマ・主要語を全文から再算出
+                        base_text = getattr(q, 'full_text', None) or getattr(q, 'original_text', None) or q.text or ''
+                        topic = self._infer_fallback_theme(base_text, q.field.value)
+                        keywords = self.theme_knowledge.extract_important_terms(base_text, q.field.value, limit=5)
+                        # 表示番号整形
+                        num = getattr(q, 'number', '') or ''
                         display_num = num
                         try:
                             import re
@@ -240,9 +231,9 @@ class SocialExamAnalyzerCLI:
                         except Exception:
                             pass
                         if keywords:
-                            print(f"    {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)}")
+                            print(f"    {display_num}: {topic} [{q.field.value}] | 主要語: {'、'.join(keywords)}")
                         else:
-                            print(f"    {display_num}: {theme} [{field}]")
+                            print(f"    {display_num}: {topic} [{q.field.value}]")
                 else:
                     print("    （テーマ情報なし）")
         else:

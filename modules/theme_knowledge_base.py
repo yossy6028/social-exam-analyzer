@@ -333,6 +333,27 @@ class ThemeKnowledgeBase:
             est_field, _score = self.estimate_field(text)
             field = est_field or '総合'
         
+        # 事前正規化（複合語の結合など）
+        try:
+            def _normalize_special_terms(s: str) -> str:
+                import re
+                if not s:
+                    return s
+                # 代表的な複合語の分断を結合
+                patterns = [
+                    (r'促\s*成\s*栽\s*培', '促成栽培'),
+                    (r'抑\s*制\s*栽\s*培', '抑制栽培'),
+                    (r'施\s*設\s*園\s*芸', '施設園芸'),
+                    (r'等\s*高\s*線', '等高線'),
+                    (r'縮\s*尺', '縮尺'),
+                ]
+                for pat, rep in patterns:
+                    s = re.sub(pat, rep, s)
+                return s
+            text = _normalize_special_terms(text)
+        except Exception:
+            pass
+
         # 0) 高特異語（subject_index外を含む）が本文に出現している場合は最優先でその語をテーマに採用
         try:
             hs_set = None
