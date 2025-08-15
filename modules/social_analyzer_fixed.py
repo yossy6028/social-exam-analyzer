@@ -1128,13 +1128,20 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
             return (getattr(q, 'original_text', None) or q.text or '')
 
         anchors = [
-            ('促成抑制', lambda t: ('促成栽培' in t or '抑制栽培' in t)),
-            ('雨温図',    lambda t: ('雨温図' in t) or (re.search(r'1月.*12月', t) and any(k in t for k in ['気温','降水量','℃','mm']))),
-            ('畜産',      lambda t: any(k in t for k in ['豚','肉用若鶏','乳牛','肉牛','鶏卵','ブロイラー','鶏'])),
-            ('農業特色',  lambda t: '農業の特色' in t),
-            ('工場所在地',lambda t: re.search(r'業種別.*工場.*所在地|工場.*所在地.*業種|製造業|出荷額|立地', t) is not None),
-            ('地形図',    lambda t: '地形図' in t or any(k in t for k in ['等高線','尾根','谷','縮尺'])),
-            ('一次エネ',  lambda t: re.search(r'一次エネルギー|エネルギー.{0,6}供給|構成比', t) is not None),
+            # 促成/抑制（かな表記も許容）
+            ('促成抑制', lambda t: ('促成栽培' in t or '抑制栽培' in t or '促成' in t or '抑制' in t or re.search(r'そ\s*く\s*せ\s*い', t) is not None or 'ソクセイ' in t)),
+            # 雨温図（1〜12月＋単位も許容）
+            ('雨温図',    lambda t: ('雨温図' in t) or (re.search(r'1月.*12月', t) and any(k in t for k in ['気温','降水量','℃','mm','平均気温','降水']))),
+            # 畜産（種名 or 表語彙）
+            ('畜産',      lambda t: (any(k in t for k in ['豚','肉用若鶏','乳牛','肉牛','鶏卵','ブロイラー','鶏']) or any(k in t for k in ['頭数','飼育','上位','都道府県別']))),
+            # 農業の特色
+            ('農業特色',  lambda t: '農業の特色' in t or ('特色' in t and any(k in t for k in ['農業','栽培','園芸']))),
+            # 工場所在地（表語彙も追加）
+            ('工場所在地',lambda t: re.search(r'業種別.*工場.*所在地|工場.*所在地.*業種|製造業|出荷額|立地|工業出荷', t) is not None),
+            # 地形図（凡例語彙/数値）
+            ('地形図',    lambda t: '地形 図' in t or '地形図' in t or any(k in t for k in ['等高線','尾根','谷','縮尺']) or re.search(r'\b(50|100|150|200)\b', t) is not None),
+            # 一次エネルギー
+            ('一次エネ',  lambda t: re.search(r'一次エネルギー|エネルギー.{0,6}供給|構成比|エネルギー消費', t) is not None),
         ]
 
         used_idx = set()
