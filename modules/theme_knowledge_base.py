@@ -41,9 +41,10 @@ class ThemeKnowledgeBase:
             logger.error(f"Error loading subject_index.md: {e}")
     
     def _parse_history_section(self, content: str):
-        """歴史分野のセクションをパース"""
+        """歴史分野のセクションをパース（改良版）"""
         history_section = re.search(r'### 歴史分野の分類(.*?)(?=###|$)', content, re.DOTALL)
         if not history_section:
+            logger.warning("歴史分野のセクションが見つかりません")
             return
         
         section_text = history_section.group(1)
@@ -70,6 +71,19 @@ class ThemeKnowledgeBase:
                     # 既存のキーワードに追加
                     self.history_periods[period_key].extend(keyword_list)
                     self.history_periods[period_key] = list(set(self.history_periods[period_key]))  # 重複除去
+        
+        # 中国王朝を歴史分野として明示的に追加（重要な修正）
+        chinese_dynasties = ['秦', '漢', '隋', '唐', '宋', '元', '明', '清', '三国', '晋', '五代', '十国']
+        self.history_periods['中国王朝'] = chinese_dynasties
+        
+        # 歴史分野の特徴的キーワードを追加
+        history_specific_keywords = [
+            '王朝', '皇帝', '皇后', '太子', '宦官', '科挙', '郡県制', '封建制',
+            '律令制', '三省六部', '中央集権', '地方分権', '皇室', '貴族'
+        ]
+        self.history_periods['古代中国制度'] = history_specific_keywords
+        
+        logger.info(f"歴史分野のキーワード更新: {len(self.history_periods)}カテゴリ")
     
     def _parse_civics_section(self, content: str):
         """公民分野のセクションをパース"""
@@ -286,11 +300,30 @@ class ThemeKnowledgeBase:
                 max_score = score
                 detected_period = period
         
-        # 中国王朝の特別処理
-        china_dynasties = ['隋', '唐', '宋', '元', '明', '清', '秦', '漢', '三国', '晋', '五代']
+        # 中国王朝の特別処理（強化版）
+        china_dynasties = ['隋', '唐', '宋', '元', '明', '清', '秦', '漢', '三国', '晋', '五代', '十国']
         for dynasty in china_dynasties:
-            if dynasty in text and ('中国' in text or '王朝' in text or '皇帝' in text):
-                return f"{dynasty}朝の特徴"
+            # より正確な王朝検出（文字境界を考慮）
+            import re
+            dynasty_pattern = re.compile(r'\b' + dynasty + r'(?:朝|王朝|の|について|時代)?')
+            if dynasty_pattern.search(text):
+                # 王朝名だけでも歴史テーマとして扱う
+                if ('中国' in text or '王朝' in text or '皇帝' in text or '朝廷' in text):
+                    return f"{dynasty}朝の特徴"
+                elif '政治' in text:
+                    return f"{dynasty}の政治"
+                elif '制度' in text:
+                    return f"{dynasty}の制度"
+                elif '社会' in text:
+                    return f"{dynasty}の社会"
+                elif '文化' in text:
+                    return f"{dynasty}の文化"
+                elif '歴史' in text:
+                    return f"{dynasty}の歴史"
+                elif '統一' in text:
+                    return f"{dynasty}の統一事業"
+                else:
+                    return f"{dynasty}朝の歴史"
         
         # 文化の具体化
         specific_cultures = {

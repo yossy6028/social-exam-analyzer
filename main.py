@@ -528,9 +528,9 @@ class SocialExamAnalyzerGUI:
                 major_num = int(m.group(1))
                 # 異常値チェック（中学入試で大問10以上は稀）
                 if major_num > 10:
-                    # 問22が誤って大問22になった場合の補正
-                    logger.warning(f"異常な大問番号を検出: {major_num} → 補正")
-                    return str((major_num - 1) // 10 + 1)
+                    # 異常な大問番号の場合は1を返す
+                    logger.warning(f"異常な大問番号を検出: {major_num} → 1に補正")
+                    return "1"
                 return str(major_num)
             # パターン2: X-問Y / X.Y
             m2 = re.match(r'\s*(\d+)[\-\.]', number_str)

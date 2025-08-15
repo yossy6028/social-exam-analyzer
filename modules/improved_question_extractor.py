@@ -65,19 +65,19 @@ class ImprovedQuestionExtractor:
         major_sections = self._find_major_sections(cleaned_text)
         
         if major_sections:
-            # 大問ごとに小問を抽出
-            for major_num, section_text in major_sections:
+            # 大問番号を1から順番に振り直す
+            for idx, (original_major_num, section_text) in enumerate(major_sections, 1):
                 minor_questions = self._extract_minor_questions(section_text)
                 
                 if minor_questions:
                     for minor_num, q_text in minor_questions:
                         # 全角数字を半角に変換
                         minor_num = self._normalize_number(minor_num)
-                        questions.append((f"大問{major_num}-問{minor_num}", q_text))
+                        questions.append((f"大問{idx}-問{minor_num}", q_text))
                 else:
                     # 小問が見つからない場合は大問全体を1つの問題として扱う
                     if len(section_text.strip()) > 20:
-                        questions.append((f"大問{major_num}", section_text[:500]))
+                        questions.append((f"大問{idx}", section_text[:500]))
         else:
             # 大問構造がない場合は全体から小問を探す
             logger.info("大問構造が見つかりません。全体から問題を抽出します。")
@@ -144,24 +144,48 @@ class ImprovedQuestionExtractor:
         return minor_questions
     
     def _detect_resets_and_assign_major(self, minor_questions: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
-        """問題番号のリセットを検出して大問を割り当て"""
+        """問題番号のリセットを検出して大問を割り当て（改良版）"""
         if not minor_questions:
             return []
         
         result = []
         current_major = 1
         previous_num = 0
+        max_major = 10  # 大問の最大数を制限（異常な大問番号を防ぐ）
         
         for num_str, q_text in minor_questions:
-            num = int(self._normalize_number(num_str))
+            try:
+                num = int(self._normalize_number(num_str))
+            except (ValueError, TypeError):
+                # 数値に変換できない場合はスキップ
+                logger.warning(f"問題番号の変換に失敗: {num_str}")
+                continue
             
-            # リセット検出
-            if num == 1 and previous_num >= 2:
-                current_major += 1
-                logger.debug(f"問題番号リセット検出: 大問{current_major}へ")
+            # リセット検出ロジックを改善
+            # 問1に戻った場合のみリセットとして扱う（より厳密に）
+            if num == 1 and previous_num >= 3:  # 前の問題が3以上の場合のみリセット
+                if current_major < max_major:  # 大問数の上限チェック
+                    current_major += 1
+                    logger.debug(f"問題番号リセット検出: 問{previous_num}→問1, 大問{current_major}へ")
+                else:
+                    logger.warning(f"大問数が上限({max_major})に達しました。リセットを無視します。")
+            
+            # 問題番号が大きく逆行した場合（5→1など）もリセットとして扱う
+            elif previous_num > 0 and num < previous_num and (previous_num - num) >= 4:
+                if current_major < max_major:
+                    current_major += 1
+                    logger.debug(f"大幅な番号逆行検出: 問{previous_num}→問{num}, 大問{current_major}へ")
             
             result.append((f"大問{current_major}-問{num}", q_text))
             previous_num = num
+        
+        # 結果の妥当性チェック
+        major_counts = {}
+        for q_id, _ in result:
+            major_part = q_id.split('-')[0]
+            major_counts[major_part] = major_counts.get(major_part, 0) + 1
+        
+        logger.info(f"検出された大問構造: {dict(major_counts)}")
         
         return result
     

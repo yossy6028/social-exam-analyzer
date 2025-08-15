@@ -1233,3 +1233,1290 @@ Q. 10.1 7.7 15.9
 60...' -> '社会保障関係費の特徴' conf=0.5
 2025-08-15 11:11:12,602 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
 2025-08-15 11:11:12,603 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:17:28,562 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:17:50,142 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:17:50,162 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:17:50,164 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:17:50,166 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:17:50,166 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:17:50,169 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:17:50,170 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:17:50,171 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:17:50,172 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:17:50,172 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:17:50,172 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:17:50,173 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:17:50,174 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:17:50,175 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:17:50,175 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:17:50,176 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:17:50,177 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:17:50,177 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:17:50,177 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:17:50,178 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:17:50,178 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:17:50,178 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:17:50,178 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:17:50,178 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:17:50,178 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:17:50,179 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:17:50,179 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:17:50,179 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:17:50,179 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:17:50,179 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:17:50,179 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:17:50,180 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:17:50,180 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:17:50,180 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:17:50,180 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:17:50,180 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:17:50,180 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:17:50,181 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:17:50,181 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:17:50,181 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:17:50,182 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:17:50,182 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:17:50,182 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:17:50,182 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:17:50,182 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:17:50,182 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:17:50,184 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:17:50,184 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:17:50,184 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:17:50,184 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:17:50,185 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:17:50,185 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:17:50,185 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:17:50,185 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:17:50,186 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:17:50,186 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:17:50,186 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:17:50,186 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:17:50,186 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:17:50,186 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:17:50,187 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:17:50,187 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:17:50,187 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:17:50,187 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:17:50,187 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:17:50,187 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:17:50,188 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:17:50,189 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:17:50,189 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:17:50,189 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:17:50,192 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:17:50,192 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:17:50,193 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:24:39,332 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:25:00,584 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:25:00,602 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:25:00,604 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:25:00,606 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:25:00,606 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:25:00,613 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:25:00,614 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:25:00,614 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:25:00,615 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:25:00,615 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:25:00,616 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:25:00,616 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:25:00,617 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:25:00,618 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:25:00,619 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:25:00,619 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:25:00,620 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:25:00,620 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:25:00,620 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:25:00,621 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:25:00,621 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:25:00,621 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:25:00,621 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:25:00,621 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:25:00,621 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:25:00,622 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:25:00,622 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:25:00,622 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:25:00,623 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:25:00,623 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:25:00,623 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:25:00,623 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:25:00,623 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:25:00,623 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:25:00,624 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:25:00,624 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:25:00,624 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:25:00,624 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:25:00,624 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:25:00,624 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:25:00,625 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:25:00,625 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:25:00,625 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:25:00,625 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:25:00,625 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:25:00,625 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:25:00,627 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:25:00,628 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:25:00,628 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:25:00,628 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:25:00,628 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:25:00,628 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:25:00,628 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:25:00,629 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:25:00,629 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:25:00,629 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:25:00,629 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:25:00,630 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:25:00,630 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:25:00,630 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:25:00,630 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:25:00,630 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:25:00,630 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:25:00,630 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:25:00,631 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:25:00,631 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:25:00,631 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:25:00,632 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:25:00,632 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:25:00,632 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:25:00,636 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:25:00,636 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:25:00,637 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:27:21,726 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:27:43,275 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:27:43,290 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:27:43,293 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:27:43,294 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:27:43,294 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:27:43,299 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:27:43,300 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:27:43,301 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:27:43,302 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:27:43,302 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:27:43,302 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:27:43,303 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:27:43,303 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:27:43,304 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:27:43,305 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:27:43,306 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:27:43,306 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:27:43,306 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:27:43,306 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:27:43,307 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:27:43,307 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:27:43,307 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:27:43,308 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:27:43,308 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:27:43,308 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:27:43,308 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:27:43,308 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:27:43,308 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:27:43,309 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:27:43,309 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:27:43,309 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:27:43,310 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:27:43,310 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:27:43,310 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:27:43,310 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:27:43,310 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:27:43,310 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:27:43,311 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:27:43,311 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:27:43,311 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:27:43,311 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:27:43,312 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:27:43,312 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:27:43,312 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:27:43,312 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:27:43,312 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:27:43,313 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:27:43,314 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:27:43,314 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:27:43,314 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:27:43,314 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:27:43,314 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:27:43,314 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:27:43,315 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:27:43,316 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:27:43,316 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:27:43,316 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:27:43,316 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:27:43,316 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:27:43,316 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:27:43,317 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:27:43,317 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:27:43,317 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:27:43,317 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:27:43,317 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:27:43,317 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:27:43,318 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:27:43,319 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:27:43,319 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:27:43,319 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:27:43,323 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:27:43,323 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:27:43,324 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:33:53,497 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:34:14,450 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:34:14,460 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:34:14,462 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:34:14,463 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:34:14,463 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:34:14,466 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:34:14,467 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:34:14,468 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:34:14,469 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:34:14,469 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:34:14,469 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:34:14,469 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:34:14,470 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:34:14,471 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:34:14,471 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:34:14,472 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:34:14,472 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:34:14,472 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:34:14,472 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:34:14,473 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:34:14,473 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:34:14,473 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:34:14,473 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:34:14,473 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:34:14,473 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:34:14,474 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:34:14,474 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:34:14,474 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:34:14,474 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:34:14,475 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:34:14,475 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:34:14,475 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:34:14,475 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:34:14,475 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:34:14,475 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:34:14,475 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:34:14,475 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:34:14,476 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:34:14,476 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:34:14,476 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:34:14,477 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:34:14,477 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:34:14,477 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:34:14,477 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:34:14,477 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:34:14,477 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:34:14,478 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:34:14,479 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:34:14,479 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:34:14,479 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:34:14,479 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:34:14,479 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:34:14,479 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:34:14,480 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:34:14,480 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:34:14,480 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:34:14,480 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:34:14,481 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:34:14,481 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:34:14,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:34:14,482 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:34:14,482 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:34:14,482 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:34:14,482 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:34:14,485 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:34:14,486 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:34:14,486 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:34:39,415 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:35:00,796 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:35:00,809 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:35:00,810 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:35:00,812 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:35:00,812 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:35:00,815 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:35:00,816 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:35:00,817 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:35:00,818 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:35:00,818 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:35:00,818 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:35:00,818 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:35:00,819 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:35:00,820 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:35:00,820 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:35:00,821 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:35:00,822 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:35:00,822 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:35:00,822 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:35:00,822 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:35:00,822 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:35:00,823 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:35:00,823 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:35:00,823 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:35:00,823 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:35:00,823 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:35:00,823 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:35:00,823 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:35:00,824 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:35:00,824 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:35:00,824 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:35:00,825 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:35:00,825 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:35:00,825 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:35:00,825 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:35:00,825 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:35:00,825 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:35:00,826 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:35:00,826 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:35:00,826 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:35:00,826 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:35:00,826 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:35:00,826 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:35:00,826 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:35:00,827 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:35:00,827 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:35:00,828 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:35:00,829 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:35:00,829 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:35:00,829 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:35:00,829 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:35:00,829 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:35:00,829 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:35:00,829 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:35:00,830 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:35:00,830 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:35:00,830 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:35:00,830 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:35:00,830 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:35:00,830 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:35:00,831 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:35:00,831 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:35:00,831 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:35:00,831 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:35:00,831 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:35:00,831 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:35:00,832 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:35:00,832 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:35:00,832 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:35:00,832 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:35:00,836 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:35:00,836 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:35:00,837 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:40:28,253 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 11:40:51,939 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:40:51,949 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:40:51,951 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:40:51,953 - modules.improved_question_extractor - INFO - 抽出された問題数: 33
+2025-08-15 11:40:51,953 - modules.social_analyzer_fixed - INFO - 改善された抽出器で33問を抽出
+2025-08-15 11:40:51,957 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=国土交通省の役割
+2025-08-15 11:40:51,958 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国土交通省の役割
+2025-08-15 11:40:51,958 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エ...'
+2025-08-15 11:40:51,958 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エから1つ選び 記号で...' -> None
+2025-08-15 11:40:51,958 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=None
+2025-08-15 11:40:51,959 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,959 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 ...'
+2025-08-15 11:40:51,960 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 イタリアやフランスを...' -> None
+2025-08-15 11:40:51,960 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=None
+2025-08-15 11:40:51,960 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=国土交通省の役割
+2025-08-15 11:40:51,961 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=国土交通省の役割
+2025-08-15 11:40:51,961 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあ...'
+2025-08-15 11:40:51,962 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあてはまる人物名を漢字...' -> None
+2025-08-15 11:40:51,962 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=地理 topic=None
+2025-08-15 11:40:51,962 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=歴史 topic=中国の王朝
+2025-08-15 11:40:51,963 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人...'
+2025-08-15 11:40:51,964 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人である。 おうしゅう...' -> None
+2025-08-15 11:40:51,964 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=地理 topic=None
+2025-08-15 11:40:51,964 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をお...'
+2025-08-15 11:40:51,964 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をおこなった。 そして、...' -> '政治制度の仕組み'
+2025-08-15 11:40:51,964 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=歴史 topic=政治制度の仕組み
+2025-08-15 11:40:51,965 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年...'
+2025-08-15 11:40:51,965 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年代後半に繊維工業を ...' -> '政治制度の仕組み'
+2025-08-15 11:40:51,965 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=総合 topic=政治制度の仕組み
+2025-08-15 11:40:51,965 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょ...'
+2025-08-15 11:40:51,965 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょう エ.土佐藩出身の...' -> '国際関係の変化'
+2025-08-15 11:40:51,965 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国際関係の変化
+2025-08-15 11:40:51,966 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指...'
+2025-08-15 11:40:51,966 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指す薩長同盟が結成され...' -> '国際関係の変化'
+2025-08-15 11:40:51,966 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=国際関係の変化
+2025-08-15 11:40:51,971 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'じょうきょう
+ふく
+下線部①が発生した理由について、当時のロシアの状況も含めて説明しなさい。...' -> '下線部の特徴' conf=0.5
+2025-08-15 11:40:51,971 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=歴史 topic=下線部の特徴
+2025-08-15 11:40:51,971 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 ...'
+2025-08-15 11:40:51,971 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 1950年代半ば か...' -> '国際関係の変化'
+2025-08-15 11:40:51,971 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=歴史 topic=国際関係の変化
+2025-08-15 11:40:51,972 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,973 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,973 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石...'
+2025-08-15 11:40:51,973 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石炭から石油へのエネル...' -> None
+2025-08-15 11:40:51,973 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=地理 topic=None
+2025-08-15 11:40:51,973 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関...'
+2025-08-15 11:40:51,973 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関連して、 日本の人権...' -> '政治の仕組み'
+2025-08-15 11:40:51,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=公民 topic=政治の仕組み
+2025-08-15 11:40:51,974 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ ...'
+2025-08-15 11:40:51,974 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ イ.被選挙権や国民審...' -> '政治の仕組み'
+2025-08-15 11:40:51,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=公民 topic=政治の仕組み
+2025-08-15 11:40:51,974 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。...'
+2025-08-15 11:40:51,974 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。 せいきゅう ウ. ...' -> '政治の仕組み'
+2025-08-15 11:40:51,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=総合 topic=政治の仕組み
+2025-08-15 11:40:51,975 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'めいしょう
+下線部⑥に関連して、1999年に男性と女性が対等な立場からあらゆる社会活動に参加し、利益...' -> '1999年の出来事' conf=0.6
+2025-08-15 11:40:51,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=地理 topic=1999年の出来事
+2025-08-15 11:40:51,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,976 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(インターネット|ソーシャルメディア|SNS|AI|人工知能)' text='級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 ...'
+2025-08-15 11:40:51,976 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 人工知能(AI) か...' -> '政治制度の仕組み'
+2025-08-15 11:40:51,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=総合 topic=政治制度の仕組み
+2025-08-15 11:40:51,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,977 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,977 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,978 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,978 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='にあてはまる.*?(人物名|語句|言葉)' text='かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下...'
+2025-08-15 11:40:51,978 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下のア~エからそれぞ
+...' -> '政治制度の仕組み'
+2025-08-15 11:40:51,978 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=政治制度の仕組み
+2025-08-15 11:40:51,979 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=地理 topic=国土交通省の役割
+2025-08-15 11:40:51,980 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含ん...'
+2025-08-15 11:40:51,980 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含んでおり、その他の住宅...' -> None
+2025-08-15 11:40:51,980 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問1 field=地理 topic=None
+2025-08-15 11:40:51,980 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問2 field=地理 topic=中国の王朝
+2025-08-15 11:40:51,982 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:41:35,170 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 11:41:58,814 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:41:58,825 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:41:58,827 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:41:58,829 - modules.improved_question_extractor - INFO - 抽出された問題数: 33
+2025-08-15 11:41:58,829 - modules.social_analyzer_fixed - INFO - 改善された抽出器で33問を抽出
+2025-08-15 11:41:58,833 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=国土交通省の役割
+2025-08-15 11:41:58,834 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国土交通省の役割
+2025-08-15 11:41:58,834 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エ...'
+2025-08-15 11:41:58,835 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エから1つ選び 記号で...' -> None
+2025-08-15 11:41:58,835 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=None
+2025-08-15 11:41:58,836 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,836 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 ...'
+2025-08-15 11:41:58,836 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 イタリアやフランスを...' -> None
+2025-08-15 11:41:58,836 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=None
+2025-08-15 11:41:58,837 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=国土交通省の役割
+2025-08-15 11:41:58,838 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=国土交通省の役割
+2025-08-15 11:41:58,839 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあ...'
+2025-08-15 11:41:58,839 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあてはまる人物名を漢字...' -> None
+2025-08-15 11:41:58,839 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=地理 topic=None
+2025-08-15 11:41:58,840 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=歴史 topic=中国の王朝
+2025-08-15 11:41:58,841 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人...'
+2025-08-15 11:41:58,846 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人である。 おうしゅう...' -> None
+2025-08-15 11:41:58,846 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=地理 topic=None
+2025-08-15 11:41:58,846 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をお...'
+2025-08-15 11:41:58,846 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をおこなった。 そして、...' -> '政治制度の仕組み'
+2025-08-15 11:41:58,846 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=歴史 topic=政治制度の仕組み
+2025-08-15 11:41:58,847 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年...'
+2025-08-15 11:41:58,847 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年代後半に繊維工業を ...' -> '政治制度の仕組み'
+2025-08-15 11:41:58,847 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=総合 topic=政治制度の仕組み
+2025-08-15 11:41:58,847 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょ...'
+2025-08-15 11:41:58,848 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょう エ.土佐藩出身の...' -> '国際関係の変化'
+2025-08-15 11:41:58,848 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国際関係の変化
+2025-08-15 11:41:58,866 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指...'
+2025-08-15 11:41:58,866 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指す薩長同盟が結成され...' -> '国際関係の変化'
+2025-08-15 11:41:58,866 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=国際関係の変化
+2025-08-15 11:41:58,873 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'じょうきょう
+ふく
+下線部①が発生した理由について、当時のロシアの状況も含めて説明しなさい。...' -> '下線部の特徴' conf=0.5
+2025-08-15 11:41:58,874 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=歴史 topic=下線部の特徴
+2025-08-15 11:41:58,875 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 ...'
+2025-08-15 11:41:58,875 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 1950年代半ば か...' -> '国際関係の変化'
+2025-08-15 11:41:58,875 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=歴史 topic=国際関係の変化
+2025-08-15 11:41:58,876 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,877 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,878 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石...'
+2025-08-15 11:41:58,878 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石炭から石油へのエネル...' -> None
+2025-08-15 11:41:58,878 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=地理 topic=None
+2025-08-15 11:41:58,879 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関...'
+2025-08-15 11:41:58,879 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関連して、 日本の人権...' -> '政治の仕組み'
+2025-08-15 11:41:58,879 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=公民 topic=政治の仕組み
+2025-08-15 11:41:58,879 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ ...'
+2025-08-15 11:41:58,879 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ イ.被選挙権や国民審...' -> '政治の仕組み'
+2025-08-15 11:41:58,879 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=公民 topic=政治の仕組み
+2025-08-15 11:41:58,881 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。...'
+2025-08-15 11:41:58,881 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。 せいきゅう ウ. ...' -> '政治の仕組み'
+2025-08-15 11:41:58,881 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=総合 topic=政治の仕組み
+2025-08-15 11:41:58,882 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'めいしょう
+下線部⑥に関連して、1999年に男性と女性が対等な立場からあらゆる社会活動に参加し、利益...' -> '1999年の出来事' conf=0.6
+2025-08-15 11:41:58,882 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=地理 topic=1999年の出来事
+2025-08-15 11:41:58,883 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,883 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(インターネット|ソーシャルメディア|SNS|AI|人工知能)' text='級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 ...'
+2025-08-15 11:41:58,883 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 人工知能(AI) か...' -> '政治制度の仕組み'
+2025-08-15 11:41:58,883 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=総合 topic=政治制度の仕組み
+2025-08-15 11:41:58,884 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,885 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,885 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,886 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,887 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='にあてはまる.*?(人物名|語句|言葉)' text='かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下...'
+2025-08-15 11:41:58,887 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下のア~エからそれぞ
+...' -> '政治制度の仕組み'
+2025-08-15 11:41:58,887 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=政治制度の仕組み
+2025-08-15 11:41:58,887 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=地理 topic=国土交通省の役割
+2025-08-15 11:41:58,888 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含ん...'
+2025-08-15 11:41:58,888 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含んでおり、その他の住宅...' -> None
+2025-08-15 11:41:58,888 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問1 field=地理 topic=None
+2025-08-15 11:41:58,889 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問2 field=地理 topic=中国の王朝
+2025-08-15 11:41:58,890 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:44:28,955 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:44:50,109 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:44:50,124 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:44:50,126 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:44:50,128 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:44:50,128 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:44:50,132 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:44:50,133 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:44:50,134 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:44:50,135 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:44:50,135 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:44:50,135 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:44:50,136 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:44:50,136 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:44:50,137 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:44:50,138 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:44:50,138 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:44:50,139 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:44:50,139 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:44:50,139 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:44:50,140 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:44:50,140 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:44:50,140 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:44:50,140 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:44:50,140 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:44:50,140 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:44:50,141 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:44:50,141 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:44:50,141 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:44:50,142 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:44:50,142 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:44:50,142 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:44:50,142 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:44:50,142 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:44:50,142 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:44:50,143 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:44:50,143 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:44:50,143 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:44:50,143 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:44:50,143 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:44:50,143 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:44:50,144 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:44:50,144 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:44:50,144 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:44:50,145 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:44:50,145 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:44:50,145 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:44:50,146 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:44:50,147 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:44:50,147 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:44:50,147 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:44:50,147 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:44:50,147 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:44:50,147 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:44:50,148 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:44:50,148 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:44:50,148 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:44:50,148 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:44:50,149 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:44:50,149 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:44:50,149 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:44:50,149 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:44:50,150 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:44:50,150 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:44:50,150 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:44:50,150 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:44:50,150 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:44:50,150 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:44:50,151 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:44:50,151 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:44:50,151 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:44:50,155 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:44:50,155 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:44:50,156 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:45:44,380 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/東京電機大学中学校/2025年東京電機大学中学校問題_社会.pdf
+2025-08-15 11:46:05,454 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:46:05,465 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:46:05,466 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:46:05,468 - modules.improved_question_extractor - INFO - 抽出された問題数: 31
+2025-08-15 11:46:05,468 - modules.social_analyzer_fixed - INFO - 改善された抽出器で31問を抽出
+2025-08-15 11:46:05,471 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=日本の中世の寺院
+2025-08-15 11:46:05,472 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:46:05,473 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=歴史 topic=日本の中世の寺院
+2025-08-15 11:46:05,473 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一...'
+2025-08-15 11:46:05,474 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)波線の遠征を行った人物についてまちがっている文章を、次のア~ エの中から一つ選び記号で答えなさ...' -> None
+2025-08-15 11:46:05,474 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=None
+2025-08-15 11:46:05,474 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=歴史 topic=日本の仏教宗派
+2025-08-15 11:46:05,475 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=中国の王朝
+2025-08-15 11:46:05,476 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=歴史 topic=中国の王朝
+2025-08-15 11:46:05,476 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問8 field=地理 topic=近現代アジア史の出来事
+2025-08-15 11:46:05,477 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問9 field=地理 topic=中国の王朝
+2025-08-15 11:46:05,478 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそ...'
+2025-08-15 11:46:05,478 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.次の図と文章を読んで、各設
+図中の空らん (① -あ) と (①-い) のそれぞれにあてはまる地...' -> None
+2025-08-15 11:46:05,478 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=地理 topic=None
+2025-08-15 11:46:05,478 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里...'
+2025-08-15 11:46:05,478 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. (あ) 泉北 (い)大淀 イ. (あ) 泉北 (い)淀 ウ. (あ) 千里 - (い) 大淀 ...' -> None
+2025-08-15 11:46:05,478 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=地理 topic=None
+2025-08-15 11:46:05,479 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあ...'
+2025-08-15 11:46:05,479 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '空らん (③)につい
+て、次の写真に見られる
+災害を何といいますか。
+空らんにあてはまるよう
+に答え...' -> None
+2025-08-15 11:46:05,479 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=地理 topic=None
+2025-08-15 11:46:05,479 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる...'
+2025-08-15 11:46:05,479 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 183 I. 193 問3. 空らん (③)につい て、次の写真に見られる 災害を何といいます...' -> None
+2025-08-15 11:46:05,479 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=地理 topic=None
+2025-08-15 11:46:05,480 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='123456789101112 月 123456 7 8 9 10 11 12月...'
+2025-08-15 11:46:05,480 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '123456789101112 月 123456 7 8 9 10 11 12月 25 中社 (1)...' -> None
+2025-08-15 11:46:05,480 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=地理 topic=None
+2025-08-15 11:46:05,480 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査よ...'
+2025-08-15 11:46:05,480 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '69.5 20.4 10.1 465,902 88.6 (2020 年国勢調査より作成) 問6.下線...' -> None
+2025-08-15 11:46:05,480 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問6 field=地理 topic=None
+2025-08-15 11:46:05,481 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたこ...'
+2025-08-15 11:46:05,481 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ.奈良県十津川村には、戦いに敗れた武士が一族を引き連れて移住し開 発を始めたことを起源とする集落が...' -> None
+2025-08-15 11:46:05,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問7 field=地理 topic=None
+2025-08-15 11:46:05,481 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (...'
+2025-08-15 11:46:05,481 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'イ. (A)福岡 (C)高知 ウ. (A) 高知 (C)山梨 エ.(A)山梨 (C) 徳島 問8. ...' -> '産業の特徴'
+2025-08-15 11:46:05,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問8 field=地理 topic=産業の特徴
+2025-08-15 11:46:05,482 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、...'
+2025-08-15 11:46:05,482 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ウ. 愛媛県今治市 工,大阪府堺市 25 中一社 (1) 問9.下線⑨について、次の図は、日本におけ...' -> None
+2025-08-15 11:46:05,482 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問9 field=地理 topic=None
+2025-08-15 11:46:05,482 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2008 2009 2010 2011 2012 2013 2014 2015 ...'
+2025-08-15 11:46:05,482 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...' -> None
+2025-08-15 11:46:05,482 - modules.social_analyzer_fixed - INFO - 設問分析: 大問5-問10 field=地理 topic=None
+2025-08-15 11:46:05,484 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=日本の工業の特徴
+2025-08-15 11:46:05,484 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア...'
+2025-08-15 11:46:05,484 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '3.次の文章を読んで、各設
+下線①について、 都知事選挙で投票できる人を、次のア~エの中から一つ
+選...' -> None
+2025-08-15 11:46:05,484 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=公民 topic=None
+2025-08-15 11:46:05,484 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/...'
+2025-08-15 11:46:05,484 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '18 歳/女性/大学生/埼玉県草加市在住/東京都足立区にある大学 に通っている/アルバイトをしており...' -> None
+2025-08-15 11:46:05,485 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=None
+2025-08-15 11:46:05,485 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=公民 topic=日露戦争
+2025-08-15 11:46:05,486 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア....'
+2025-08-15 11:46:05,486 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '答えなさい。 所得税は、所得に応じて税率が変わる( 制度を採用しています。 ア.確定申告 イ.軽減税...' -> '制度の内容'
+2025-08-15 11:46:05,486 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=制度の内容
+2025-08-15 11:46:05,486 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権...'
+2025-08-15 11:46:05,486 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '問4.下線④について、 労働者の権利を守るために憲法で保障されている「労働 三権」のうち、ストライキ...' -> None
+2025-08-15 11:46:05,486 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=公民 topic=None
+2025-08-15 11:46:05,486 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=総合 topic=人口ピラミッドの分析
+2025-08-15 11:46:05,487 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)...'
+2025-08-15 11:46:05,487 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'イ. (X)正 (Y)誤 ウ. (X) 誤 - (Y)正 エ.(X)誤・ (Y)誤 -13- 問7....' -> None
+2025-08-15 11:46:05,487 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=地理 topic=None
+2025-08-15 11:46:05,487 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '1.4
+3兆3405億円
+1990年度
+総額
+...' -> '1990年の出来事' conf=0.6
+2025-08-15 11:46:05,487 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1 field=総合 topic=1990年の出来事
+2025-08-15 11:46:05,488 - modules.social_analyzer_fixed - INFO - 設問分析: 大問22 field=地理 topic=2023年の戦争
+2025-08-15 11:46:05,488 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(空欄補充|穴埋め|空らん)' text='(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 ...'
+2025-08-15 11:46:05,488 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(Y) 国債費 (Z)防衛関係費 エ.(X)社会保障関係費 (Y) 防衛関係費 (Z)国債費 問8....' -> None
+2025-08-15 11:46:05,488 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=総合 topic=None
+2025-08-15 11:46:05,491 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: '14.1 8.9 5.34.7 12.6
+22:1
+114兆3812億円
+0%
+20%
+40%
+60...' -> '社会保障関係費の特徴' conf=0.5
+2025-08-15 11:46:05,491 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=社会保障関係費の特徴
+2025-08-15 11:46:05,492 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 11:49:26,428 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 11:49:50,607 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 11:49:50,619 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 11:49:50,620 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 11:49:50,622 - modules.improved_question_extractor - INFO - 抽出された問題数: 33
+2025-08-15 11:49:50,622 - modules.social_analyzer_fixed - INFO - 改善された抽出器で33問を抽出
+2025-08-15 11:49:50,625 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=地理 topic=国土交通省の役割
+2025-08-15 11:49:50,626 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国土交通省の役割
+2025-08-15 11:49:50,626 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エ...'
+2025-08-15 11:49:50,626 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エから1つ選び 記号で...' -> None
+2025-08-15 11:49:50,626 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=None
+2025-08-15 11:49:50,627 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,627 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 ...'
+2025-08-15 11:49:50,627 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 イタリアやフランスを...' -> None
+2025-08-15 11:49:50,627 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=None
+2025-08-15 11:49:50,628 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=国土交通省の役割
+2025-08-15 11:49:50,629 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=国土交通省の役割
+2025-08-15 11:49:50,629 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあ...'
+2025-08-15 11:49:50,629 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあてはまる人物名を漢字...' -> None
+2025-08-15 11:49:50,629 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=地理 topic=None
+2025-08-15 11:49:50,630 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=歴史 topic=中国の王朝
+2025-08-15 11:49:50,631 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人...'
+2025-08-15 11:49:50,632 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人である。 おうしゅう...' -> None
+2025-08-15 11:49:50,632 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=地理 topic=None
+2025-08-15 11:49:50,632 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をお...'
+2025-08-15 11:49:50,632 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をおこなった。 そして、...' -> '政治制度の仕組み'
+2025-08-15 11:49:50,632 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=歴史 topic=政治制度の仕組み
+2025-08-15 11:49:50,632 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年...'
+2025-08-15 11:49:50,632 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年代後半に繊維工業を ...' -> '政治制度の仕組み'
+2025-08-15 11:49:50,632 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=総合 topic=政治制度の仕組み
+2025-08-15 11:49:50,633 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょ...'
+2025-08-15 11:49:50,633 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょう エ.土佐藩出身の...' -> '国際関係の変化'
+2025-08-15 11:49:50,633 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国際関係の変化
+2025-08-15 11:49:50,633 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指...'
+2025-08-15 11:49:50,633 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指す薩長同盟が結成され...' -> '国際関係の変化'
+2025-08-15 11:49:50,633 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=国際関係の変化
+2025-08-15 11:49:50,637 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'じょうきょう
+ふく
+下線部①が発生した理由について、当時のロシアの状況も含めて説明しなさい。...' -> '下線部の特徴' conf=0.5
+2025-08-15 11:49:50,637 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=歴史 topic=下線部の特徴
+2025-08-15 11:49:50,638 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 ...'
+2025-08-15 11:49:50,638 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 1950年代半ば か...' -> '国際関係の変化'
+2025-08-15 11:49:50,638 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=歴史 topic=国際関係の変化
+2025-08-15 11:49:50,638 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,639 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,639 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石...'
+2025-08-15 11:49:50,639 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石炭から石油へのエネル...' -> None
+2025-08-15 11:49:50,639 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=地理 topic=None
+2025-08-15 11:49:50,640 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関...'
+2025-08-15 11:49:50,640 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関連して、 日本の人権...' -> '政治の仕組み'
+2025-08-15 11:49:50,640 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=公民 topic=政治の仕組み
+2025-08-15 11:49:50,640 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ ...'
+2025-08-15 11:49:50,640 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ イ.被選挙権や国民審...' -> '政治の仕組み'
+2025-08-15 11:49:50,640 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=公民 topic=政治の仕組み
+2025-08-15 11:49:50,641 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。...'
+2025-08-15 11:49:50,641 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。 せいきゅう ウ. ...' -> '政治の仕組み'
+2025-08-15 11:49:50,641 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=総合 topic=政治の仕組み
+2025-08-15 11:49:50,641 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'めいしょう
+下線部⑥に関連して、1999年に男性と女性が対等な立場からあらゆる社会活動に参加し、利益...' -> '1999年の出来事' conf=0.6
+2025-08-15 11:49:50,641 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=地理 topic=1999年の出来事
+2025-08-15 11:49:50,642 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,642 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(インターネット|ソーシャルメディア|SNS|AI|人工知能)' text='級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 ...'
+2025-08-15 11:49:50,642 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 人工知能(AI) か...' -> '政治制度の仕組み'
+2025-08-15 11:49:50,642 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=総合 topic=政治制度の仕組み
+2025-08-15 11:49:50,643 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,643 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,644 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,644 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,645 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='にあてはまる.*?(人物名|語句|言葉)' text='かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下...'
+2025-08-15 11:49:50,645 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下のア~エからそれぞ
+...' -> '政治制度の仕組み'
+2025-08-15 11:49:50,645 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=政治制度の仕組み
+2025-08-15 11:49:50,645 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=地理 topic=国土交通省の役割
+2025-08-15 11:49:50,646 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含ん...'
+2025-08-15 11:49:50,646 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含んでおり、その他の住宅...' -> None
+2025-08-15 11:49:50,646 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問1 field=地理 topic=None
+2025-08-15 11:49:50,647 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問2 field=地理 topic=中国の王朝
+2025-08-15 11:49:50,648 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 12:00:04,408 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 12:00:28,443 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 12:00:28,458 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 12:00:28,459 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 12:00:28,461 - modules.improved_question_extractor - INFO - 抽出された問題数: 33
+2025-08-15 12:00:28,461 - modules.social_analyzer_fixed - INFO - 改善された抽出器で33問を抽出
+2025-08-15 12:00:28,464 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4 field=歴史 topic=国土交通省の役割
+2025-08-15 12:00:28,464 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=地理 topic=国土交通省の役割
+2025-08-15 12:00:28,465 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エ...'
+2025-08-15 12:00:28,465 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エから1つ選び 記号で...' -> None
+2025-08-15 12:00:28,465 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=歴史 topic=None
+2025-08-15 12:00:28,466 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,466 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 ...'
+2025-08-15 12:00:28,466 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 イタリアやフランスを...' -> None
+2025-08-15 12:00:28,466 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=地理 topic=None
+2025-08-15 12:00:28,467 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=地理 topic=国土交通省の役割
+2025-08-15 12:00:28,468 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=地理 topic=国土交通省の役割
+2025-08-15 12:00:28,468 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあ...'
+2025-08-15 12:00:28,468 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあてはまる人物名を漢字...' -> None
+2025-08-15 12:00:28,468 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=歴史 topic=None
+2025-08-15 12:00:28,469 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,470 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人...'
+2025-08-15 12:00:28,470 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人である。 おうしゅう...' -> None
+2025-08-15 12:00:28,471 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=歴史 topic=None
+2025-08-15 12:00:28,471 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をお...'
+2025-08-15 12:00:28,471 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をおこなった。 そして、...' -> '政治制度の仕組み'
+2025-08-15 12:00:28,471 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:00:28,471 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年...'
+2025-08-15 12:00:28,471 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年代後半に繊維工業を ...' -> '政治制度の仕組み'
+2025-08-15 12:00:28,471 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:00:28,472 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょ...'
+2025-08-15 12:00:28,472 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょう エ.土佐藩出身の...' -> '国際関係の変化'
+2025-08-15 12:00:28,472 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=歴史 topic=国際関係の変化
+2025-08-15 12:00:28,473 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指...'
+2025-08-15 12:00:28,473 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指す薩長同盟が結成され...' -> '国際関係の変化'
+2025-08-15 12:00:28,473 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=歴史 topic=国際関係の変化
+2025-08-15 12:00:28,478 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'じょうきょう
+ふく
+下線部①が発生した理由について、当時のロシアの状況も含めて説明しなさい。...' -> '下線部の特徴' conf=0.5
+2025-08-15 12:00:28,478 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=歴史 topic=下線部の特徴
+2025-08-15 12:00:28,478 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 ...'
+2025-08-15 12:00:28,478 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 1950年代半ば か...' -> '国際関係の変化'
+2025-08-15 12:00:28,478 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=歴史 topic=国際関係の変化
+2025-08-15 12:00:28,479 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,480 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,480 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石...'
+2025-08-15 12:00:28,480 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石炭から石油へのエネル...' -> None
+2025-08-15 12:00:28,480 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=歴史 topic=None
+2025-08-15 12:00:28,481 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関...'
+2025-08-15 12:00:28,481 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関連して、 日本の人権...' -> '政治の仕組み'
+2025-08-15 12:00:28,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問1 field=公民 topic=政治の仕組み
+2025-08-15 12:00:28,481 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ ...'
+2025-08-15 12:00:28,481 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ イ.被選挙権や国民審...' -> '政治の仕組み'
+2025-08-15 12:00:28,481 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問2 field=歴史 topic=政治の仕組み
+2025-08-15 12:00:28,482 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。...'
+2025-08-15 12:00:28,482 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。 せいきゅう ウ. ...' -> '政治の仕組み'
+2025-08-15 12:00:28,482 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問3 field=歴史 topic=政治の仕組み
+2025-08-15 12:00:28,482 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'めいしょう
+下線部⑥に関連して、1999年に男性と女性が対等な立場からあらゆる社会活動に参加し、利益...' -> '1999年の出来事' conf=0.6
+2025-08-15 12:00:28,482 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問4 field=歴史 topic=1999年の出来事
+2025-08-15 12:00:28,483 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問5 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,483 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(インターネット|ソーシャルメディア|SNS|AI|人工知能)' text='級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 ...'
+2025-08-15 12:00:28,483 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 人工知能(AI) か...' -> '政治制度の仕組み'
+2025-08-15 12:00:28,483 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問6 field=公民 topic=政治制度の仕組み
+2025-08-15 12:00:28,484 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問7 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,484 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問8 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,485 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問9 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,485 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問10 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,486 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='にあてはまる.*?(人物名|語句|言葉)' text='かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下...'
+2025-08-15 12:00:28,486 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下のア~エからそれぞ
+...' -> '政治制度の仕組み'
+2025-08-15 12:00:28,486 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問11 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:00:28,487 - modules.social_analyzer_fixed - INFO - 設問分析: 大問38-問12 field=歴史 topic=国土交通省の役割
+2025-08-15 12:00:28,487 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含ん...'
+2025-08-15 12:00:28,487 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含んでおり、その他の住宅...' -> None
+2025-08-15 12:00:28,487 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問1 field=総合 topic=None
+2025-08-15 12:00:28,488 - modules.social_analyzer_fixed - INFO - 設問分析: 大問9-問2 field=歴史 topic=中国の王朝
+2025-08-15 12:00:28,489 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 20カテゴリ
+2025-08-15 12:00:28,489 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 12:02:03,244 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 12:02:26,981 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 12:02:26,992 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 12:02:26,995 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 12:02:26,997 - modules.improved_question_extractor - INFO - 抽出された問題数: 33
+2025-08-15 12:02:26,997 - modules.social_analyzer_fixed - INFO - 改善された抽出器で33問を抽出
+2025-08-15 12:02:27,000 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2 field=歴史 topic=国土交通省の役割
+2025-08-15 12:02:27,001 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問6 field=地理 topic=国土交通省の役割
+2025-08-15 12:02:27,001 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エ...'
+2025-08-15 12:02:27,002 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エから1つ選び 記号で...' -> None
+2025-08-15 12:02:27,002 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問7 field=歴史 topic=None
+2025-08-15 12:02:27,002 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,003 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 ...'
+2025-08-15 12:02:27,003 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 イタリアやフランスを...' -> None
+2025-08-15 12:02:27,003 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問9 field=地理 topic=None
+2025-08-15 12:02:27,004 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問10 field=地理 topic=国土交通省の役割
+2025-08-15 12:02:27,005 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問11 field=地理 topic=国土交通省の役割
+2025-08-15 12:02:27,006 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあ...'
+2025-08-15 12:02:27,006 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあてはまる人物名を漢字...' -> None
+2025-08-15 12:02:27,006 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=歴史 topic=None
+2025-08-15 12:02:27,006 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問2 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,007 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人...'
+2025-08-15 12:02:27,008 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人である。 おうしゅう...' -> None
+2025-08-15 12:02:27,008 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問3 field=歴史 topic=None
+2025-08-15 12:02:27,008 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をお...'
+2025-08-15 12:02:27,009 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をおこなった。 そして、...' -> '政治制度の仕組み'
+2025-08-15 12:02:27,009 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問4 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:02:27,009 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年...'
+2025-08-15 12:02:27,009 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年代後半に繊維工業を ...' -> '政治制度の仕組み'
+2025-08-15 12:02:27,009 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問5 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:02:27,010 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょ...'
+2025-08-15 12:02:27,010 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょう エ.土佐藩出身の...' -> '国際関係の変化'
+2025-08-15 12:02:27,010 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問6 field=歴史 topic=国際関係の変化
+2025-08-15 12:02:27,010 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指...'
+2025-08-15 12:02:27,010 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指す薩長同盟が結成され...' -> '国際関係の変化'
+2025-08-15 12:02:27,010 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問7 field=歴史 topic=国際関係の変化
+2025-08-15 12:02:27,015 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'じょうきょう
+ふく
+下線部①が発生した理由について、当時のロシアの状況も含めて説明しなさい。...' -> '下線部の特徴' conf=0.5
+2025-08-15 12:02:27,015 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=歴史 topic=下線部の特徴
+2025-08-15 12:02:27,015 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 ...'
+2025-08-15 12:02:27,015 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 1950年代半ば か...' -> '国際関係の変化'
+2025-08-15 12:02:27,015 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問9 field=歴史 topic=国際関係の変化
+2025-08-15 12:02:27,016 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問10 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,017 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問11 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,017 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石...'
+2025-08-15 12:02:27,017 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石炭から石油へのエネル...' -> None
+2025-08-15 12:02:27,017 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問12 field=歴史 topic=None
+2025-08-15 12:02:27,018 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関...'
+2025-08-15 12:02:27,018 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関連して、 日本の人権...' -> '政治の仕組み'
+2025-08-15 12:02:27,018 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=政治の仕組み
+2025-08-15 12:02:27,018 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ ...'
+2025-08-15 12:02:27,018 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ イ.被選挙権や国民審...' -> '政治の仕組み'
+2025-08-15 12:02:27,018 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問2 field=歴史 topic=政治の仕組み
+2025-08-15 12:02:27,019 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。...'
+2025-08-15 12:02:27,019 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。 せいきゅう ウ. ...' -> '政治の仕組み'
+2025-08-15 12:02:27,019 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問3 field=歴史 topic=政治の仕組み
+2025-08-15 12:02:27,019 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'めいしょう
+下線部⑥に関連して、1999年に男性と女性が対等な立場からあらゆる社会活動に参加し、利益...' -> '1999年の出来事' conf=0.6
+2025-08-15 12:02:27,019 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問4 field=歴史 topic=1999年の出来事
+2025-08-15 12:02:27,020 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問5 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,020 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(インターネット|ソーシャルメディア|SNS|AI|人工知能)' text='級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 ...'
+2025-08-15 12:02:27,020 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 人工知能(AI) か...' -> '政治制度の仕組み'
+2025-08-15 12:02:27,020 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問6 field=公民 topic=政治制度の仕組み
+2025-08-15 12:02:27,021 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問7 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,021 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,022 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問9 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,023 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問10 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,023 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='にあてはまる.*?(人物名|語句|言葉)' text='かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下...'
+2025-08-15 12:02:27,023 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下のア~エからそれぞ
+...' -> '政治制度の仕組み'
+2025-08-15 12:02:27,024 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問11 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:02:27,024 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問12 field=歴史 topic=国土交通省の役割
+2025-08-15 12:02:27,025 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含ん...'
+2025-08-15 12:02:27,025 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含んでおり、その他の住宅...' -> None
+2025-08-15 12:02:27,025 - modules.social_analyzer_fixed - INFO - 設問分析: 大問32-問1 field=総合 topic=None
+2025-08-15 12:02:27,026 - modules.social_analyzer_fixed - INFO - 設問分析: 大問32-問2 field=歴史 topic=中国の王朝
+2025-08-15 12:02:27,026 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 20カテゴリ
+2025-08-15 12:02:27,027 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 12:04:48,341 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2025年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 12:05:12,016 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 12:05:12,032 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 12:05:12,034 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 12:05:12,036 - modules.improved_question_extractor - INFO - 抽出された問題数: 33
+2025-08-15 12:05:12,036 - modules.social_analyzer_fixed - INFO - 改善された抽出器で33問を抽出
+2025-08-15 12:05:12,040 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2 field=歴史 topic=国土交通省の役割
+2025-08-15 12:05:12,041 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問6 field=地理 topic=国土交通省の役割
+2025-08-15 12:05:12,041 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エ...'
+2025-08-15 12:05:12,042 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '(2)この地形図の地形や土地利用について説明した文として正しいものを、次のア~エから1つ選び 記号で...' -> None
+2025-08-15 12:05:12,042 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問7 field=歴史 topic=None
+2025-08-15 12:05:12,042 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,043 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 ...'
+2025-08-15 12:05:12,043 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'じょうきょう 状況としては、 一人あたりの国民総所得 (GNI)が比較的高く、 イタリアやフランスを...' -> None
+2025-08-15 12:05:12,043 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問9 field=地理 topic=None
+2025-08-15 12:05:12,044 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問10 field=地理 topic=国土交通省の役割
+2025-08-15 12:05:12,045 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問11 field=地理 topic=国土交通省の役割
+2025-08-15 12:05:12,046 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあ...'
+2025-08-15 12:05:12,046 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+【あ】にあてはまる人物名を漢字...' -> None
+2025-08-15 12:05:12,046 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=歴史 topic=None
+2025-08-15 12:05:12,047 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問2 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,047 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人...'
+2025-08-15 12:05:12,048 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'きのつらゆき イ.『土佐日記』を書いた紀貫之は、『古今和歌集』 を編さんした1人である。 おうしゅう...' -> None
+2025-08-15 12:05:12,048 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問3 field=歴史 topic=None
+2025-08-15 12:05:12,049 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をお...'
+2025-08-15 12:05:12,049 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '⊕1867 年、江戸幕府の最後の将軍の徳川慶喜が政権を朝廷に返還する大政奉還をおこなった。 そして、...' -> '政治制度の仕組み'
+2025-08-15 12:05:12,049 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問4 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:05:12,049 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(正しい|適切な|誤って|間違って).*?(選び|答え)' text='民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年...'
+2025-08-15 12:05:12,049 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '民権運動がさかんになり、1881年には⑧国会開設の勅諭が出された。 1880 年代後半に繊維工業を ...' -> '政治制度の仕組み'
+2025-08-15 12:05:12,049 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問5 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:05:12,050 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょ...'
+2025-08-15 12:05:12,050 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ウ.新政府軍と旧幕府軍との間で戊辰戦争がおこった。 りょうま とうばく さっちょう エ.土佐藩出身の...' -> '国際関係の変化'
+2025-08-15 12:05:12,050 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問6 field=歴史 topic=国際関係の変化
+2025-08-15 12:05:12,051 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(漢字で答え|ひらがなで答え|カタカナで答え)' text='りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指...'
+2025-08-15 12:05:12,051 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'りょうま とうばく さっちょう エ.土佐藩出身の坂本龍馬らの仲立ちで、倒幕を目指す薩長同盟が結成され...' -> '国際関係の変化'
+2025-08-15 12:05:12,051 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問7 field=歴史 topic=国際関係の変化
+2025-08-15 12:05:12,056 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'じょうきょう
+ふく
+下線部①が発生した理由について、当時のロシアの状況も含めて説明しなさい。...' -> '下線部の特徴' conf=0.5
+2025-08-15 12:05:12,056 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=歴史 topic=下線部の特徴
+2025-08-15 12:05:12,057 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 ...'
+2025-08-15 12:05:12,057 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'の間でサンフランシスコ平和条約を結び、 翌年には独立国としての主権を回復した。 1950年代半ば か...' -> '国際関係の変化'
+2025-08-15 12:05:12,057 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問9 field=歴史 topic=国際関係の変化
+2025-08-15 12:05:12,057 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問10 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,058 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問11 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,059 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石...'
+2025-08-15 12:05:12,059 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'ア. 三種の神器として白黒テレビ・クーラー・自動車が普及した。 てんかん イ.石炭から石油へのエネル...' -> None
+2025-08-15 12:05:12,059 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問12 field=歴史 topic=None
+2025-08-15 12:05:12,059 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関...'
+2025-08-15 12:05:12,059 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '38.6%
+合計
+100%
+『日本国勢図会 2024/25』より作成
+下線部に関連して、 日本の人権...' -> '政治の仕組み'
+2025-08-15 12:05:12,059 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問1 field=公民 topic=政治の仕組み
+2025-08-15 12:05:12,060 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ ...'
+2025-08-15 12:05:12,060 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ア.国から制約を受けることなく、自由に活動する権利を自由権という。 ひせんきょ イ.被選挙権や国民審...' -> '政治の仕組み'
+2025-08-15 12:05:12,060 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問2 field=歴史 topic=政治の仕組み
+2025-08-15 12:05:12,061 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='【[あ-んア-ン]】.*?にあてはまる' text='ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。...'
+2025-08-15 12:05:12,061 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'ひせんきょ イ.被選挙権や国民審査権など国民が政治に参加する権利を参政権という。 せいきゅう ウ. ...' -> '政治の仕組み'
+2025-08-15 12:05:12,061 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問3 field=歴史 topic=政治の仕組み
+2025-08-15 12:05:12,061 - modules.social_analyzer_fixed - INFO - テーマ抽出低信頼度: 'めいしょう
+下線部⑥に関連して、1999年に男性と女性が対等な立場からあらゆる社会活動に参加し、利益...' -> '1999年の出来事' conf=0.6
+2025-08-15 12:05:12,061 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問4 field=歴史 topic=1999年の出来事
+2025-08-15 12:05:12,062 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問5 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,062 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(インターネット|ソーシャルメディア|SNS|AI|人工知能)' text='級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 ...'
+2025-08-15 12:05:12,062 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: '級が参加。重要鉱物や⊕ 半導体の供給網の強化などについて話し合う。 会談では、 人工知能(AI) か...' -> '政治制度の仕組み'
+2025-08-15 12:05:12,062 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問6 field=公民 topic=政治制度の仕組み
+2025-08-15 12:05:12,063 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問7 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,064 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問8 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,065 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問9 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,065 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問10 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,066 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='にあてはまる.*?(人物名|語句|言葉)' text='かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下...'
+2025-08-15 12:05:12,066 - modules.social_analyzer_fixed - INFO - 文脈からテーマ推定: 'かくりょう
+下線部に関連した次の文章の【 A 】【 B 】 にあてはまる語句を下のア~エからそれぞ
+...' -> '政治制度の仕組み'
+2025-08-15 12:05:12,066 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問11 field=歴史 topic=政治制度の仕組み
+2025-08-15 12:05:12,067 - modules.social_analyzer_fixed - INFO - 設問分析: 大問14-問12 field=歴史 topic=国土交通省の役割
+2025-08-15 12:05:12,068 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含ん...'
+2025-08-15 12:05:12,068 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '9.1%
+べっそう
+ふぐ
+※全体の空き家率は、別荘や賃貸のための空き家などを含んでおり、その他の住宅...' -> None
+2025-08-15 12:05:12,068 - modules.social_analyzer_fixed - INFO - 設問分析: 大問32-問1 field=総合 topic=None
+2025-08-15 12:05:12,069 - modules.social_analyzer_fixed - INFO - 設問分析: 大問32-問2 field=歴史 topic=中国の王朝
+2025-08-15 12:05:12,069 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 20カテゴリ
+2025-08-15 12:05:12,070 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
