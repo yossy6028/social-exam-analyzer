@@ -7098,3 +7098,258 @@ mm
 2025-08-15 22:24:19,217 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問5 field=公民 topic=憲法第10条
 2025-08-15 22:24:19,286 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
 2025-08-15 22:24:19,286 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 22:26:59,216 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2023年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 22:27:22,947 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 22:27:22,958 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 22:27:22,959 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 22:27:22,960 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
+2025-08-15 22:27:22,961 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 22:27:22,962 - modules.improved_question_extractor - INFO - 大問構造が不明確なため、問題番号リセットから推定します
+2025-08-15 22:27:22,962 - modules.improved_question_extractor - INFO - 大問構造が見つかりません。全体から問題を抽出します。
+2025-08-15 22:27:22,963 - modules.improved_question_extractor - INFO - 検出された大問構造: {'大問1': 4, '大問2': 14, '大問3': 13, '大問4': 5}
+2025-08-15 22:27:22,963 - modules.improved_question_extractor - INFO - 抽出された問題数: 36
+2025-08-15 22:27:22,963 - modules.social_analyzer_fixed - INFO - 改善された抽出器で36問を抽出
+2025-08-15 22:27:22,967 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='です。何の工場であるか、 次のア~エから1つ選び
+記号で答えなさい。
+1980 ...'
+2025-08-15 22:27:22,967 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'です。何の工場であるか、 次のア~エから1つ選び
+記号で答えなさい。
+1980 17.6%
+6.4 ...' -> None
+2025-08-15 22:27:22,967 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=地形図の読み取り
+2025-08-15 22:27:22,968 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=鎌倉時代の文化
+2025-08-15 22:27:22,968 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=公民 topic=循環型社会
+2025-08-15 22:27:22,968 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=明治時代の特徴
+2025-08-15 22:27:22,968 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=総合 topic=この時代の特徴
+2025-08-15 22:27:22,970 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部⑥に関する次のア~エのできごとを年代順に並び替え、 解答らんに合うように答えなさい。...' -> None
+2025-08-15 22:27:22,972 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=下線部 日本
+2025-08-15 22:27:22,972 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=地理 topic=阪神淡路大震災
+2025-08-15 22:27:22,972 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=歴史 topic=日宋貿易
+2025-08-15 22:27:22,972 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=歴史 topic=鎌倉時代の政治
+2025-08-15 22:27:22,973 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^下線部の(内容|特徴|説明|史料)' text='下線部の史料として正しいものを次のア~エから1つ選び記号で答えなさい。
+≪ア≫...'
+2025-08-15 22:27:22,973 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部の史料として正しいものを次のア~エから1つ選び記号で答えなさい。
+≪ア≫...' -> None
+2025-08-15 22:27:22,973 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:27:22,973 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=歴史 topic=地租改正
+2025-08-15 22:27:22,973 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='【い】にあてはまる人物名を答えなさい。
+そうどう
+けず
+≪ウ≫
+しょばつ
+けんか...'
+2025-08-15 22:27:22,973 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '【い】にあてはまる人物名を答えなさい。
+そうどう
+けず
+≪ウ≫
+しょばつ
+けんかをしたものは、いかな...' -> None
+2025-08-15 22:27:22,973 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:27:22,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問6 field=歴史 topic=新聞記事
+2025-08-15 22:27:22,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問7 field=歴史 topic=勘合 理由
+2025-08-15 22:27:22,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問8 field=地理 topic=農業の特色
+2025-08-15 22:27:22,974 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問9 field=歴史 topic=説明 間違
+2025-08-15 22:27:22,974 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='【あ】にあてはまる人物名を次のア~エから1つ選び記号で答えなさい。...'
+2025-08-15 22:27:22,974 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '【あ】にあてはまる人物名を次のア~エから1つ選び記号で答えなさい。...' -> None
+2025-08-15 22:27:22,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問10 field=公民 topic=政治の仕組み
+2025-08-15 22:27:22,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問11 field=歴史 topic=歴史総合問題
+2025-08-15 22:27:22,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:27:22,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=憲法第70条
+2025-08-15 22:27:22,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=歴史 topic=歴史総合問題
+2025-08-15 22:27:22,975 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=憲法第78条
+2025-08-15 22:27:22,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=歴史 topic=歴史総合問題
+2025-08-15 22:27:22,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=歴史 topic=太平洋地域
+2025-08-15 22:27:22,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:27:22,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問8 field=公民 topic=日本国憲法の原則
+2025-08-15 22:27:22,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問9 field=公民 topic=経済の仕組み
+2025-08-15 22:27:22,976 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問10 field=公民 topic=政治の仕組み
+2025-08-15 22:27:22,977 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問11 field=公民 topic=国際協力
+2025-08-15 22:27:22,977 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問12 field=歴史 topic=社会保障制度
+2025-08-15 22:27:22,977 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='年、プリンストン大学で研究をしていた真鍋淑郎氏がノーベル賞を受賞しました。どの分...'
+2025-08-15 22:27:22,977 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '年、プリンストン大学で研究をしていた真鍋淑郎氏がノーベル賞を受賞しました。どの分
+野での受賞であった...' -> None
+2025-08-15 22:27:22,977 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問13 field=歴史 topic=真鍋淑郎氏
+2025-08-15 22:27:22,977 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2.
+下線部の日本語の名称を次のア~エから1つ選び記号で答えなさい。...'
+2025-08-15 22:27:22,978 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.
+下線部の日本語の名称を次のア~エから1つ選び記号で答えなさい。...' -> None
+2025-08-15 22:27:22,978 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問1 field=総合 topic=None
+2025-08-15 22:27:22,978 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問2 field=公民 topic=社会保障制度
+2025-08-15 22:27:22,978 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問3 field=歴史 topic=核兵器禁止条約
+2025-08-15 22:27:22,978 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^下線部.*?として' text='下線部ⓓ⑥が示す、アメリカ大統領の前政権と現政権の組み合わせとして正しいものを、...'
+2025-08-15 22:27:22,978 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部ⓓ⑥が示す、アメリカ大統領の前政権と現政権の組み合わせとして正しいものを、次のア
+~カから1つ...' -> None
+2025-08-15 22:27:22,979 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問4 field=歴史 topic=核兵器 記号
+2025-08-15 22:27:22,979 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問5 field=公民 topic=憲法第10条
+2025-08-15 22:27:23,047 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
+2025-08-15 22:27:23,048 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 22:37:45,466 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2023年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 22:38:08,911 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 22:38:08,921 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 22:38:08,924 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 22:38:08,925 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
+2025-08-15 22:38:08,926 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 22:38:08,927 - modules.improved_question_extractor - INFO - 大問構造が不明確なため、問題番号リセットから推定します
+2025-08-15 22:38:08,927 - modules.improved_question_extractor - INFO - 大問構造が見つかりません。全体から問題を抽出します。
+2025-08-15 22:38:08,928 - modules.improved_question_extractor - INFO - 検出された大問構造: {'大問1': 4, '大問2': 14, '大問3': 13, '大問4': 5}
+2025-08-15 22:38:08,928 - modules.improved_question_extractor - INFO - 抽出された問題数: 36
+2025-08-15 22:38:08,928 - modules.social_analyzer_fixed - INFO - 改善された抽出器で36問を抽出
+2025-08-15 22:38:08,932 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='です。何の工場であるか、 次のア~エから1つ選び
+記号で答えなさい。
+1980 ...'
+2025-08-15 22:38:08,932 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'です。何の工場であるか、 次のア~エから1つ選び
+記号で答えなさい。
+1980 17.6%
+6.4 ...' -> None
+2025-08-15 22:38:08,932 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=地形図の読み取り
+2025-08-15 22:38:08,933 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=鎌倉時代の文化
+2025-08-15 22:38:08,933 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=公民 topic=循環型社会
+2025-08-15 22:38:08,933 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=明治時代の特徴
+2025-08-15 22:38:08,933 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=総合 topic=この時代の特徴
+2025-08-15 22:38:08,935 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部⑥に関する次のア~エのできごとを年代順に並び替え、 解答らんに合うように答えなさい。...' -> None
+2025-08-15 22:38:08,937 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=下線部 日本
+2025-08-15 22:38:08,937 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=地理 topic=阪神淡路大震災
+2025-08-15 22:38:08,938 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=歴史 topic=日宋貿易
+2025-08-15 22:38:08,938 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=歴史 topic=鎌倉時代の政治
+2025-08-15 22:38:08,938 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^下線部の(内容|特徴|説明|史料)' text='下線部の史料として正しいものを次のア~エから1つ選び記号で答えなさい。
+≪ア≫...'
+2025-08-15 22:38:08,938 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部の史料として正しいものを次のア~エから1つ選び記号で答えなさい。
+≪ア≫...' -> None
+2025-08-15 22:38:08,938 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:38:08,938 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=歴史 topic=地租改正
+2025-08-15 22:38:08,939 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='【い】にあてはまる人物名を答えなさい。
+そうどう
+けず
+≪ウ≫
+しょばつ
+けんか...'
+2025-08-15 22:38:08,939 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '【い】にあてはまる人物名を答えなさい。
+そうどう
+けず
+≪ウ≫
+しょばつ
+けんかをしたものは、いかな...' -> None
+2025-08-15 22:38:08,939 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:38:08,939 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問6 field=歴史 topic=新聞記事
+2025-08-15 22:38:08,939 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問7 field=歴史 topic=勘合 理由
+2025-08-15 22:38:08,940 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問8 field=地理 topic=農業の特色
+2025-08-15 22:38:08,940 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問9 field=歴史 topic=説明 間違
+2025-08-15 22:38:08,940 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='【あ】にあてはまる人物名を次のア~エから1つ選び記号で答えなさい。...'
+2025-08-15 22:38:08,940 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '【あ】にあてはまる人物名を次のア~エから1つ選び記号で答えなさい。...' -> None
+2025-08-15 22:38:08,940 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問10 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:38:08,940 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問11 field=歴史 topic=歴史総合問題
+2025-08-15 22:38:08,940 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:38:08,941 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=憲法第70条
+2025-08-15 22:38:08,941 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=歴史 topic=歴史総合問題
+2025-08-15 22:38:08,941 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=憲法第78条
+2025-08-15 22:38:08,941 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=歴史 topic=歴史総合問題
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=歴史 topic=太平洋地域
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問8 field=公民 topic=日本国憲法の原則
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問9 field=公民 topic=経済の仕組み
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問10 field=公民 topic=政治の仕組み
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問11 field=公民 topic=国際協力
+2025-08-15 22:38:08,942 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問12 field=歴史 topic=社会保障制度
+2025-08-15 22:38:08,943 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='年、プリンストン大学で研究をしていた真鍋淑郎氏がノーベル賞を受賞しました。どの分...'
+2025-08-15 22:38:08,943 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '年、プリンストン大学で研究をしていた真鍋淑郎氏がノーベル賞を受賞しました。どの分
+野での受賞であった...' -> None
+2025-08-15 22:38:08,943 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問13 field=歴史 topic=真鍋淑郎氏
+2025-08-15 22:38:08,943 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2.
+下線部の日本語の名称を次のア~エから1つ選び記号で答えなさい。...'
+2025-08-15 22:38:08,943 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.
+下線部の日本語の名称を次のア~エから1つ選び記号で答えなさい。...' -> None
+2025-08-15 22:38:08,943 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問1 field=総合 topic=None
+2025-08-15 22:38:08,943 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問2 field=公民 topic=基本的人権
+2025-08-15 22:38:08,944 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問3 field=歴史 topic=核兵器禁止条約
+2025-08-15 22:38:08,944 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^下線部.*?として' text='下線部ⓓ⑥が示す、アメリカ大統領の前政権と現政権の組み合わせとして正しいものを、...'
+2025-08-15 22:38:08,944 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部ⓓ⑥が示す、アメリカ大統領の前政権と現政権の組み合わせとして正しいものを、次のア
+~カから1つ...' -> None
+2025-08-15 22:38:08,944 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問4 field=歴史 topic=核兵器 記号
+2025-08-15 22:38:08,945 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問5 field=公民 topic=憲法第10条
+2025-08-15 22:38:09,011 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
+2025-08-15 22:38:09,011 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 22:40:11,781 - modules.ocr_handler - INFO - PDFを処理中: /Users/yoshiikatsuhiko/Desktop/01_仕事 (Work)/オンライン家庭教師資料/過去問/日本工業大学駒場中学校/2023年日本工業大学駒場中学校問題_社会.pdf
+2025-08-15 22:40:34,876 - modules.ocr_handler - INFO - Google Cloud Vision APIでテキスト抽出成功
+2025-08-15 22:40:34,888 - modules.social_analyzer_fixed - INFO - 強化版テーマ抽出器を使用します（Web検索無効）
+2025-08-15 22:40:34,891 - modules.social_analyzer_fixed - INFO - 改善された問題抽出器を使用します
+2025-08-15 22:40:34,892 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
+2025-08-15 22:40:34,893 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md
+2025-08-15 22:40:34,894 - modules.improved_question_extractor - INFO - 大問構造が不明確なため、問題番号リセットから推定します
+2025-08-15 22:40:34,894 - modules.improved_question_extractor - INFO - 大問構造が見つかりません。全体から問題を抽出します。
+2025-08-15 22:40:34,895 - modules.improved_question_extractor - INFO - 検出された大問構造: {'大問1': 4, '大問2': 14, '大問3': 13, '大問4': 5}
+2025-08-15 22:40:34,895 - modules.improved_question_extractor - INFO - 抽出された問題数: 36
+2025-08-15 22:40:34,895 - modules.social_analyzer_fixed - INFO - 改善された抽出器で36問を抽出
+2025-08-15 22:40:34,898 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='です。何の工場であるか、 次のア~エから1つ選び
+記号で答えなさい。
+1980 ...'
+2025-08-15 22:40:34,898 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: 'です。何の工場であるか、 次のア~エから1つ選び
+記号で答えなさい。
+1980 17.6%
+6.4 ...' -> None
+2025-08-15 22:40:34,899 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問1 field=地理 topic=地形図の読み取り
+2025-08-15 22:40:34,899 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問2 field=歴史 topic=鎌倉時代の文化
+2025-08-15 22:40:34,900 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問3 field=公民 topic=循環型社会
+2025-08-15 22:40:34,900 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問4 field=歴史 topic=明治時代の特徴
+2025-08-15 22:40:34,900 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問5 field=総合 topic=この時代の特徴
+2025-08-15 22:40:34,902 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部⑥に関する次のア~エのできごとを年代順に並び替え、 解答らんに合うように答えなさい。...' -> None
+2025-08-15 22:40:34,904 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問6 field=歴史 topic=下線部 日本
+2025-08-15 22:40:34,904 - modules.social_analyzer_fixed - INFO - 設問分析: 大問1-問7 field=地理 topic=阪神淡路大震災
+2025-08-15 22:40:34,904 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問1 field=歴史 topic=日宋貿易
+2025-08-15 22:40:34,904 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問2 field=歴史 topic=鎌倉時代の政治
+2025-08-15 22:40:34,904 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^下線部の(内容|特徴|説明|史料)' text='下線部の史料として正しいものを次のア~エから1つ選び記号で答えなさい。
+≪ア≫...'
+2025-08-15 22:40:34,904 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部の史料として正しいものを次のア~エから1つ選び記号で答えなさい。
+≪ア≫...' -> None
+2025-08-15 22:40:34,904 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問3 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:40:34,905 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問4 field=歴史 topic=地租改正
+2025-08-15 22:40:34,905 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='【い】にあてはまる人物名を答えなさい。
+そうどう
+けず
+≪ウ≫
+しょばつ
+けんか...'
+2025-08-15 22:40:34,905 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '【い】にあてはまる人物名を答えなさい。
+そうどう
+けず
+≪ウ≫
+しょばつ
+けんかをしたものは、いかな...' -> None
+2025-08-15 22:40:34,905 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問5 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:40:34,906 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問6 field=歴史 topic=新聞記事
+2025-08-15 22:40:34,906 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問7 field=歴史 topic=勘合 理由
+2025-08-15 22:40:34,906 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問8 field=地理 topic=農業の特色
+2025-08-15 22:40:34,906 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問9 field=歴史 topic=説明 間違
+2025-08-15 22:40:34,906 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^(問\d+|【[あ-おア-オ]】|\([あ-おア-オ]\))' text='【あ】にあてはまる人物名を次のア~エから1つ選び記号で答えなさい。...'
+2025-08-15 22:40:34,906 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '【あ】にあてはまる人物名を次のア~エから1つ選び記号で答えなさい。...' -> None
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問10 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問2-問11 field=歴史 topic=歴史総合問題
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問1 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問2 field=公民 topic=憲法第70条
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問3 field=歴史 topic=歴史総合問題
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問4 field=公民 topic=憲法第78条
+2025-08-15 22:40:34,907 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問5 field=歴史 topic=歴史総合問題
+2025-08-15 22:40:34,908 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問6 field=歴史 topic=太平洋地域
+2025-08-15 22:40:34,908 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問7 field=歴史 topic=昭和戦後時代の特徴
+2025-08-15 22:40:34,908 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問8 field=公民 topic=日本国憲法の原則
+2025-08-15 22:40:34,908 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問9 field=公民 topic=経済の仕組み
+2025-08-15 22:40:34,908 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問10 field=公民 topic=政治の仕組み
+2025-08-15 22:40:34,909 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問11 field=公民 topic=国際協力
+2025-08-15 22:40:34,909 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問12 field=歴史 topic=社会保障制度
+2025-08-15 22:40:34,909 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='年、プリンストン大学で研究をしていた真鍋淑郎氏がノーベル賞を受賞しました。どの分...'
+2025-08-15 22:40:34,909 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '年、プリンストン大学で研究をしていた真鍋淑郎氏がノーベル賞を受賞しました。どの分
+野での受賞であった...' -> None
+2025-08-15 22:40:34,909 - modules.social_analyzer_fixed - INFO - 設問分析: 大問3-問13 field=歴史 topic=真鍋淑郎氏
+2025-08-15 22:40:34,910 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='(記号で答え|番号で答え|選択肢)' text='2.
+下線部の日本語の名称を次のア~エから1つ選び記号で答えなさい。...'
+2025-08-15 22:40:34,910 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '2.
+下線部の日本語の名称を次のア~エから1つ選び記号で答えなさい。...' -> None
+2025-08-15 22:40:34,910 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問1 field=総合 topic=None
+2025-08-15 22:40:34,910 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問2 field=公民 topic=基本的人権
+2025-08-15 22:40:34,910 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問3 field=歴史 topic=核兵器禁止条約
+2025-08-15 22:40:34,910 - modules.theme_extractor_v2 - INFO - テーマ除外: pattern='^下線部.*?として' text='下線部ⓓ⑥が示す、アメリカ大統領の前政権と現政権の組み合わせとして正しいものを、...'
+2025-08-15 22:40:34,910 - modules.social_analyzer_fixed - INFO - テーマ抽出なし: '下線部ⓓ⑥が示す、アメリカ大統領の前政権と現政権の組み合わせとして正しいものを、次のア
+~カから1つ...' -> None
+2025-08-15 22:40:34,911 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問4 field=歴史 topic=核兵器 記号
+2025-08-15 22:40:34,911 - modules.social_analyzer_fixed - INFO - 設問分析: 大問4-問5 field=公民 topic=憲法第10条
+2025-08-15 22:40:34,978 - modules.theme_knowledge_base - INFO - 歴史分野のキーワード更新: 18カテゴリ
+2025-08-15 22:40:34,979 - modules.theme_knowledge_base - INFO - Successfully loaded subject_index.md

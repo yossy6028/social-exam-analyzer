@@ -356,20 +356,8 @@ class SocialExamAnalyzerGUI:
                                     break
                         except Exception:
                             keywords = []
-                        # 関連語候補
-                        related = []
-                        try:
-                            related = self.theme_knowledge.suggest_related_terms(theme, field, limit=3)
-                        except Exception:
-                            related = []
-                        if keywords and related:
-                            related = [r for r in related if r not in keywords]
-                        if keywords and related:
-                            self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords[:5])} | 関連語候補: {'、'.join(related)}\n")
-                        elif keywords:
+                        if keywords:
                             self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords[:5])}\n")
-                        elif related:
-                            self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}] | 関連語候補: {'、'.join(related)}\n")
                         else:
                             self.result_text.insert(tk.END, f"  {display_num}: {theme} [{field}]\n")
                 else:
@@ -734,17 +722,10 @@ if __name__ == "__main__":
                         theme = q.topic
                     else:
                         theme = theme_kb.determine_theme(question_text[:200], field_name)
-                    # 主要語・関連語候補
+                    # 主要語のみ
                     keywords = theme_kb.extract_important_terms(question_text or '', field_name, limit=5)
-                    related = theme_kb.suggest_related_terms(theme, field_name, limit=3)
-                    if keywords and related:
-                        related = [r for r in related if r not in keywords]
-                    if keywords and related:
-                        output_lines.append(f"  {question_num}: {theme} [{field_name}] | 主要語: {'、'.join(keywords[:5])} | 関連語候補: {'、'.join(related)}")
-                    elif keywords:
+                    if keywords:
                         output_lines.append(f"  {question_num}: {theme} [{field_name}] | 主要語: {'、'.join(keywords[:5])}")
-                    elif related:
-                        output_lines.append(f"  {question_num}: {theme} [{field_name}] | 関連語候補: {'、'.join(related)}")
                     else:
                         output_lines.append(f"  {question_num}: {theme} [{field_name}]")
                 

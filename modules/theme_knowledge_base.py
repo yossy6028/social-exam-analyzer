@@ -333,13 +333,29 @@ class ThemeKnowledgeBase:
             est_field, _score = self.estimate_field(text)
             field = est_field or '総合'
         
-        # まず主題インデックス照合に基づく厳密判定（根拠語ベース）
+        # 0) 高特異語（subject_index外を含む）が本文に出現している場合は最優先でその語をテーマに採用
+        try:
+            hs_set = None
+            if field in ('地理','歴史','公民'):
+                hs_set = self.high_specific_terms.get(field, set())
+            else:
+                from itertools import chain
+                hs_set = set(chain.from_iterable(self.high_specific_terms.values()))
+            hits = [w for w in hs_set if w and (w in text)]
+            if hits:
+                # より具体的な語（文字数の長いもの）を優先
+                hits.sort(key=lambda s: (-len(s), s))
+                return hits[0]
+        except Exception:
+            pass
+
+        # 1) 主題インデックス照合に基づく厳密判定（根拠語ベース）
         strict = self._strict_match_subject_index(text, field)
         if strict and strict.get('score', 0) >= 2:
             logger.debug(f"strict theme matched: {strict}")
             return strict['theme']
 
-        # 分野別の詳細なテーマ決定
+        # 2) 分野別の詳細なテーマ決定
         if field == '歴史':
             return self._determine_history_theme(text)
         elif field == '地理':

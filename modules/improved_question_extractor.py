@@ -27,10 +27,13 @@ class ImprovedQuestionExtractor:
         ]
         
         # 小問パターン（優先順位順）
+        circ = '①②③④⑤⑥⑦⑧⑨⑩'
         self.minor_patterns = [
-            re.compile(r'問\s*([０-９\d]+)[\s\.\:：　]*(.+?)(?=問\s*[０-９\d]+|$)', re.DOTALL),
-            re.compile(r'\(([０-９\d]+)\)\s*(.+?)(?=\([０-９\d]+\)|$)', re.DOTALL),
-            re.compile(r'設問\s*([０-９\d]+)[\s\.\:：　]*(.+?)(?=設問\s*[０-９\d]+|$)', re.DOTALL),
+            # 問1 / 問１ / 問① に対応
+            re.compile(rf'問\s*([０-９\d{circ}]+)[\s\.\:：　]*(.+?)(?=問\s*[０-９\d{circ}]+|$)', re.DOTALL),
+            # (1) / (１) / (①)
+            re.compile(rf'\(([０-９\d{circ}]+)\)\s*(.+?)(?=\([０-９\d{circ}]+\)|$)', re.DOTALL),
+            re.compile(rf'設問\s*([０-９\d{circ}]+)[\s\.\:：　]*(.+?)(?=設問\s*[０-９\d{circ}]+|$)', re.DOTALL),
         ]
         
         # クリーニングパターン
@@ -257,9 +260,16 @@ class ImprovedQuestionExtractor:
         return result
     
     def _normalize_number(self, num_str: str) -> str:
-        """全角数字を半角に変換"""
+        """全角数字と丸数字を半角に変換"""
         trans_table = str.maketrans('０１２３４５６７８９', '0123456789')
-        return num_str.translate(trans_table)
+        s = num_str.translate(trans_table)
+        circ_map = {
+            '①':'1','②':'2','③':'3','④':'4','⑤':'5',
+            '⑥':'6','⑦':'7','⑧':'8','⑨':'9','⑩':'10'
+        }
+        for k,v in circ_map.items():
+            s = s.replace(k, v)
+        return s
     
     def _clean_question_text(self, text: str) -> str:
         """問題文をクリーニング"""
@@ -303,8 +313,9 @@ class ImprovedQuestionExtractor:
         unique_questions = []
         
         for q_num, q_text in questions:
-            # 問題文の最初の50文字をキーとして使用
-            key = q_text[:50] if len(q_text) > 50 else q_text
+            # 問題番号 + 先頭テキストで重複判定（同文頭の小問が潰れないようにする）
+            head = q_text[:80] if len(q_text) > 80 else q_text
+            key = f"{q_num}|{head}"
             if key not in seen:
                 seen.add(key)
                 unique_questions.append((q_num, q_text))

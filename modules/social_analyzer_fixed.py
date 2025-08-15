@@ -1004,7 +1004,7 @@ class FixedSocialAnalyzer(BaseSocialAnalyzer):
         
         # キーワードが含まれているか、または一定以上の長さがある場合はOK
         has_keywords = any(keyword in text for keyword in question_keywords)
-        is_long_enough = len(text.strip()) >= 50
+        is_long_enough = len(text.strip()) >= 30
         
         return has_keywords or is_long_enough
     

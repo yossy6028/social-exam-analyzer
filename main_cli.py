@@ -239,21 +239,8 @@ class SocialExamAnalyzerCLI:
                                 display_num = f"問{m.group(2)}"
                         except Exception:
                             pass
-                        # 関連語候補（subject_index由来、出現有無に関わらず提示）
-                        related = []
-                        try:
-                            related = self.theme_knowledge.suggest_related_terms(theme, field, limit=3)
-                        except Exception:
-                            related = []
-                        # 既存の主要語と重複は省く
-                        if keywords and related:
-                            related = [r for r in related if r not in keywords]
-                        if keywords and related:
-                            print(f"    {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)} | 関連語候補: {'、'.join(related)}")
-                        elif keywords:
+                        if keywords:
                             print(f"    {display_num}: {theme} [{field}] | 主要語: {'、'.join(keywords)}")
-                        elif related:
-                            print(f"    {display_num}: {theme} [{field}] | 関連語候補: {'、'.join(related)}")
                         else:
                             print(f"    {display_num}: {theme} [{field}]")
                 else:
