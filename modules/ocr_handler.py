@@ -25,8 +25,13 @@ class OCRHandler:
         try:
             from google.cloud import vision
             # ADC（Application Default Credentials）の確認
-            client = vision.ImageAnnotatorClient()
+            # ここでは実際にclientを作成しない（リソース節約のため）
+            # importが成功すれば利用可能と判断
+            logger.info("Google Cloud Vision APIが利用可能です")
             return True
+        except ImportError as e:
+            logger.info(f"Google Cloud Vision APIモジュールが見つかりません: {e}")
+            return False
         except Exception as e:
             logger.info(f"Google Cloud Vision API利用不可: {e}")
             return False
@@ -43,24 +48,33 @@ class OCRHandler:
         # 複数の方法でテキスト抽出を試行
         text = None
         
-        # 1. Google Cloud Vision APIを試行
+        # 1. Google Cloud Vision APIを最優先で試行（日本語PDFに最適）
         if self.use_google_vision:
+            logger.debug("Google Cloud Vision APIを試行中...")
             text = self._extract_with_google_vision(pdf_path)
-            if text:
+            if text and len(text.strip()) > 100:  # 有効なテキストかチェック
                 logger.info("Google Cloud Vision APIでテキスト抽出成功")
                 return self._normalize_ocr_text(text)
+            elif text:
+                logger.warning(f"Google Cloud Vision APIの抽出結果が短すぎます: {len(text)}文字")
         
-        # 2. pdfplumberを試行
+        # 2. pdfplumberを試行（バックアップ）
+        logger.debug("pdfplumberを試行中...")
         text = self._extract_with_pdfplumber(pdf_path)
-        if text:
+        if text and len(text.strip()) > 100:  # 有効なテキストかチェック
             logger.info("pdfplumberでテキスト抽出成功")
             return self._normalize_ocr_text(text)
+        elif text:
+            logger.warning(f"pdfplumberの抽出結果が短すぎます: {len(text)}文字")
         
-        # 3. pdftotextコマンドを試行
+        # 3. pdftotextコマンドを試行（最終手段）
+        logger.debug("pdftotextを試行中...")
         text = self._extract_with_pdftotext(pdf_path)
-        if text:
+        if text and len(text.strip()) > 100:  # 有効なテキストかチェック
             logger.info("pdftotextでテキスト抽出成功")
             return self._normalize_ocr_text(text)
+        elif text:
+            logger.warning(f"pdftotextの抽出結果が短すぎます: {len(text)}文字")
         
         # 4. すべて失敗した場合はダミーテキストを返す
         logger.warning("PDF処理に失敗しました。ダミーテキストを使用します")
@@ -95,7 +109,19 @@ class OCRHandler:
         # 連続改行の整理
         t = re.sub(r'\n{3,}', '\n\n', t)
         # 行内の多重空白を整理
-        t = re.sub(r'[ \t]{2,}', ' ', t)
+        t = re.sub(r'[ 	]{2,}', ' ', t)
+        
+        # OCR誤認識の修正
+        # 「そくせい」→「促成」
+        t = t.replace('そくせい', '促成')
+        
+        # 「オバマオ」「オバマウ」→「オバマ」
+        t = re.sub(r'オバマ[オウ]', 'オバマ', t)
+        
+        # 「ーバイデン」→「バイデン」（先頭の長音記号を削除）
+        t = re.sub(r'(?<=\s)ー([ァ-ヴ])', r'\1', t)
+        t = re.sub(r'^ー([ァ-ヴ])', r'\1', t, flags=re.MULTILINE)
+        
         return t
     
     def _extract_with_google_vision(self, pdf_path: str) -> Optional[str]:
@@ -107,11 +133,14 @@ class OCRHandler:
             
             client = vision.ImageAnnotatorClient()
             
-            # PDFを画像に変換
+            # PDFを画像に変換（全ページ）
+            logger.info(f"PDFを画像に変換中...")
             images = convert_from_path(pdf_path, dpi=300)
             all_text = []
             
+            logger.info(f"合計{len(images)}ページを処理します")
             for i, image in enumerate(images):
+                logger.debug(f"ページ{i+1}/{len(images)}を処理中...")
                 # 画像をバイト列に変換
                 byte_io = io.BytesIO()
                 image.save(byte_io, format='PNG')
@@ -125,7 +154,11 @@ class OCRHandler:
                 )
                 
                 if response.text_annotations:
-                    all_text.append(response.text_annotations[0].description)
+                    page_text = response.text_annotations[0].description
+                    logger.debug(f"ページ{i+1}: {len(page_text)}文字抽出")
+                    all_text.append(page_text)
+                else:
+                    logger.debug(f"ページ{i+1}: テキストなし")
             
             return "\n".join(all_text) if all_text else None
             

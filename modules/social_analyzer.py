@@ -69,7 +69,12 @@ class SocialQuestion:
     keywords: List[str] = dataclass_field(default_factory=list)
     time_period: Optional[str] = None  # 歴史の時代
     region: Optional[str] = None  # 地理の地域
-    topic: Optional[str] = None  # 主題
+    theme: Optional[str] = None  # 主題
+    topic: Optional[str] = None  # テーマ（themeの別名、互換性のため）
+    hierarchy_level: int = -1  # 階層レベル（0:大問, 1:中問, 2:小問）
+    hierarchy_id: str = ""  # 階層ID
+    parent_id: Optional[str] = None  # 親問題のID
+    gemini_analyzed: bool = False  # Geminiで分析済みかどうか
 
 
 class SocialAnalyzer:
@@ -80,6 +85,15 @@ class SocialAnalyzer:
         self.resource_patterns = self._initialize_resource_patterns()
         self.format_patterns = self._initialize_format_patterns()
         self.current_affairs_keywords = self._initialize_current_affairs_keywords()
+        
+        # Gemini分析器を初期化（利用可能な場合）
+        try:
+            from .gemini_theme_analyzer import GeminiThemeAnalyzer
+            self.gemini_analyzer = GeminiThemeAnalyzer()
+            logger.info("Gemini分析器を初期化しました")
+        except Exception as e:
+            self.gemini_analyzer = None
+            logger.warning(f"Gemini分析器の初期化をスキップ: {e}")
         
         # 改善されたテーマ抽出器を初期化
         if USE_V2_EXTRACTOR:
@@ -210,7 +224,9 @@ class SocialAnalyzer:
         elif question.field == SocialField.GEOGRAPHY:
             question.region = self._extract_region(question_text)
         
-        question.topic = self._extract_topic(question_text)
+        question.theme = self._extract_topic(question_text)
+        # topicとthemeを同期（互換性のため）
+        question.topic = question.theme
         
         return question
     
@@ -387,6 +403,22 @@ class SocialAnalyzer:
         """重要キーワードを抽出（詳細版）"""
         keywords = []
         
+        # 重要な複合語（2文字+2文字の漢字）を優先的に抽出
+        # 例: 促成栽培、近郊農業、循環型社会など
+        compound_words = re.findall(r'[一-龥]{2,4}(?:栽培|農業|社会|産業|工業|漁業|商業)', text)
+        keywords.extend(compound_words)
+        
+        # 時代名（○○時代）
+        periods = re.findall(r'[一-龥ぁ-ん]{2,4}時代', text)
+        keywords.extend(periods)
+        
+        # 歴史的建造物・施設（○○式○○、○○倉庫など）
+        structures = re.findall(r'[一-龥]{2,4}式[一-龥]{2,4}', text)
+        keywords.extend(structures)
+        # 倉庫単体も抽出
+        warehouses = re.findall(r'[一-龥]{2,4}倉庫', text)
+        keywords.extend(warehouses)
+        
         # 固有名詞（カタカナ、漢字の連続）を抽出
         katakana = re.findall(r'[ァ-ヴー]{3,}', text)
         keywords.extend(katakana)
@@ -419,7 +451,28 @@ class SocialAnalyzer:
         persons = re.findall(r'([ぁ-ん]*[一-龥]{2,4}(?:天皇|将軍|上皇|法皇))', text)
         keywords.extend(persons)
         
-        return list(set(keywords))[:20]  # 重複を除いて最大20個
+        # 重複を除去しつつ、出現順序を保持
+        seen = set()
+        unique_keywords = []
+        for kw in keywords:
+            if kw and kw not in seen and len(kw) >= 2:  # 2文字以上の語句のみ
+                seen.add(kw)
+                unique_keywords.append(kw)
+        
+        # 重要度でソート（複合語を優先）
+        # 1. 4文字以上の複合語
+        # 2. 「栽培」「農業」などを含む語
+        # 3. その他
+        def keyword_priority(kw):
+            if any(suffix in kw for suffix in ['栽培', '農業', '産業', '工業', '社会']):
+                return 0  # 最優先
+            elif len(kw) >= 4:
+                return 1  # 次に優先
+            else:
+                return 2  # その他
+        
+        unique_keywords.sort(key=keyword_priority)
+        return unique_keywords[:20]  # 最大20個
     
     def _extract_time_period(self, text: str) -> Optional[str]:
         """歴史問題から時代を抽出"""
@@ -882,6 +935,112 @@ class SocialAnalyzer:
             'statistics': stats,
             'total_questions': len(analyzed_questions)
         }
+
+    def analyze_document_with_hierarchy(self, text: str, hierarchical_questions: List[Dict]) -> Dict[str, Any]:
+        """階層構造を考慮した文書分析
+        
+        Args:
+            text: OCRで取得した全文テキスト
+            hierarchical_questions: 階層管理システムで抽出した問題リスト
+            
+        Returns:
+            分析結果の辞書
+        """
+        # 各問題を分析
+        analyzed_questions = []
+        
+        for h_question in hierarchical_questions:
+            # 階層情報から正しい問題番号を取得
+            question_number = h_question['number']
+            question_text = h_question.get('text', '')
+            
+            # テキストが短い場合、元のOCRテキストから周辺文脈を取得
+            if len(question_text) < 50 and text:
+                # 問題番号の周辺テキストを抽出
+                import re
+                pattern = re.escape(question_number) + r'.{0,500}'
+                match = re.search(pattern, text)
+                if match:
+                    question_text = match.group()
+            
+            # 問題を分析（階層情報付き）
+            analyzed_q = self.analyze_question(question_text, question_number)
+            
+            # 階層レベル情報を追加
+            analyzed_q.hierarchy_level = h_question.get('level', -1)
+            analyzed_q.hierarchy_id = h_question.get('id', '')
+            analyzed_q.parent_id = h_question.get('parent_id', None)
+            
+            analyzed_questions.append(analyzed_q)
+        
+        # 総合と判定された問題を再評価
+        analyzed_questions = self._reevaluate_mixed_questions(analyzed_questions)
+        
+        # Gemini APIが利用可能な場合、追加の高精度分析
+        if hasattr(self, 'gemini_analyzer') and self.gemini_analyzer and self.gemini_analyzer.api_enabled:
+            try:
+                # Geminiで全問題を総括的に分析
+                questions_for_gemini = []
+                for q in analyzed_questions:
+                    questions_for_gemini.append({
+                        'question_number': q.number,
+                        'text': q.text[:500],  # 最初の500文字
+                        'field': q.field.value,
+                        'topic': q.topic or ''
+                    })
+                
+                # Geminiで精緻化
+                refined_questions = self.gemini_analyzer.analyze_all_questions(questions_for_gemini)
+                
+                # 結果を反映
+                for i, refined in enumerate(refined_questions):
+                    if i < len(analyzed_questions):
+                        if 'topic' in refined and refined['topic']:
+                            # OCRフラグメントでなければ更新
+                            if not self._is_ocr_fragment(refined['topic']):
+                                analyzed_questions[i].topic = refined['topic']
+                        if 'gemini_analyzed' in refined:
+                            analyzed_questions[i].gemini_analyzed = refined['gemini_analyzed']
+            except Exception as e:
+                logger.warning(f"Gemini精緻化スキップ: {e}")
+        
+        # 統計情報を集計
+        stats = self._calculate_statistics(analyzed_questions)
+        
+        return {
+            'questions': analyzed_questions,
+            'statistics': stats,
+            'total_questions': len(analyzed_questions),
+            'hierarchy_info': {
+                'total_major': len([q for q in analyzed_questions if q.hierarchy_level == 0]),
+                'total_minor': len([q for q in analyzed_questions if q.hierarchy_level == 1]),
+                'total_sub': len([q for q in analyzed_questions if q.hierarchy_level == 2])
+            }
+        }
+    
+    def _is_ocr_fragment(self, text: str) -> bool:
+        """OCRフラグメントかどうかを判定"""
+        if not text:
+            return True
+        
+        fragment_patterns = [
+            r'^記号\s+\w+$',
+            r'^\w{2,4}県\w{1,2}$',
+            r'^[ぁ-ん]+以外$',
+            r'^下線部\s*\w*$',
+            r'^\w+\s+下線部$',
+            r'^[ア-ンA-Z]\s+',
+            r'^\d+年\w{1,2}$',
+            r'^第\d+[条項]$',
+            r'^新詳\w+$',
+        ]
+        
+        import re
+        for pattern in fragment_patterns:
+            if re.match(pattern, text):
+                return True
+        
+        return len(text) <= 2 or re.match(r'^[\W_]+$', text)
     
     def _reevaluate_mixed_questions(self, questions: List[SocialQuestion]) -> List[SocialQuestion]:
         """総合と判定された問題を再評価し、全体の傾向に基づいて分野を調整"""

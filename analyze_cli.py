@@ -174,7 +174,7 @@ def analyze_pdf(pdf_path: str, school_name: str, year: str):
                         grouped_themes[major_num] = []
                     
                     # テーマがない場合は推定
-                    topic = q.topic
+                    topic = q.theme
                     if not topic:
                         base_text = getattr(q, 'original_text', None) or q.text
                         topic = infer_fallback_theme(base_text, q.field.value, theme_knowledge)

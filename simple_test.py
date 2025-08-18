@@ -24,4 +24,4 @@ result = analyzer.analyze_document(test_text)
 print(f"検出された問題数: {result['total_questions']}")
 print("\nテーマ一覧:")
 for q in result['questions']:
-    print(f"  {q.number}: {q.topic if q.topic else '（なし）'}")
+    print(f"  {q.number}: {q.theme if q.theme else '（なし）'}")

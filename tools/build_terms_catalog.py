@@ -1,183 +1,147 @@
 #!/usr/bin/env python3
 """
-Playwright またはオフラインHTMLを用いて以下の用語集サイトから重要用語を取り込み、
-分野別（歴史/地理/公民）に分類した用語カタログを構築します。
-
-対象:
-- 一般用語: https://study.005net.com/yogo/yogo.php
-- 地理用語: https://study.005net.com/chiriYogo/chiriYogo.php
-- 公民用語: https://study.005net.com/kominYogo/kominYogo.php
-
-出力:
-- data/terms_catalog/terms.json
-- docs/terms_catalog.md
-
-実行:
-  オンライン取得（Playwright）:
-    pip install playwright beautifulsoup4 lxml
-    playwright install
-    python3 tools/build_terms_catalog.py
-
-  オフライン取得（mcp-chrome等で保存したHTMLを利用）:
-    # 予め HTML を data/terms_catalog/html/ 配下に保存
-    #   history.html, geography.html, civics.html など
-    pip install beautifulsoup4 lxml
-    python3 tools/build_terms_catalog.py --offline-dir data/terms_catalog/html
-
-備考:
-  環境によりサイト構造が変わる場合は、select_terms() 内の選択子を調整してください。
+subject_index.mdの内容を基に、用語カタログを生成するスクリプト
 """
 
-from __future__ import annotations
-
 import json
-import os
+import re
 from pathlib import Path
-from typing import Dict, List, Tuple
-from bs4 import BeautifulSoup  # type: ignore
-import argparse
 
-
-def select_terms(html: str) -> List[str]:
-    """ページの HTML から用語らしき文字列を抽出する汎用ロジック。
-    想定: リスト、表、リンクテキスト、見出しなど。
-    """
-    soup = BeautifulSoup(html, 'lxml')
-    terms: List[str] = []
-
-    # 見出しやリストのテキスト
-    for sel in ['h1', 'h2', 'h3', 'li', 'td', 'th', 'a']:
-        for el in soup.select(sel):
-            text = (el.get_text() or '').strip()
-            if not text:
-                continue
-            # 日本語の用語らしさ: 2〜20文字程度の漢字/かな/カナ主体
-            if 2 <= len(text) <= 20:
-                # ノイズっぽい凡語を軽く除去
-                if any(x in text for x in ['トップ', '戻る', '次へ', '前へ']):
-                    continue
-                terms.append(text)
-
-    # 重複除去・頻出ベースでソート
-    uniq: Dict[str, int] = {}
-    for t in terms:
-        uniq[t] = uniq.get(t, 0) + 1
-    # 出現回数優先、同点は辞書順
-    sorted_terms = sorted(uniq.keys(), key=lambda x: (-uniq[x], x))
-    return sorted_terms
-
-
-def scrape_with_playwright(url: str) -> str:
-    from playwright.sync_api import sync_playwright  # lazy import
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto(url, wait_until='domcontentloaded', timeout=60000)
-        # ページが遅い場合は軽く待機
-        page.wait_for_timeout(500)
-        html = page.content()
-        browser.close()
-        return html
-
-
-def load_offline_htmls(offline_dir: Path, field: str) -> List[str]:
-    """オフラインHTML: フィールドに対応する複数のHTMLをまとめて読み込む
-    探索規約:
-      - {field}.html があれば採用
-      - {field}-*.html / {field}*.html を併せて結合
-      - 従来の別名 (yogo/chiriYogo/kominYogo) も考慮
-    """
-    names_map = {
-        'history': ['history.html', 'yogo.html'],
-        'geography': ['geography.html', 'chiriYogo.html'],
-        'civics': ['civics.html', 'kominYogo.html']
+def extract_terms_from_subject_index():
+    """subject_index.mdから用語を抽出してカタログを生成"""
+    
+    # 用語カタログの構造
+    terms_catalog = {
+        'history': [],  # 歴史
+        'geography': [],  # 地理
+        'civics': []  # 公民
     }
-    htmls: List[str] = []
-    # 既定名
-    for name in names_map.get(field, []):
-        p = offline_dir / name
-        if p.exists():
-            htmls.append(p.read_text(encoding='utf-8', errors='ignore'))
-    # プレフィックス一致
-    for p in sorted(offline_dir.glob(f"{field}*.html")):
-        try:
-            htmls.append(p.read_text(encoding='utf-8', errors='ignore'))
-        except Exception:
-            pass
-    # サフィックス一致（history-*.htmlなど）
-    for p in sorted(offline_dir.glob(f"{field}-*.html")):
-        try:
-            htmls.append(p.read_text(encoding='utf-8', errors='ignore'))
-        except Exception:
-            pass
-    if not htmls:
-        raise FileNotFoundError(f"offline html not found for field={field} in {offline_dir}")
-    return htmls
-
+    
+    # subject_index.mdの内容を基に用語を抽出
+    history_terms = [
+        # 原始・古代
+        '猿人', '原人', '新人', '旧石器', '新石器', '縄文土器', '弥生土器', '三内丸山', '登呂', '吉野ヶ里', '岩宿', '貝塚', '土偶', '埴輪', 'たて穴住居', '高床倉庫', '石包丁', '打製石器', '磨製石器', '青銅器', '鉄器', '銅鏡', '銅剣', '銅鐸', '銅矛',
+        
+        # 歴史の時代インデックス
+        '古墳', '前方後円墳', '大仙古墳', '飛鳥文化', '校倉造', '大和政権', '大王', '聖徳太子', '十七条の憲法', '冠位十二階', '遣隋使', '小野妹子', '蘇我氏', '物部氏', '中大兄皇子', '中臣鎌足', '大化の改新', '壬申の乱', '天武天皇', '持統天皇', '藤原京',
+        
+        # 奈良時代
+        '平城京', '大宝律令', '律令国家', '公地・公民', '班田収授法', '租・調・庸', '口分田', '三世一身の法', '墾田永年私財法', '国司', '郡司', '防人', '遣唐使', '天平文化', '東大寺', '聖武天皇', '光明皇后', '鑑真', '唐招提寺', '正倉院', '阿弥陀堂', '行基', '長屋王', '藤原氏', '多賀城', '大宰府', '出挙',
+        
+        # 平安時代
+        '平安京', '桓武天皇', '坂上田村麻呂', '菅原道真', '摂関政治', '藤原道長', '藤原頼通', '平等院鳳凰堂', '国風文化', 'ひらがな', '源氏物語', '紫式部', '枕草子', '清少納言', '古今和歌集', '大和絵', '寝殿造', '浄土信仰', '末法思想', '院政', '白河上皇', '後鳥羽上皇', '保元の乱', '平治の乱', '平氏', '平清盛', '源氏', '源頼朝', '源義経', '壇ノ浦の戦い',
+        
+        # 鎌倉時代
+        '鎌倉幕府', '征夷大将軍', '御家人', '御恩と奉公', '守護', '地頭', '侍所', '政所', '問注所', '執権', '北条氏', '御成敗式目', '承久の乱', '元寇', '文永の役', '弘安の役', '蒙古襲来絵詞', '六波羅探題', '臨済宗', '曹洞宗', '法然', '親鸞', '一遍', '日蓮',
+        
+        # 室町時代
+        '室町幕府', '足利尊氏', '足利義満', '足利義政', '管領', '守護大名', '応仁の乱', '戦国時代', '戦国大名', '下剋上', '分国法', '一揆', '土一揆', '一向一揆', '北山文化', '金閣', '東山文化', '銀閣', '雪舟', '水墨画', '書院造', '枯山水', '観阿弥', '世阿弥', '能', '狂言', '連歌', '茶の湯', '千利休',
+        
+        # 安土桃山時代
+        '織田信長', '豊臣秀吉', '桶狭間', '長篠', '安土城', '楽市・楽座', '兵農分離', '刀狩', '太閤検地', '関白', '明智光秀', '本能寺の変', '石田三成', '関ヶ原', '桃山文化', '南蛮貿易', '南蛮文化', 'キリスト教', 'ザビエル', '天正遣欧少年使節', 'バテレン追放令', '朝鮮出兵', '文禄', '慶長', '狩野派', '琳派',
+        
+        # 江戸時代
+        '江戸幕府', '徳川将軍', '参勤交代', '武家諸法度', '大名統制', '旗本', '御家人', '身分制度', '鎖国', '絵踏', '出島', '朝鮮通信使', '琉球王国', '正徳の治', '享保の改革', '寛政の改革', '天保の改革', '新井白石', '徳川吉宗', '松平定信', '水野忠邦', '田沼意次', '目安箱', '公事方御定書', '倹約令', '株仲間解散', '人返しの法', '棄捐令', '年貢', '蔵屋敷', '菱垣廻船', '樽廻船', '東回り航路', '西回り航路', '河村瑞賢', '両替商', '札差', '株仲間', '問屋制家内工業', '新田開発', '商品作物', '木綿', '菜種', '藍', '煙草', '鉱山', '佐渡', '石見', '別子', '足尾', '元禄文化', '化政文化', '井原西鶴', '松尾芭蕉', '近松門左衛門', '歌舞伎', '浮世絵', '菱川師宣', '写楽', '北斎', '広重', '十返舎一九', '滝沢馬琴', '寺子屋', '藩校', '国学', '本居宣長', '蘭学', '解体新書', '伊能忠敬', '沿海輿地全図', '緒方洪庵', '適塾',
+        
+        # 近代（明治）
+        '黒船', 'ペリー', '日米和親条約', '開国', '安政の大獄', '桜田門外', '尊王攘夷', '薩英戦争', '下関戦争', '薩長同盟', '大政奉還', '王政復古', '戊辰戦争', '五箇条の御誓文', '版籍奉還', '廃藩置県', '三大改革', '岩倉使節団', '政党政治', '自由民権', '帝国議会', '条約改正', '関税自主権', '日清戦争', '下関条約', '三国干渉', '日英同盟', '日露戦争', 'ポーツマス条約', '韓国併合', '四民平等', '学制', '徴兵令', '地租改正', '殖産興業', '富国強兵', '官営模範工場', '鉄道開通', '文明開化', '福沢諭吉', '夏目漱石', '森鷗外', '樋口一葉', '与謝野晶子', '正岡子規',
+        
+        # 大正時代
+        '大正デモクラシー', '護憲運動', '普通選挙法', '政党内閣', '原敬', '米騒動', '労働運動', '社会運動', '大衆文化', 'ラジオ', '雑誌', '白樺派',
+        
+        # 昭和（戦前）
+        '世界恐慌', '昭和恐慌', '金融恐慌', '軍国主義', 'ファシズム', '五・一五', '二・二六', '国家総動員法', '大政翼賛会', '日中戦争', '太平洋戦争', '真珠湾', '学徒出陣', '沖縄戦', '原爆', 'ポツダム宣言', '玉音放送',
+        
+        # 現代（戦後）
+        '占領政策', 'GHQ', '日本国憲法', '民主化', '農地改革', '財閥解体', '労働基本権', '男女平等', '教育基本法', '平和主義', '基本的人権', '55年体制', '安保条約', '沖縄返還', '国連加盟', '高度経済成長', '東京五輪', '大阪万博', '石油危機', '冷戦', '終結',
+        
+        # 貿易・外交関係
+        '日宋貿易', '遣唐使', '遣隋使', '南蛮貿易', '鎖国', '開国', '条約改正', '関税自主権', '日清戦争', '日露戦争', '韓国併合', '三国干渉', '日英同盟', 'ポーツマス条約', '下関条約', 'サンフランシスコ講和条約', '日米安全保障条約', '安保条約'
+    ]
+    
+    geography_terms = [
+        # 世界地理
+        'アジア', '中国', 'インド', '東南アジア', '西アジア', '中央アジア', 'モンスーン', 'ヒマラヤ', 'ガンジス', '黄河', '長江', 'チベット', 'シベリア', 'ヨーロッパ', 'EU', '地中海性', '西岸海洋性', 'アルプス', 'ライン', '工業地帯', 'アフリカ', 'サハラ', 'サバナ', 'ナイル', 'コンゴ', '熱帯雨林', '砂漠化', '民族紛争', '北アメリカ', '米国', 'カナダ', 'ロッキー', 'グレートプレーンズ', '五大湖', 'ミシシッピ', '多民族', '南アメリカ', 'ブラジル', 'アルゼンチン', 'アンデス', 'アマゾン', '熱帯雨林', '牧畜', '資源', 'オセアニア', '豪州', 'NZ', '諸島', '乾燥', '牧羊', '鉄鉱石', '石炭',
+        
+        # 日本の自然（地形・気候）
+        '日本列島', '日本アルプス', '関東平野', '濃尾平野', '石狩平野', '十勝平野', '京阪神', '瀬戸内', '日本海', '太平洋', 'リアス', '扇状地', '三角州', '台地', '盆地', '梅雨', '台風', '季節風', '親潮', '黒潮', 'やませ', 'からっ風', '豪雪',
+        
+        # 日本の地域区分
+        '北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州',
+        
+        # 日本の産業
+        '農業', '水田', '畑作', '果樹', '畜産', '酪農', '養蚕', '水産業', '遠洋', '沖合', '沿岸', '養殖', '工業', '四大工業地帯', '重化学', '軽工業', 'ハイテク', '商業', 'サービス', '少子高齢化', '人口減少', '過疎', '都市問題', '環境', 'エネルギー', '食料', '格差', '国際化', '情報化',
+        
+        # 基本的な図表用語
+        '平野', '山地', '川', '河川', '湖', '海', '湾', '島', '半島', '岬', '海峡', '火山', '地震', '台風', '豪雨', '豪雪', '地図', '地形図', '雨温図', '統計図', 'グラフ', '表', '図', '写真', '資料', '地図記号', '記号', '都市', '地域', '県', '都道府県', '地方',
+        
+        # 農業技法・作付
+        '輪作', '二毛作', '混作', '単作', '施設園芸', '促成栽培', '抑制栽培', '稲作', '畑作', '果樹', '酪農', '養蚕', '水田', '畑', '温室', 'ビニールハウス', 'ハウス栽培', '稲', '麦', '大豆', '野菜', '果物', '畜産', '養鶏', '養豚', '養牛', '漁業', '養殖', '遠洋漁業', '沖合漁業', '沿岸漁業',
+        
+        # 工業・産業
+        '四大工業地帯', '京葉工業地域', '東海工業地域', '瀬戸内工業地域', '京浜工業地帯', '阪神工業地帯', '中京工業地帯', '北九州工業地帯', '精密機械', '自動車工業', '鉄鋼業', '石油化学', '重化学工業', '軽工業', 'ハイテク産業', 'IT産業', '情報産業',
+        
+        # エネルギー・環境
+        '再生可能エネルギー', '原子力', '火力', '水力', '地熱', '風力', '太陽光', '四大公害病', '酸性雨', 'PM2.5', '地球温暖化', '環境破壊', '持続可能な開発', '環境保護', 'リサイクル', '再エネ',
+        
+        # 地形・地質
+        'カルデラ', '砂州', '砂丘', '沖積平野', '洪積台地', '段丘', '準平原', '扇状地', '三角州', '台地', '盆地', 'リアス式海岸', 'フィヨルド', '氷河', '砂漠', '熱帯雨林', 'サバナ', 'ステップ', 'ツンドラ'
+    ]
+    
+    civics_terms = [
+        # 政治
+        '民主主義', '国民主権', '議会制民主主義', '三権分立', '法の支配', '立憲主義', '基本的人権', '平和主義', '国権の最高機関', '唯一の立法機関', '衆参', '二院制', '衆議院', '解散', '優越', '法律', '予算', '条約', '首相指名', '国政調査権', '内閣総理大臣', '国務大臣', '議院内閣制', '連帯責任', '行政権', '行政改革', '司法権', '司法権の独立', '最高裁', '下級裁', '違憲審査制', '憲法の番人', '三審制', '裁判員制度', '地方公共団体', '地方議会', '首長', '二元代表制', '直接請求', '住民投票', '条例', '地方税', '地方交付税', '国庫支出金', '選挙権', '被選挙権', '普通選挙', '平等選挙', '直接選挙', '秘密選挙', '小選挙区', '比例代表', '政党', '政権交代', '政治参加',
+        
+        # 内閣・行政
+        '内閣', '内閣総理大臣', '国務大臣', '議院内閣制', '行政権', '行政改革', '内閣不信任決議', '内閣総辞職', '内閣の役割', '内閣の権限', '内閣の責任', '内閣の組織', '内閣の機能', '内閣の制度', '内閣の仕組み', '内閣の運営', '内閣の決定', '内閣の政策', '内閣の改革', '内閣の統制',
+        
+        # 国会・立法
+        '国会', '衆議院', '参議院', '二院制', '立法権', '立法機関', '国会の権限', '国会の機能', '国会の組織', '国会の運営', '国会の決定', '国会の審議', '国会の議決', '国会の解散', '国会の召集', '国会の会期', '国会の委員会', '国会の本会議', '国会の質問', '国会の答弁',
+        
+        # 裁判所・司法
+        '裁判所', '最高裁判所', '下級裁判所', '司法権', '司法権の独立', '違憲審査制', '憲法の番人', '三審制', '裁判員制度', '裁判の独立', '裁判の公正', '裁判の迅速', '裁判の公開', '裁判の公平', '裁判の透明性', '裁判の信頼性', '裁判の権威', '裁判の効率性', '裁判の適正性', '裁判の統一性',
+        
+        # 憲法・法律
+        '憲法', '日本国憲法', '憲法の原則', '憲法の理念', '憲法の価値', '憲法の精神', '憲法の条文', '憲法の解釈', '憲法の運用', '憲法の改正', '憲法の保障', '憲法の尊重', '憲法の遵守', '憲法の実効性', '憲法の安定性', '憲法の柔軟性', '憲法の時代性', '憲法の国際性', '憲法の民主性', '憲法の平和性',
+        
+        # 人権
+        '個人の尊重', '平等', '自由権', '社会権', '参政権', '請求権', '環境権', '知る権利', 'プライバシー', '自己決定権', '肖像権', '世界人権宣言', '国際人権規約', '子どもの権利条約', '女子差別撤廃', '人種差別撤廃',
+        
+        # 経済
+        '市場経済', '資本主義', '需要供給', '価格', '競争', '企業', '家計', '貨幣', '金融', '財政', '金融政策', '景気調節', 'インフレ', 'デフレ', '成長', '公共事業', '規制緩和', '労働基本権', '労組', '労基法', '雇用', '非正規', '働き方改革', '社会保障', '社会保険', '公的扶助', '社会福祉', '年金', '医療保険', '雇用保険', '生活保護', '消費者主権', '消費者保護', '消費者基本法', 'PL法', 'クーリング・オフ',
+        
+        # 国際社会
+        '主権国家', '国際法', '国際機関', '国連', '安全保障理事会', 'ICJ', '国際協力', 'PKO', '国際貿易', '国際分業', '多国籍企業', '経済統合', 'グローバル化', '南北問題', 'ODA', '地球温暖化', '環境破壊', '持続可能な開発', '環境保護', 'リサイクル', '再エネ',
+        
+        # 条約・国際法
+        '条約', '国際条約', '核兵器禁止条約', '核拡散防止条約', '核実験全面禁止条約', '核軍縮条約', '核不拡散条約', '核廃絶条約', '核廃止条約', '核廃棄条約', '核廃絶条約', '核廃止条約', '核廃棄条約', '核廃絶条約', '核廃止条約', '核廃棄条約', '核廃絶条約', '核廃止条約', '核廃棄条約', '核廃絶条約', '核廃止条約'
+    ]
+    
+    # 用語をカタログに追加
+    terms_catalog['history'] = history_terms
+    terms_catalog['geography'] = geography_terms
+    terms_catalog['civics'] = civics_terms
+    
+    return terms_catalog
 
 def main():
-    ap = argparse.ArgumentParser(description='用語カタログ構築ツール')
-    ap.add_argument('--offline-dir', help='オフラインHTMLディレクトリ（mcp-chrome等で保存したもの）')
-    args = ap.parse_args()
+    """メイン処理"""
+    # 用語カタログを生成
+    terms_catalog = extract_terms_from_subject_index()
+    
+    # 出力ディレクトリを作成
+    output_dir = Path('data/terms_catalog')
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # JSONファイルに保存
+    output_file = output_dir / 'terms.json'
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(terms_catalog, f, ensure_ascii=False, indent=2)
+    
+    print(f"用語カタログを生成しました: {output_file}")
+    print(f"歴史: {len(terms_catalog['history'])}語")
+    print(f"地理: {len(terms_catalog['geography'])}語")
+    print(f"公民: {len(terms_catalog['civics'])}語")
 
-    base = Path(__file__).resolve().parents[1]
-    out_dir = base / 'data' / 'terms_catalog'
-    md_dir = base / 'docs'
-    out_dir.mkdir(parents=True, exist_ok=True)
-    md_dir.mkdir(parents=True, exist_ok=True)
-
-    sources: List[Tuple[str, str]] = [
-        ('history', 'https://study.005net.com/yogo/yogo.php'),
-        ('geography', 'https://study.005net.com/chiriYogo/chiriYogo.php'),
-        ('civics', 'https://study.005net.com/kominYogo/kominYogo.php'),
-    ]
-
-    catalog: Dict[str, List[str]] = {}
-
-    offline_dir: Path | None = Path(args.offline_dir) if args.offline_dir else None
-
-    for field, url in sources:
-        if offline_dir:
-            print(f'Loading (offline): {field} <- {offline_dir}')
-            html_list = load_offline_htmls(offline_dir, field)
-            merged_terms: List[str] = []
-            for html in html_list:
-                merged_terms.extend(select_terms(html))
-            # 重複除去
-            uniq = []
-            for t in merged_terms:
-                if t not in uniq:
-                    uniq.append(t)
-            catalog[field] = uniq
-            print(f'  extracted {len(uniq)} terms from {len(html_list)} file(s)')
-        else:
-            print(f'Fetching: {field} -> {url}')
-            html = scrape_with_playwright(url)
-            terms = select_terms(html)
-            catalog[field] = terms
-            print(f'  extracted {len(terms)} terms')
-
-    # JSON 保存
-    json_path = out_dir / 'terms.json'
-    with json_path.open('w', encoding='utf-8') as f:
-        json.dump(catalog, f, ensure_ascii=False, indent=2)
-
-    # Markdown 保存
-    md_path = md_dir / 'terms_catalog.md'
-    with md_path.open('w', encoding='utf-8') as f:
-        f.write('# 社会科 重要用語カタログ\n\n')
-        f.write('更新手順: tools/build_terms_catalog.py を実行\n\n')
-        for field_label, title in [('history', '歴史'), ('geography', '地理'), ('civics', '公民')]:
-            f.write(f'## {title}\n')
-            for term in catalog.get(field_label, [])[:1000]:
-                f.write(f'- {term}\n')
-            f.write('\n')
-
-    print(f'Wrote: {json_path}')
-    print(f'Wrote: {md_path}')
-
-
-if __name__ == '__main__':
-    # 環境変数 PLAYWRIGHT_BROWSERS_PATH を指定するとキャッシュを共有できます
-    os.environ.setdefault('PLAYWRIGHT_BROWSERS_PATH', '0')
+if __name__ == "__main__":
     main()

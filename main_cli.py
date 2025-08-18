@@ -218,7 +218,7 @@ class SocialExamAnalyzerCLI:
                     for q in bucket:
                         # テーマ・主要語を全文から再算出
                         base_text = getattr(q, 'full_text', None) or getattr(q, 'original_text', None) or q.text or ''
-                        topic = self._infer_fallback_theme(base_text, q.field.value)
+                        topic = q.theme or self._infer_fallback_theme(base_text, q.field.value)
                         keywords = self.theme_knowledge.extract_important_terms(base_text, q.field.value, limit=5)
                         # 表示番号整形
                         num = getattr(q, 'number', '') or ''

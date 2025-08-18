@@ -1,5 +1,8 @@
 # Core module initialization
-from .application import EntranceExamAnalyzer
-from .cli import CLI
+# CLI temporarily commented out due to remaining legacy dependencies
+# from .cli import CLI
+from .text_engine import TextEngine
+from .config import get_config, MainConfig
+from .analyzer_di import AnalyzerFactory, BaseAnalyzer
 
-__all__ = ['EntranceExamAnalyzer', 'CLI']
+__all__ = ['TextEngine', 'get_config', 'MainConfig', 'AnalyzerFactory', 'BaseAnalyzer']

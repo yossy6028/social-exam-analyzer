@@ -7,28 +7,36 @@ from pathlib import Path
 from typing import Optional, List
 import json
 
-from .application import EntranceExamAnalyzer
-from config.settings import Settings
-from utils.display_utils import (
-    print_header,
-    print_section,
-    print_success,
-    print_error,
-    print_warning,
-    print_info,
-    clear_screen,
-    Colors
-)
-from plugins.loader import get_plugin_loader
-from modules.excel_manager import ExcelManager
-from modules.text_file_manager import TextFileManager
+# Legacy imports commented out due to refactoring
+# from .application import EntranceExamAnalyzer
+# from config.settings import Settings
+# from utils.display_utils import (
+#     print_header,
+#     print_section,
+#     print_success,
+#     print_error,
+#     print_warning,
+#     print_info,
+#     clear_screen,
+#     Colors
+# )
+# from plugins.loader import get_plugin_loader
+# from modules.excel_manager import ExcelManager
+# from modules.text_file_manager import TextFileManager
+
+from .config import get_config
+from .text_engine import TextEngine
+from .analyzer_di import AnalyzerFactory
 
 
 class CLI:
     """コマンドラインインターフェース"""
     
     def __init__(self):
-        self.app = EntranceExamAnalyzer()
+        # Legacy application replaced with new components
+        self.config = get_config()
+        self.text_engine = TextEngine(self.config)
+        self.analyzer_factory = AnalyzerFactory()
         self.parser = self._create_parser()
     
     def _create_parser(self) -> argparse.ArgumentParser:

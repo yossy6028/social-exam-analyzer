@@ -60,14 +60,14 @@ def analyze_2025_pdf():
     ]
     
     for q in questions:
-        if q.topic is None:
+        if q.theme is None:
             none_themes.append(q)
-        elif any(bad in str(q.topic) for bad in problematic_patterns):
-            bad_themes.append((q.number, q.topic))
-        elif len(str(q.topic)) > 2:
-            good_themes.append((q.number, q.topic))
+        elif any(bad in str(q.theme) for bad in problematic_patterns):
+            bad_themes.append((q.number, q.theme))
+        elif len(str(q.theme)) > 2:
+            good_themes.append((q.number, q.theme))
         else:
-            bad_themes.append((q.number, q.topic))
+            bad_themes.append((q.number, q.theme))
     
     print(f"✅ 良質なテーマ: {len(good_themes)}問 ({len(good_themes)/len(questions)*100:.1f}%)")
     print(f"❌ 問題のあるテーマ: {len(bad_themes)}問 ({len(bad_themes)/len(questions)*100:.1f}%)")

@@ -15,7 +15,7 @@ class Settings:
     
     # 年度関連
     MIN_YEAR_2DIGIT = 14        # 2桁年度の最小値（2014年）
-    MAX_YEAR_2DIGIT = 25        # 2桁年度の最大値（2025年）
+    MAX_YEAR_2DIGIT = 25        # 2桁年度の最大値（2025年）- 現在まで
     MIN_VALID_YEAR = 1990       # 有効年度の最小値
     MAX_VALID_YEAR = 2030       # 有効年度の最大値
     

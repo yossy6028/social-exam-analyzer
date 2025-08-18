@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 from config.settings import Settings
 from models import YearDetectionResult
-from exceptions import YearDetectionError
+from core.exceptions import YearDetectionError
 from utils.text_utils import normalize_text
 
 

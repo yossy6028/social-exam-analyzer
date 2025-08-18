@@ -4,15 +4,29 @@
 """
 
 from .registry import PatternRegistry
-from .year_patterns import YEAR_PATTERNS
-from .section_patterns import SECTION_PATTERNS
-from .source_patterns import SOURCE_PATTERNS
-from .question_patterns import QUESTION_PATTERNS
+from .recognition_patterns import (
+    YEAR_PATTERNS,
+    SECTION_PATTERNS,
+    SOURCE_PATTERNS,
+    QUESTION_PATTERNS,
+    QUESTION_CONFIG,
+    SECTION_CONFIG,
+    SOURCE_CONFIG,
+    YEAR_CONFIG,
+    QUESTION_NUMBER_MAP,
+    SECTION_NUMBER_MAP
+)
 
 __all__ = [
     'PatternRegistry',
     'YEAR_PATTERNS',
     'SECTION_PATTERNS', 
     'SOURCE_PATTERNS',
-    'QUESTION_PATTERNS'
+    'QUESTION_PATTERNS',
+    'QUESTION_CONFIG',
+    'SECTION_CONFIG',
+    'SOURCE_CONFIG',
+    'YEAR_CONFIG',
+    'QUESTION_NUMBER_MAP',
+    'SECTION_NUMBER_MAP'
 ]

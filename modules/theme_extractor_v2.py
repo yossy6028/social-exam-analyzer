@@ -248,6 +248,43 @@ class ThemeExtractorV2:
             (re.compile(r'図表.*?読み取り'), '図表の読み取り'),
             (re.compile(r'表から.*?読み取'), '統計表の分析'),  # 「表から読み取れること」対策
             (re.compile(r'次の表.*?(読み取|説明)'), '統計表の分析'),  # 「次の表から読み取れること」対策
+            
+            # 図表問題の強化
+            (re.compile(r'次の図.*?(見て|答え|選び)'), '図の読み取り'),
+            (re.compile(r'次の地図.*?(見て|答え|選び)'), '地図の読み取り'),
+            (re.compile(r'次の雨温図.*?(見て|答え|選び)'), '雨温図の読み取り'),
+            (re.compile(r'次の地形図.*?(見て|答え|選び)'), '地形図の読み取り'),
+            (re.compile(r'次の写真.*?(見て|答え|選び)'), '写真の読み取り'),
+            (re.compile(r'図中.*?(記号|地図記号)'), '図の読み取り'),
+            (re.compile(r'地図中.*?(記号|地図記号)'), '地図の読み取り'),
+            (re.compile(r'地形図.*?(読み取|見て)'), '地形図の読み取り'),
+            (re.compile(r'雨温図.*?(見て|答え)'), '雨温図の読み取り'),
+            (re.compile(r'図中の.*?地図記号'), '地図記号の読み取り'),
+            (re.compile(r'地図記号.*?何を示している'), '地図記号の読み取り'),
+            
+            # 統計・データ問題の強化
+            (re.compile(r'表.*?(都道府県|県|市|町|村)'), '統計表の分析'),
+            (re.compile(r'統計.*?(都道府県|県|市|町|村)'), '統計の分析'),
+            (re.compile(r'データ.*?(都道府県|県|市|町|村)'), 'データの分析'),
+            (re.compile(r'表.*?(頭数|生産量|人口|面積)'), '統計表の分析'),
+            (re.compile(r'都道府県別.*?(頭数|生産量|人口|面積)'), '統計表の分析'),
+            
+            # 平野・地形問題の強化
+            (re.compile(r'平野.*?(説明|特徴)'), '平野の特徴'),
+            (re.compile(r'地形.*?(説明|特徴)'), '地形の特徴'),
+            (re.compile(r'河川.*?(流れ|特徴)'), '河川の特徴'),
+            (re.compile(r'気候.*?(特徴|影響)'), '気候の特徴'),
+            
+            # 産業・農業問題の強化
+            (re.compile(r'農業.*?(特徴|作物)'), '農業の特徴'),
+            (re.compile(r'工業.*?(特徴|製品)'), '工業の特徴'),
+            (re.compile(r'産業.*?(特徴|発展)'), '産業の特徴'),
+            
+            # 地図記号問題の強化
+            (re.compile(r'図中の.*?地図記号'), '地図記号の読み取り'),
+            (re.compile(r'地図記号.*?何を示している'), '地図記号の読み取り'),
+            (re.compile(r'図中の.*?記号.*?何を示している'), '地図記号の読み取り'),
+            (re.compile(r'図中.*?記号'), '図の読み取り'),
         ]
     
     def _init_exclusion_patterns(self) -> List[re.Pattern]:
@@ -268,20 +305,21 @@ class ThemeExtractorV2:
             re.compile(r'^(説明として|関連して|関する文|期間におきた)'),
             
             # === 空欄・穴埋め関連 ===
-            # 空欄補充・穴埋め
-            re.compile(r'(空欄補充|穴埋め|空らん)'),
+            # 空欄補充・穴埋め（単独の場合のみ除外）
+            re.compile(r'^(空欄補充|穴埋め|空らん)$'),
             # 記号や括弧のみの内容
-            re.compile(r'^【[あ-んア-ン]】|^\([あ-んア-ン]\)'),
-            # 【】にあてはまる形式
-            re.compile(r'【[あ-んア-ン]】.*?にあてはまる'),  # 【い】にあてはまる
-            re.compile(r'にあてはまる.*?(人物名|語句|言葉)'),  # にあてはまる人物名
+            re.compile(r'^【[あ-んア-ン]】$|^\([あ-んア-ン]\)$'),
+            # 【】にあてはまる形式のみ
+            re.compile(r'^【[あ-んア-ン]】.*?にあてはまる$'),  # 【い】にあてはまる
+            re.compile(r'^にあてはまる.*?(人物名|語句|言葉)$'),  # にあてはまる人物名
             
             # === 「次の〜」パターン ===
             # 図表等の紹介だけで具体性がないものは除外（読み取り/分析/説明がなければ除外）
-            re.compile(r'^次の(図|グラフ|資料|写真|地図|雨温図)(?!.*?(読み取|分析|説明))'),
-            re.compile(r'^次の表(?!.*?(読み取|分析|説明))'),
-            re.compile(r'^以下の(うち|中から|選択肢)'),  # 以下のうちなど
-            re.compile(r'^次のア〜'),  # 次のア〜エからなど
+            # ただし、問題文として機能するものは除外しない
+            re.compile(r'^次の(図|グラフ|資料|写真|地図|雨温図)(?!.*?(読み取|分析|説明|答え|選び|見て))$'),
+            re.compile(r'^次の表(?!.*?(読み取|分析|説明|答え|選び|見て))$'),
+            re.compile(r'^以下の(うち|中から|選択肢)$'),  # 以下のうちなど
+            re.compile(r'^次のア〜$'),  # 次のア〜エからなど
             re.compile(r'から選べ$'),  # 「〜から選べ」で終わる文
             
             # === 下線部関連 ===
@@ -328,10 +366,10 @@ class ThemeExtractorV2:
             re.compile(r'を用いて.*事例'),  # 「〜を用いて〜事例」パターン
             
             # === 問題解答指示 ===
-            # 解答形式の指定
-            re.compile(r'(漢字で答え|ひらがなで答え|カタカナで答え)'),
-            re.compile(r'(記号で答え|番号で答え|選択肢)'),
-            re.compile(r'(正しい|適切な|誤って|間違って).*?(選び|答え)'),
+            # 解答形式の指定（単独の場合のみ除外）
+            re.compile(r'^(漢字で答え|ひらがなで答え|カタカナで答え)$'),
+            re.compile(r'^(記号で答え|番号で答え|選択肢)$'),
+            re.compile(r'^(正しい|適切な|誤って|間違って).*?(選び|答え)$'),
             
             # === 地図・図表の参照（文脈なしでは無意味） ===
             # 地図中の〜（位置指定）- ただし都市名や地域名がある場合は除外しない
@@ -355,7 +393,7 @@ class ThemeExtractorV2:
             # 新聞記事の内容など、教材参照のみの断片
             re.compile(r'新聞記事の内容'),
             # 「以下の表」を含むが読み取り等が無い場合は除外
-            re.compile(r'以下の表(?!.*?(読み取|分析|説明))'),
+            re.compile(r'以下の表(?!.*?(読み取|分析|説明))$'),
         ]
     
     def extract(self, text: str) -> ExtractedTheme:
@@ -363,30 +401,23 @@ class ThemeExtractorV2:
         テーマを抽出するメインメソッド
         
         階層的アプローチ:
-        1. 除外チェック
-        2. 具体的パターンのマッチング
-        3. カテゴリパターンのマッチング
-        4. 抽象パターンのマッチング
-        5. フォールバック処理
+        1. 用語カタログからのテーマ抽出（最優先）
+        2. 除外チェック
+        3. 具体的パターンのマッチング
+        4. カテゴリパターンのマッチング
+        5. 抽象パターンのマッチング
+        6. フォールバック処理
         """
         
-        # ステップ0.5: 選択肢からの共起判定（空欄/選択問題でもテーマを推定）
-        opt_cluster = self._match_options_cluster(text)
-        if opt_cluster:
-            return opt_cluster
-
-        # ステップ1: 除外チェック（ただし上記で強い根拠がある場合は回避済み）
-        if self._should_exclude(text):
-            return ExtractedTheme(None, None, 0.0)
-
-        # ステップ1.5: キーワードから具体的なテーマを生成（最優先）
-        refined = self._refine_theme_from_keywords(text)
-        if refined:
-            return refined
-
-        # ステップ1.6: 用語カタログ/時代インデックスに基づく分野・時代推定（任意）
+        # ステップ0: 用語カタログからのテーマ抽出（最優先）
         if self.terms_repo is not None:
-            # 時代推定を先に試みる（歴史の具体化に寄与）
+            # 用語カタログからテーマを提案
+            theme_suggestion = self.terms_repo.suggest_theme(text)
+            if theme_suggestion:
+                theme, field = theme_suggestion
+                return ExtractedTheme(theme, self._field_label_to_category(field), 0.9)
+            
+            # 時代推定を試みる（歴史の具体化に寄与）
             period = self.terms_repo.infer_history_period(text)
             if period:
                 # 文脈語で2文節化
@@ -401,11 +432,21 @@ class ThemeExtractorV2:
                 else:
                     theme = f"{period}の特徴"
                 return ExtractedTheme(theme, '歴史', 0.85)
-            hit = self.terms_repo.suggest_theme(text)
-            if hit:
-                theme, field = hit
-                return ExtractedTheme(theme, self._field_label_to_category(field), 0.8)
         
+        # ステップ0.5: 選択肢からの共起判定（空欄/選択問題でもテーマを推定）
+        opt_cluster = self._match_options_cluster(text)
+        if opt_cluster:
+            return opt_cluster
+
+        # ステップ1: 除外チェック（ただし上記で強い根拠がある場合は回避済み）
+        if self._should_exclude(text):
+            return ExtractedTheme(None, None, 0.0)
+
+        # ステップ1.5: キーワードから具体的なテーマを生成
+        refined = self._refine_theme_from_keywords(text)
+        if refined:
+            return refined
+
         # ステップ2: クラスタ（複数語の共起による高次テーマ）
         cluster_result = self._match_cluster_patterns(text)
         if cluster_result:

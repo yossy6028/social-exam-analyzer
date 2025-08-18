@@ -39,19 +39,21 @@ class PatternRegistry:
     
     def _load_all_patterns(self):
         """すべてのパターン定義を読み込み"""
-        from . import year_patterns, section_patterns, source_patterns, question_patterns
+        from .recognition_patterns import (
+            YEAR_PATTERNS, SECTION_PATTERNS, SOURCE_PATTERNS, QUESTION_PATTERNS
+        )
         
         # 年度パターン
-        self._register_patterns('year', year_patterns.YEAR_PATTERNS)
+        self._register_patterns('year', YEAR_PATTERNS)
         
         # セクションパターン
-        self._register_patterns('section', section_patterns.SECTION_PATTERNS)
+        self._register_patterns('section', SECTION_PATTERNS)
         
         # 出典パターン
-        self._register_patterns('source', source_patterns.SOURCE_PATTERNS)
+        self._register_patterns('source', SOURCE_PATTERNS)
         
         # 設問パターン
-        self._register_patterns('question', question_patterns.QUESTION_PATTERNS)
+        self._register_patterns('question', QUESTION_PATTERNS)
         
         logger.info(f"Loaded {len(self._pattern_definitions)} pattern definitions")
     
@@ -220,3 +222,25 @@ class PatternRegistry:
             'source.author_title_niyoru': r'.+『.+』',  # 最小限のパターン
         }
         return fallback_patterns.get(pattern_name)
+    
+    def get_all_patterns(self) -> Dict[str, Any]:
+        """全パターンを取得 - 後方互換性のため"""
+        return {
+            'questions': self._compiled_patterns,
+            'sections': self._compiled_patterns,
+            'sources': self._compiled_patterns,
+            'years': self._compiled_patterns
+        }
+    
+    def extract_all(self, text: str, filename: str = '') -> Dict[str, Any]:
+        """テキストから全情報を抽出 - 後方互換性のため"""
+        from .recognition_patterns import (
+            extract_sections, extract_questions, extract_source_info, extract_year
+        )
+        
+        return {
+            'sections': extract_sections(text),
+            'questions': extract_questions(text),
+            'sources': extract_source_info(text),
+            'year': extract_year(text, filename)
+        }
