@@ -32,7 +32,7 @@ class GeminiThemeAnalyzer:
         self.api_enabled = False
         if GENAI_AVAILABLE:
             # 環境変数またはハードコードされたAPIキーを使用
-            api_key = os.getenv('GEMINI_API_KEY', "AIzaSyA-4jEpv2dACzU-zvd68yQeCMTEvNKzygY")
+            api_key = os.getenv('GEMINI_API_KEY')
             if api_key:
                 genai.configure(api_key=api_key)
                 try:
